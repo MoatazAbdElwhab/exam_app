@@ -10,6 +10,8 @@ class CustomTextFormField extends StatelessWidget {
   final bool isPass;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
+   double? suffixIconHeight;
+  Widget? suffixIcon;
 
    CustomTextFormField({
     super.key,
@@ -18,6 +20,8 @@ class CustomTextFormField extends StatelessWidget {
     this.isPass = false,
     this.controller,
     this.validator,
+    this.suffixIcon,
+     this.suffixIconHeight,
   });
 
   @override
@@ -25,9 +29,13 @@ class CustomTextFormField extends StatelessWidget {
     return TextFormField(
        controller: controller,
        validator: validator,
+       
       style: getRegularStyle(color: ColorManager.black, fontSize: 16.sp),
       obscureText: isPass,
       decoration: InputDecoration(
+         suffixIcon: suffixIcon,
+           suffixIconConstraints:
+              BoxConstraints(maxHeight: suffixIconHeight ?? 40),
         contentPadding: const EdgeInsets.only(left: 16, top: 18, bottom: 18),
         hintText: hint,
         hintStyle: getRegularStyle(

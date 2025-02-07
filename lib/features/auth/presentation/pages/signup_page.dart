@@ -140,6 +140,7 @@ class _SignupPageState extends State<SignupPage> {
                     child: CustomTextFormField(
                       label: 'Password',
                       hint: 'Enter password',
+                      isPass: true,
                       controller: passwordController,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -157,6 +158,7 @@ class _SignupPageState extends State<SignupPage> {
                     child: CustomTextFormField(
                       label: 'Confirm Password',
                       hint: 'Confirm password',
+                      isPass: true,
                       controller: confirmPasswordController,
                       validator: (value) {
                         if (value!.isEmpty) {
