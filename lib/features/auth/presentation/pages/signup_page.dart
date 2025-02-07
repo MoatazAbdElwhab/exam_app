@@ -1,10 +1,13 @@
+// features/auth/presentation/pages/signup_page.dart
 import 'package:exam_app/core/functions/navigation.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:exam_app/core/utils/validator.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
 import 'package:exam_app/core/widgets/custom_text_form_field.dart';
-import 'package:exam_app/features/profile/presentation/profile_page.dart';
+
+import 'package:exam_app/features/profile/presentation/pages/profile_page.dart';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -98,6 +101,7 @@ class _SignupPageState extends State<SignupPage> {
                     child: CustomTextFormField(
                       label: 'Password',
                       hint: 'Enter password',
+                      isPass: true,
                       controller: passwordController,
                       validator: Validator.passwordValidation,
                     ),
@@ -107,6 +111,7 @@ class _SignupPageState extends State<SignupPage> {
                     child: CustomTextFormField(
                       label: 'Confirm Password',
                       hint: 'Confirm password',
+                      isPass: true,
                       controller: confirmPasswordController,
                       validator: (value) {
                         if (value!.isEmpty) {

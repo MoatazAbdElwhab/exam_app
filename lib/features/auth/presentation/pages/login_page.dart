@@ -1,6 +1,7 @@
 // features/auth/presentation/pages/login_page.dart
 import 'package:exam_app/core/functions/navigation.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
+import 'package:exam_app/core/resources/icon_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:exam_app/core/utils/validator.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
@@ -8,10 +9,11 @@ import 'package:exam_app/core/widgets/custom_text_form_field.dart';
 import 'package:exam_app/features/auth/presentation/pages/forgetpassword_page.dart';
 import 'package:exam_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:exam_app/features/auth/presentation/widgets/remember_me_widget.dart';
-import 'package:exam_app/features/profile/presentation/profile_page.dart';
+import 'package:exam_app/features/profile/presentation/pages/profile_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 
 class LoginPage extends StatefulWidget {
@@ -38,6 +40,7 @@ class _LoginPageState extends State<LoginPage> {
           style: getMediumStyle(fontSize: 20.sp, color: ColorManager.black),
         ),
       ),
+      //body
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
