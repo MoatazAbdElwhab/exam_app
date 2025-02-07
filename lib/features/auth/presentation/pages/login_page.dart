@@ -72,12 +72,8 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   RememberMeWidget(
-                    value: rememberMe,
-                    onChanged: (newValue) {
-                      setState(() {
-                        rememberMe = newValue!;
-                      });
-                    },
+                    value: false,
+                    onChanged: (value) {},
                   ),
                   GestureDetector(
                     onTap: () {
@@ -97,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                 title: 'Login',
                 onTap: () async {
                   if (formKey.currentState!.validate()) {
-                    await _saveCredentials();
+                    
                     push(context, ProfilePage());
                   }
                 },
