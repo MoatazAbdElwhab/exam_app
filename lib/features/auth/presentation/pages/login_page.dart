@@ -1,9 +1,8 @@
 // features/auth/presentation/pages/login_page.dart
-import 'package:exam_app/core/functions/email_validate.dart';
 import 'package:exam_app/core/functions/navigation.dart';
-import 'package:exam_app/core/functions/password_validate.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
+import 'package:exam_app/core/utils/validator.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
 import 'package:exam_app/core/widgets/custom_text_form_field.dart';
 import 'package:exam_app/features/auth/presentation/pages/forgetpassword_page.dart';
@@ -55,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'please enter your email';
-                  } else if (!emailValidate(value)) {
+                  } else if (!Validator.emailValidate(value)) {
                     return 'enter valid email';
                   } else {
                     return null;
@@ -72,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                 isPass: true,
                 controller: passwordController,
                 validator: (value) {
-                  if (passwordValidation(value)) {
+                  if (Validator.passwordValidation(value)) {
                     return 'The password is not valid';
                   }
                   if (value!.isEmpty) return 'Please enter your password';

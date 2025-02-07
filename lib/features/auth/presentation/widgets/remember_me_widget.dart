@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 class RememberMeWidget extends StatelessWidget {
   final bool? value;
   final Function(bool?)? onChanged;
-  const RememberMeWidget(
-      {super.key, required this.onChanged, required this.value});
+  const RememberMeWidget({
+    super.key,
+    required this.onChanged,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
