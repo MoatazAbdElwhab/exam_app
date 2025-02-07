@@ -10,10 +10,10 @@ class CustomTextFormField extends StatelessWidget {
   final bool isPass;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
-   double? suffixIconHeight;
-  Widget? suffixIcon;
+  final double? suffixIconHeight;
+  final Widget? suffixIcon;
 
-   CustomTextFormField({
+   const CustomTextFormField({
     super.key,
     required this.label,
     required this.hint,

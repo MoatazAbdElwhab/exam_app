@@ -1,8 +1,8 @@
 // features/auth/presentation/pages/login_page.dart
 import 'package:exam_app/core/functions/navigation.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
-import 'package:exam_app/core/resources/icon_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
+import 'package:exam_app/core/services/local_storage.dart';
 import 'package:exam_app/core/utils/validator.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
 import 'package:exam_app/core/widgets/custom_text_form_field.dart';
@@ -13,7 +13,6 @@ import 'package:exam_app/features/profile/presentation/pages/profile_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 
 class LoginPage extends StatefulWidget {
@@ -29,6 +28,32 @@ class _LoginPageState extends State<LoginPage> {
   //email & password controller
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  //rememberMe
+  bool rememberMe = false;
+
+  Future<void> _loadSavedCredentials() async {
+    final credentials = await AppLocalStorage.getLoginCredentials();
+    setState(() {
+      emailController.text = credentials["email"];
+      passwordController.text = credentials["password"];
+      rememberMe = credentials["rememberMe"];
+    });
+  }
+
+  Future<void> _saveCredentials() async {
+    await AppLocalStorage.saveLoginCredentials(
+      emailController.text,
+      passwordController.text,
+      rememberMe,
+    );
+    debugPrint("Saved credentials");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +98,12 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   RememberMeWidget(
-                    value: true,
-                    onChanged: (p0) {},
+                    value: rememberMe,
+                    onChanged: (newValue) {
+                      setState(() {
+                        rememberMe = newValue!;
+                      });
+                    },
                   ),
                   GestureDetector(
                     onTap: () {
@@ -92,8 +121,9 @@ class _LoginPageState extends State<LoginPage> {
               //login button
               CustomElevatedButton(
                 title: 'Login',
-                onTap: () {
+                onTap: () async {
                   if (formKey.currentState!.validate()) {
+                    await _saveCredentials();
                     push(context, ProfilePage());
                   }
                 },
