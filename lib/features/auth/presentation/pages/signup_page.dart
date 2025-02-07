@@ -1,13 +1,7 @@
-// features/auth/presentation/pages/signup_page.dart
-import 'package:exam_app/core/functions/email_validate.dart';
-import 'package:exam_app/core/functions/firstname_validate.dart';
-import 'package:exam_app/core/functions/lastname_validate.dart';
 import 'package:exam_app/core/functions/navigation.dart';
-import 'package:exam_app/core/functions/password_validate.dart';
-import 'package:exam_app/core/functions/phonenumber_validate.dart';
-import 'package:exam_app/core/functions/username_validate.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
+import 'package:exam_app/core/utils/validator.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
 import 'package:exam_app/core/widgets/custom_text_form_field.dart';
 import 'package:exam_app/features/auth/presentation/pages/forgetpassword_page.dart';
@@ -68,7 +62,7 @@ class _SignupPageState extends State<SignupPage> {
                     return 'please enter your user name';
                   } else if (value.length < 8) {
                     return 'username must be at least 8 characters';
-                  } else if (!userNAmeValidation(value)) {
+                  } else if (!Validator.userNameValidation(value)) {
                     return 'enter valid user name';
                   } else {
                     return null;
@@ -88,7 +82,7 @@ class _SignupPageState extends State<SignupPage> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'please enter your first name';
-                        } else if (!firstNAmeValidation(value)) {
+                        } else if (!Validator.firstNameValidation(value)) {
                           return 'enter valid first name';
                         } else {
                           return null;
@@ -105,7 +99,7 @@ class _SignupPageState extends State<SignupPage> {
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'please enter your last name';
-                          } else if (!lastNAmeValidation(value)) {
+                          } else if (!Validator.lastNameValidation(value)) {
                             return 'enter valid last name';
                           } else {
                             return null;
@@ -124,7 +118,7 @@ class _SignupPageState extends State<SignupPage> {
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'please enter your email';
-                  } else if (!emailValidate(value)) {
+                  } else if (!Validator.emailValidate(value)) {
                     return 'enter valid email';
                   } else {
                     return null;
@@ -145,7 +139,7 @@ class _SignupPageState extends State<SignupPage> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'please enter your password';
-                        } else if (!passwordValidation(value)) {
+                        } else if (!Validator.passwordValidation(value)) {
                           return 'enter valid password';
                         } else {
                           return null;
@@ -183,7 +177,7 @@ class _SignupPageState extends State<SignupPage> {
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'please enter your phone number';
-                  } else if (!phoneNumberValidation(value)) {
+                  } else if (!Validator.phoneNumberValidation(value)) {
                     return 'enter valid phone number';
                   } else {
                     return null;
