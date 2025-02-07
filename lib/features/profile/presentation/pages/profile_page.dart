@@ -1,7 +1,6 @@
 // features/profile/presentation/pages/profile_page.dart
 import 'package:exam_app/core/functions/navigation.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
-import 'package:exam_app/core/resources/icon_manager.dart';
 import 'package:exam_app/core/resources/image_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
@@ -70,14 +69,14 @@ class ProfilePage extends StatelessWidget {
               //first name & last name
               Row(
                 children: [
-                  Expanded(
+                  const Expanded(
                     child: CustomTextFormField(
                       label: 'First name',
                       hint: 'Enter your first name',
                     ),
                   ),
                   SizedBox(width: 16.w),
-                  Expanded(
+                  const Expanded(
                     child: CustomTextFormField(
                       label: 'Last name',
                       hint: 'Enter your last name',
@@ -88,7 +87,7 @@ class ProfilePage extends StatelessWidget {
 
               //email
               Gap(24.h),
-              CustomTextFormField(
+              const CustomTextFormField(
                 label: 'E-mail',
                 hint: 'Enter your first E-mail',
               ),
@@ -112,7 +111,7 @@ class ProfilePage extends StatelessWidget {
 
               //phone number
               Gap(24.h),
-              CustomTextFormField(
+             const CustomTextFormField(
                 label: 'Phone number',
                 hint: 'Enter your phone number',
               ),
