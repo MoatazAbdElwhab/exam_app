@@ -51,15 +51,7 @@ class _LoginPageState extends State<LoginPage> {
                 label: 'Email',
                 hint: 'Enter you email',
                 controller: emailController,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'please enter your email';
-                  } else if (!Validator.emailValidate(value)) {
-                    return 'enter valid email';
-                  } else {
-                    return null;
-                  }
-                },
+                validator: Validator.emailValidate,
               ),
 
               Gap(24.h),
@@ -70,13 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                 hint: 'Enter you password',
                 isPass: true,
                 controller: passwordController,
-                validator: (value) {
-                  if (Validator.passwordValidation(value)) {
-                    return 'The password is not valid';
-                  }
-                  if (value!.isEmpty) return 'Please enter your password';
-                  return null;
-                },
+                validator: Validator.passwordValidation,
               ),
 
               //forgetpassword

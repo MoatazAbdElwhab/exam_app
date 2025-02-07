@@ -59,15 +59,7 @@ class _ForgetpasswordPageState extends State<ForgetpasswordPage> {
                 label: 'Email',
                 hint: 'Enter you email',
                 controller: emailController,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'please enter your email';
-                  } else if (!Validator.emailValidate(value)) {
-                    return 'enter valid email';
-                  } else {
-                    return null;
-                  }
-                },
+                validator: Validator.emailValidate,
               ),
               Gap(48.h),
               CustomElevatedButton(

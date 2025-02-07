@@ -13,3 +13,7 @@ pushAndRemoveUntil(BuildContext context, Widget view) {
   Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => view), (route) => false);
 }
+
+pop(BuildContext context) {
+  Navigator.of(context).pop();
+}

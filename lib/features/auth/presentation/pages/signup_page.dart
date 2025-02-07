@@ -4,9 +4,6 @@ import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:exam_app/core/utils/validator.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
 import 'package:exam_app/core/widgets/custom_text_form_field.dart';
-import 'package:exam_app/features/auth/presentation/pages/forgetpassword_page.dart';
-import 'package:exam_app/features/auth/presentation/pages/login_page.dart';
-import 'package:exam_app/features/auth/presentation/widgets/remember_me_widget.dart';
 import 'package:exam_app/features/profile/presentation/profile_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -57,17 +54,7 @@ class _SignupPageState extends State<SignupPage> {
                 label: 'User name',
                 hint: 'Enter your user name',
                 controller: userNameController,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'please enter your user name';
-                  } else if (value.length < 8) {
-                    return 'username must be at least 8 characters';
-                  } else if (!Validator.userNameValidation(value)) {
-                    return 'enter valid user name';
-                  } else {
-                    return null;
-                  }
-                },
+                validator: Validator.userNameValidation,
               ),
               Gap(24.h),
 
@@ -79,32 +66,17 @@ class _SignupPageState extends State<SignupPage> {
                       label: 'First name',
                       hint: 'Enter your first name',
                       controller: firstNameController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'please enter your first name';
-                        } else if (!Validator.firstNameValidation(value)) {
-                          return 'enter valid first name';
-                        } else {
-                          return null;
-                        }
-                      },
+                      validator: Validator.firstNameValidation,
                     ),
                   ),
                   SizedBox(width: 16.w),
                   Expanded(
                     child: CustomTextFormField(
-                        label: 'Last name',
-                        hint: 'Enter your last name',
-                        controller: lastNameController,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'please enter your last name';
-                          } else if (!Validator.lastNameValidation(value)) {
-                            return 'enter valid last name';
-                          } else {
-                            return null;
-                          }
-                        }),
+                      label: 'Last name',
+                      hint: 'Enter your last name',
+                      controller: lastNameController,
+                      validator: Validator.lastNameValidation,
+                    ),
                   ),
                 ],
               ),
@@ -115,15 +87,7 @@ class _SignupPageState extends State<SignupPage> {
                 label: 'Email',
                 hint: 'Enter you E-mail',
                 controller: emailController,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'please enter your email';
-                  } else if (!Validator.emailValidate(value)) {
-                    return 'enter valid email';
-                  } else {
-                    return null;
-                  }
-                },
+                validator: Validator.emailValidate,
               ),
               Gap(24.h),
 
@@ -135,15 +99,7 @@ class _SignupPageState extends State<SignupPage> {
                       label: 'Password',
                       hint: 'Enter password',
                       controller: passwordController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'please enter your password';
-                        } else if (!Validator.passwordValidation(value)) {
-                          return 'enter valid password';
-                        } else {
-                          return null;
-                        }
-                      },
+                      validator: Validator.passwordValidation,
                     ),
                   ),
                   SizedBox(width: 16.w),
@@ -172,36 +128,9 @@ class _SignupPageState extends State<SignupPage> {
                 label: 'Phone number',
                 hint: 'Enter phone number',
                 controller: phoneNumberController,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'please enter your phone number';
-                  } else if (!Validator.phoneNumberValidation(value)) {
-                    return 'enter valid phone number';
-                  } else {
-                    return null;
-                  }
-                },
+                validator: Validator.phoneNumberValidation,
               ),
 
-              //forgetpassword
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  RememberMeWidget(
-                    value: true,
-                    onChanged: (p0) {},
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      push(context, ForgetpasswordPage());
-                    },
-                    child: Text(
-                      'Forget password?',
-                      style: getTextUnderLine(color: ColorManager.black),
-                    ),
-                  )
-                ],
-              ),
               SizedBox(height: 24.h),
 
               //signUp button
@@ -228,7 +157,7 @@ class _SignupPageState extends State<SignupPage> {
                           color: ColorManager.blue, fontSize: 16.sp),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          push(context, LoginPage());
+                          pop(context);
                         },
                     ),
                   ],
