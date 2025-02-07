@@ -2,6 +2,7 @@
 import 'package:exam_app/core/functions/navigation.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
+import 'package:exam_app/core/services/local_storage.dart';
 import 'package:exam_app/core/utils/validator.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
 import 'package:exam_app/core/widgets/custom_text_form_field.dart';
@@ -27,7 +28,6 @@ class _LoginPageState extends State<LoginPage> {
   //email & password controller
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  
 
   @override
   Widget build(BuildContext context) {
@@ -72,8 +72,12 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   RememberMeWidget(
-                    value: true,
-                    onChanged: (p0) {},
+                    value: rememberMe,
+                    onChanged: (newValue) {
+                      setState(() {
+                        rememberMe = newValue!;
+                      });
+                    },
                   ),
                   GestureDetector(
                     onTap: () {
@@ -91,8 +95,9 @@ class _LoginPageState extends State<LoginPage> {
               //login button
               CustomElevatedButton(
                 title: 'Login',
-                onTap: () {
+                onTap: () async {
                   if (formKey.currentState!.validate()) {
+                    await _saveCredentials();
                     push(context, ProfilePage());
                   }
                 },

@@ -6,13 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  AppLocalStorage.init();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+  Future<bool> checkRememberMe() async {
+    return AppLocalStorage.getCachedData(AppLocalStorage.rememberMeKey) ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +24,8 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (_, __) => const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: LoginPage(),
-        //home: NavbarPage(),
+        //home: LoginPage(),
+        home: NavbarPage(),
       ),
     );
   }
