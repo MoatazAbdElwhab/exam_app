@@ -1,7 +1,7 @@
 // features/auth/presentation/pages/login_page.dart
 import 'package:exam_app/core/functions/email_validate.dart';
 import 'package:exam_app/core/functions/navigation.dart';
-import 'package:exam_app/core/functions/password_validation.dart';
+import 'package:exam_app/core/functions/password_validate.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
