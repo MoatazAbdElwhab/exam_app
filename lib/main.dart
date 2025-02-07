@@ -1,7 +1,7 @@
 // main.dart
 import 'package:exam_app/features/auth/presentation/pages/login_page.dart';
 import 'package:exam_app/features/nav/navbar_page.dart';
-import 'package:exam_app/features/profile/presentation/profile_page.dart';
+import 'package:exam_app/features/profile/presentation/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

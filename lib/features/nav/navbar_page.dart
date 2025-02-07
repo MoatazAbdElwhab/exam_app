@@ -2,11 +2,10 @@
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/icon_manager.dart';
 import 'package:exam_app/features/explore/presentation/pages/explore_page.dart';
-import 'package:exam_app/features/profile/presentation/profile_page.dart';
+import 'package:exam_app/features/profile/presentation/pages/profile_page.dart';
 import 'package:exam_app/features/result/presentation/pages/result_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 
 class NavbarPage extends StatefulWidget {
   const NavbarPage({super.key});
@@ -32,7 +31,6 @@ class _NavbarPageState extends State<NavbarPage> {
         type: BottomNavigationBarType.fixed,
         onTap: (index) {
           _selectedIndex = index;
-
           setState(() {});
         },
         selectedItemColor: ColorManager.blue,
@@ -70,9 +68,8 @@ class _NavbarPageState extends State<NavbarPage> {
       ),
       child: SvgPicture.asset(
         assetPath,
-        // height: mediaquery.height * 0.03,
         colorFilter: ColorFilter.mode(
-          isSelected ? Colors.blue : Colors.grey,
+          isSelected ? ColorManager.blue : Colors.grey,
           BlendMode.srcIn,
         ),
       ),

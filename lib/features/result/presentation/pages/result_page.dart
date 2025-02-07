@@ -6,6 +6,6 @@ class ResultPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Result");
+    return Center(child: Text("Result"));
   }
 }

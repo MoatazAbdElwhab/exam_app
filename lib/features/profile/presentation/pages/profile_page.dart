@@ -1,10 +1,12 @@
-// features/profile/presentation/profile_page.dart
+// features/profile/presentation/pages/profile_page.dart
+import 'package:exam_app/core/functions/navigation.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/icon_manager.dart';
 import 'package:exam_app/core/resources/image_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
 import 'package:exam_app/core/widgets/custom_text_form_field.dart';
+import 'package:exam_app/features/profile/presentation/pages/resetpassword_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -26,7 +28,7 @@ class ProfilePage extends StatelessWidget {
       //body
       body: Center(
         child: Padding(
-          padding:const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
               //image
@@ -97,6 +99,15 @@ class ProfilePage extends StatelessWidget {
                 label: 'Password',
                 hint: 'Enter your password',
                 isPass: true,
+                suffixIcon: TextButton(
+                    onPressed: () {
+                      push(context, ResetpasswordPage());
+                    },
+                    child: Text(
+                      'change',
+                      style: getRegularStyle(
+                          color: ColorManager.blue, fontSize: 14.sp),
+                    )),
               ),
 
               //phone number

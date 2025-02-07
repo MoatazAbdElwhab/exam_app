@@ -1,3 +1,4 @@
+// core/widgets/custom_elevated_button.dart
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:flutter/material.dart';
@@ -8,12 +9,15 @@ class CustomElevatedButton extends StatelessWidget {
   final double? height;
   final double? width;
   final VoidCallback onTap;
-  const CustomElevatedButton({
+  Color? backgroundColor;
+
+   CustomElevatedButton({
     super.key,
     required this.title,
     this.height,
     this.width,
     required this.onTap,
+    this.backgroundColor,
   });
 
   @override
@@ -24,7 +28,7 @@ class CustomElevatedButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
-          backgroundColor: ColorManager.blue,
+          backgroundColor:backgroundColor?? ColorManager.blue,
         ),
         child: Text(
           title,

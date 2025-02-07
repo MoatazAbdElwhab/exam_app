@@ -9,7 +9,7 @@ import 'package:exam_app/core/widgets/custom_text_form_field.dart';
 import 'package:exam_app/features/auth/presentation/pages/forgetpassword_page.dart';
 import 'package:exam_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:exam_app/features/auth/presentation/widgets/remember_me_widget.dart';
-import 'package:exam_app/features/profile/presentation/profile_page.dart';
+import 'package:exam_app/features/profile/presentation/pages/profile_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
