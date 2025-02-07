@@ -1,4 +1,6 @@
+import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 TextStyle _getTextStyle(
   double fontSize,
@@ -17,7 +19,7 @@ TextStyle getLightStyle({
   required Color color,
 }) =>
     _getTextStyle(
-      fontSize ?? 12,
+      fontSize ?? 12.sp,
       FontWeight.w300,
       color,
     );
@@ -27,7 +29,7 @@ TextStyle getRegularStyle({
   required Color color,
 }) =>
     _getTextStyle(
-      fontSize ?? 12,
+      fontSize ?? 12.sp,
       FontWeight.w400,
       color,
     );
@@ -37,7 +39,7 @@ TextStyle getMediumStyle({
   required Color color,
 }) =>
     _getTextStyle(
-      fontSize ?? 12,
+      fontSize ?? 12.sp,
       FontWeight.w500,
       color,
     );
@@ -47,7 +49,7 @@ TextStyle getSemiBoldStyle({
   required Color color,
 }) =>
     _getTextStyle(
-      fontSize ?? 12,
+      fontSize ?? 12.sp,
       FontWeight.w600,
       color,
     );
@@ -57,7 +59,18 @@ TextStyle getBoldStyle({
   required Color color,
 }) =>
     _getTextStyle(
-      fontSize ?? 12,
+      fontSize ?? 12.sp,
       FontWeight.w700,
       color,
+    );
+TextStyle getTextUnderLine({
+  double? fontSize,
+  required Color color,
+}) =>
+    TextStyle(
+      color: color,
+      fontSize: fontSize ?? 12.sp,
+      fontWeight: FontWeight.w400,
+      decoration: TextDecoration.underline,
+      decorationColor: color,
     );
