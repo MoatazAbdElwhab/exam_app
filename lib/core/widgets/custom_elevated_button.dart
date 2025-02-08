@@ -11,7 +11,7 @@ class CustomElevatedButton extends StatelessWidget {
   final VoidCallback onTap;
   Color? backgroundColor;
 
-   CustomElevatedButton({
+  CustomElevatedButton({
     super.key,
     required this.title,
     this.height,
@@ -28,13 +28,13 @@ class CustomElevatedButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
-          backgroundColor:backgroundColor?? ColorManager.blue,
+          backgroundColor: backgroundColor ?? ColorManager.blue,
         ),
         child: Text(
           title,
           style: getRegularStyle(
             color: ColorManager.white,
-            fontSize: 16,
+            fontSize: 16.sp,
           ),
         ),
       ),

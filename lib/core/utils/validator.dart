@@ -74,7 +74,7 @@ class Validator {
     if (email == null || email.trim().isEmpty) {
       return 'please enter your email';
     } else if (emailRegex.hasMatch(email) == false) {
-      return 'enter valid email';
+      return 'This Email is not valid';
     } else {
       return null;
     }

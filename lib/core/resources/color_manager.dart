@@ -13,4 +13,5 @@ class ColorManager {
   static const Color lightGreen = Color(0xFFCAF9CC);
   static const Color lightRed = Color(0xFFF8D2D2);
   static const Color placeholder = Color(0xFFA6A6A6);
+  static const Color pincode = Color(0xFFDFE7F7);
 }
