@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
               //login button
               CustomElevatedButton(
                 title: 'Login',
-                onTap: () {
+                onTap: () async {
                   if (formKey.currentState!.validate()) {
                     push(context, ProfilePage());
                   }
