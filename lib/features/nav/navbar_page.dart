@@ -17,9 +17,9 @@ class NavbarPage extends StatefulWidget {
 class _NavbarPageState extends State<NavbarPage> {
   int _selectedIndex = 2;
   final List _pages = [
-    ExplorePage(),
-    ResultPage(),
-    ProfilePage(),
+    const ExplorePage(),
+    const ResultPage(),
+    const ProfilePage(),
   ];
   @override
   Widget build(BuildContext context) {

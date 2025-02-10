@@ -12,6 +12,7 @@ class CustomTextFormField extends StatelessWidget {
   final String? Function(String?)? validator;
   final double? suffixIconHeight;
   final Widget? suffixIcon;
+  final ValueChanged<String>? onChanged;
 
   const CustomTextFormField({
     super.key,
@@ -21,6 +22,7 @@ class CustomTextFormField extends StatelessWidget {
     this.controller,
     this.validator,
     this.suffixIcon,
+    this.onChanged,
     this.suffixIconHeight,
   });
 
@@ -31,10 +33,12 @@ class CustomTextFormField extends StatelessWidget {
       validator: validator,
       style: getRegularStyle(color: ColorManager.black, fontSize: 16.sp),
       obscureText: isPass,
+      onChanged: onChanged,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         suffixIconConstraints:
-            BoxConstraints(maxHeight: suffixIconHeight ?? 40),
+            BoxConstraints(maxHeight: suffixIconHeight ?? 40.h),
         contentPadding: EdgeInsets.only(left: 16.w, top: 18.h, bottom: 18.h),
         hintText: hint,
         hintStyle: getRegularStyle(

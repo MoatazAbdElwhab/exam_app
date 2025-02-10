@@ -1,6 +1,7 @@
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:exam_app/core/utils/validator.dart';
+import 'package:exam_app/core/widgets/custom_app_bar.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
 import 'package:exam_app/core/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
@@ -19,16 +20,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: Text(
-          'Password',
-          style: getMediumStyle(
-            fontSize: 20.sp,
-            color: ColorManager.black,
-          ),
-        ),
-      ),
+      appBar: const CustomAppBar(title: 'Password',canPop: true),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Column(

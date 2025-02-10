@@ -1,13 +1,13 @@
-import 'package:exam_app/core/functions/navigation.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
-import 'package:exam_app/features/auth/presentation/pages/reset_password_page.dart';
-import 'package:exam_app/features/auth/presentation/pages/signup_page.dart';
+import 'package:exam_app/core/widgets/custom_app_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pinput/pinput.dart';
+
+import '../../../../core/routes/routes.dart';
 
 class PinCodePage extends StatefulWidget {
   const PinCodePage({super.key});
@@ -21,13 +21,7 @@ class _PinCodePageState extends State<PinCodePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: Text(
-          'Password',
-          style: getMediumStyle(fontSize: 20.sp, color: ColorManager.black),
-        ),
-      ),
+      appBar: const CustomAppBar(title: 'Password',canPop: true),
       body: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -126,7 +120,7 @@ class _PinCodePageState extends State<PinCodePage> {
                       },
                       onCompleted: (value) {
                         if (value == validPin) {
-                          pushReplacement(context, ResetPasswordPage());
+                          Navigator.pushReplacementNamed(context, Routes.resetPassword);
                         }
                       },
                     ),

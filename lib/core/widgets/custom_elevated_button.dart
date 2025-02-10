@@ -1,8 +1,7 @@
-// core/widgets/custom_elevated_button.dart
-import 'package:exam_app/core/resources/color_manager.dart';
-import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../resources/color_manager.dart';
+import '../resources/styles_manager.dart';
 
 class CustomElevatedButton extends StatelessWidget {
   final String title;
@@ -10,8 +9,9 @@ class CustomElevatedButton extends StatelessWidget {
   final double? width;
   final VoidCallback onTap;
   final Color? backgroundColor;
+  final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
-  const CustomElevatedButton({
+  CustomElevatedButton({
     super.key,
     required this.title,
     this.height,
@@ -20,24 +20,35 @@ class CustomElevatedButton extends StatelessWidget {
     this.backgroundColor,
   });
 
+  void setColor(bool isValid) {
+    _isValidNotifier.value = isValid;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: height ?? 48.h,
-      width: width ?? double.infinity,
-      child: ElevatedButton(
-        onPressed: onTap,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? ColorManager.blue,
-        ),
-        child: Text(
-          title,
-          style: getRegularStyle(
-            color: ColorManager.white,
-            fontSize: 16.sp,
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isValidNotifier,
+      builder: (_, isValid, child) {
+        return SizedBox(
+          height: height ?? 48.h,
+          width: width ?? double.infinity,
+          child: ElevatedButton(
+            onPressed: onTap,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: backgroundColor != null
+                  ? (isValid ? backgroundColor : Colors.grey)
+                  : (isValid ? ColorManager.blue : Colors.grey),
+            ),
+            child: Text(
+              title,
+              style: getRegularStyle(
+                color: ColorManager.white,
+                fontSize: 16.sp,
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

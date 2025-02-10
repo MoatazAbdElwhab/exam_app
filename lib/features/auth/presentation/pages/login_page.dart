@@ -1,14 +1,11 @@
-// features/auth/presentation/pages/login_page.dart
-import 'package:exam_app/core/functions/navigation.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
+import 'package:exam_app/core/routes/routes.dart';
 import 'package:exam_app/core/utils/validator.dart';
+import 'package:exam_app/core/widgets/custom_app_bar.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
 import 'package:exam_app/core/widgets/custom_text_form_field.dart';
-import 'package:exam_app/features/auth/presentation/pages/forgetpassword_page.dart';
-import 'package:exam_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:exam_app/features/auth/presentation/widgets/remember_me_widget.dart';
-import 'package:exam_app/features/profile/presentation/pages/profile_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,52 +19,74 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  //form key
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  //email & password controller
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool? value = false;
+  CustomElevatedButton? customElevatedButton;
+
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    dynamic emailValidationReturn = '';
+    dynamic passwordValidationReturn = '';
+
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: Text(
-          'Login',
-          style: getMediumStyle(fontSize: 20.sp, color: ColorManager.black),
-        ),
-      ),
-      //body
+      appBar: const CustomAppBar(title: 'Login'),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         child: Form(
+          onChanged: () {
+            Validator.emailValidate(emailController.text.trim());
+            Validator.passwordValidation(passwordController.text.trim());
+          },
           key: formKey,
           child: Column(
             children: [
               Gap(32.h),
-
-              //email
               CustomTextFormField(
                 label: 'Email',
                 hint: 'Enter you email',
                 controller: emailController,
                 validator: Validator.emailValidate,
+                // onChanged: (val) {
+                //   if (customElevatedButton != null) {
+                //     emailValidationReturn =
+                //         Validator.emailValidate(emailController.text.trim());
+                //     if (emailValidationReturn == null &&
+                //         passwordValidationReturn == null) {
+                //       customElevatedButton!.setColor(true);
+                //     } else {
+                //       customElevatedButton!.setColor(false);
+                //     }
+                //   }
+                // },
               ),
-
               Gap(24.h),
-
-              //password
               CustomTextFormField(
                 label: 'Password',
                 hint: 'Enter you password',
                 isPass: true,
                 controller: passwordController,
                 validator: Validator.passwordValidation,
+                // onChanged: (val) {
+                //   passwordValidationReturn = Validator.passwordValidation(
+                //       passwordController.text.trim());
+                //   if (passwordValidationReturn == null &&
+                //       emailValidationReturn == null) {
+                //     customElevatedButton!.setColor(true);
+                //   } else {
+                //     customElevatedButton!.setColor(false);
+                //   }
+                // },
               ),
-
-              //forgetpassword
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -77,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      push(context, ForgetpasswordPage());
+                      Navigator.pushNamed(context, Routes.forgetPassword);
                     },
                     child: Text(
                       'Forget password?',
@@ -87,19 +106,23 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
               Gap(24.h),
-
-              //login button
-              CustomElevatedButton(
+              customElevatedButton = CustomElevatedButton(
                 title: 'Login',
                 onTap: () async {
                   if (formKey.currentState!.validate()) {
-                    push(context, ProfilePage());
+                    // if (customElevatedButton != null) {
+                    //   customElevatedButton!.setColor(true);
+                    // }
+                    Navigator.pushNamed(context, Routes.profile);
                   }
+                  // else {
+                  //   if (customElevatedButton != null) {
+                  //     customElevatedButton!.setColor(false);
+                  //   }
+                  // }
                 },
               ),
               Gap(16.h),
-
-              //if you don't have an account
               RichText(
                 text: TextSpan(
                   style: getRegularStyle(
@@ -112,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                           color: ColorManager.blue, fontSize: 16.sp),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          push(context, SignupPage());
+                          Navigator.pushNamed(context, Routes.signup);
                         },
                     ),
                   ],
@@ -127,6 +150,5 @@ class _LoginPageState extends State<LoginPage> {
 
   onChanged(bool? newValue) {
     value = newValue;
-    print(value);
   }
 }

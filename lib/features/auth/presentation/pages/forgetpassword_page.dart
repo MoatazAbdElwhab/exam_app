@@ -1,13 +1,14 @@
-import 'package:exam_app/core/functions/navigation.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:exam_app/core/utils/validator.dart';
+import 'package:exam_app/core/widgets/custom_app_bar.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
 import 'package:exam_app/core/widgets/custom_text_form_field.dart';
-import 'package:exam_app/features/auth/presentation/pages/pin_code_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+
+import '../../../../core/routes/routes.dart';
 
 class ForgetpasswordPage extends StatefulWidget {
   const ForgetpasswordPage({super.key});
@@ -24,17 +25,10 @@ class _ForgetpasswordPageState extends State<ForgetpasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: Text(
-          'Password',
-          style: getMediumStyle(fontSize: 20.sp, color: ColorManager.black),
-        ),
-      ),
-
+      appBar: const CustomAppBar(title: 'Reset Password',canPop: true,),
       //body
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 16.h),
         child: Center(
           child: Form(
             key: formKey,
@@ -68,7 +62,7 @@ class _ForgetpasswordPageState extends State<ForgetpasswordPage> {
                 title: 'Continue',
                 onTap: () {
                   if (formKey.currentState!.validate()) {
-                    push(context, PinCodePage());
+                    Navigator.pushNamed(context, Routes.pinCode);
                   }
                 },
               ),
