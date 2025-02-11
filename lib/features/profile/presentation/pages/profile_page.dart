@@ -15,7 +15,10 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Profile',canPop: false,),
+      appBar: const CustomAppBar(
+        title: 'Profile',
+        canPop: false,
+      ),
 
       //body
       body: SingleChildScrollView(
@@ -34,7 +37,7 @@ class ProfilePage extends StatelessWidget {
                       child: CircleAvatar(
                         backgroundColor: ColorManager.white,
                         radius: 60,
-                        backgroundImage:   AssetImage(ImageManager.userPng),
+                        backgroundImage: AssetImage(ImageManager.userPng),
                       ),
                     ),
                     GestureDetector(
@@ -51,14 +54,14 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ],
                 ),
-        
+
                 //user name
                 Gap(24.h),
                 CustomTextFormField(
                   label: 'User name',
                   hint: 'Enter your user name',
                 ),
-        
+
                 Gap(24.h),
                 //first name & last name
                 Row(
@@ -78,14 +81,14 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ],
                 ),
-        
+
                 //email
                 Gap(24.h),
                 const CustomTextFormField(
                   label: 'E-mail',
                   hint: 'Enter your first E-mail',
                 ),
-        
+
                 //password
                 Gap(24.h),
                 CustomTextFormField(
@@ -102,14 +105,14 @@ class ProfilePage extends StatelessWidget {
                             color: ColorManager.blue, fontSize: 14.sp),
                       )),
                 ),
-        
+
                 //phone number
                 Gap(24.h),
-               const CustomTextFormField(
+                const CustomTextFormField(
                   label: 'Phone number',
                   hint: 'Enter your phone number',
                 ),
-        
+
                 //button update
                 Gap(48.h),
                 CustomElevatedButton(

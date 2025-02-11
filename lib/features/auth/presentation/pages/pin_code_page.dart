@@ -21,7 +21,7 @@ class _PinCodePageState extends State<PinCodePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Password',canPop: true),
+      appBar: const CustomAppBar(title: 'Password', canPop: true),
       body: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -120,7 +120,8 @@ class _PinCodePageState extends State<PinCodePage> {
                       },
                       onCompleted: (value) {
                         if (value == validPin) {
-                          Navigator.pushReplacementNamed(context, Routes.resetPassword);
+                          Navigator.pushReplacementNamed(
+                              context, Routes.resetPassword);
                         }
                       },
                     ),

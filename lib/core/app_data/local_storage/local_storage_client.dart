@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,4 +28,3 @@ class LocalStorageClient {
     return storage.read(key: key);
   }
 }
-

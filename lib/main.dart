@@ -1,5 +1,4 @@
 // main.dart
-import 'package:exam_app/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -21,15 +20,12 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
-      builder: (_, __) =>  MaterialApp(
+      builder: (_, __) => MaterialApp(
         debugShowCheckedModeBanner: false,
         initialRoute: Routes.login,
         onGenerateRoute: generateRoute,
-        theme: ThemeData(
-
-        ),
+        theme: ThemeData(),
       ),
-
     );
   }
 }

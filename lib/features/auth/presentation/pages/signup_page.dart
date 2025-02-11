@@ -41,7 +41,6 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,11 +50,10 @@ class _SignupPageState extends State<SignupPage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 16.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
           child: Form(
             key: formKey,
             child: Column(
-              spacing: 24.h,
               children: [
                 //username
                 CustomTextFormField(
@@ -176,4 +174,3 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 }
-

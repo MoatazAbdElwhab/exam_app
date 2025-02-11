@@ -11,7 +11,6 @@ import 'package:exam_app/features/nav/navbar_page.dart';
 import 'package:exam_app/features/explore/presentation/pages/explore_page.dart';
 import 'package:exam_app/features/result/presentation/pages/result_page.dart';
 
-
 Route<dynamic>? generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case Routes.login:

@@ -25,10 +25,13 @@ class _ForgetpasswordPageState extends State<ForgetpasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Reset Password',canPop: true,),
+      appBar: const CustomAppBar(
+        title: 'Reset Password',
+        canPop: true,
+      ),
       //body
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 16.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         child: Center(
           child: Form(
             key: formKey,
