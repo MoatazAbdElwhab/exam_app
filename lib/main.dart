@@ -1,4 +1,5 @@
 // main.dart
+import 'package:exam_app/core/resources/theming.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -22,9 +23,11 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (_, __) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: Routes.login,
+        // initialRoute: Routes.login,
+        initialRoute: Routes.navbar,
         onGenerateRoute: generateRoute,
-        theme: ThemeData(),
+        //theme: ThemeData(),
+        theme: ThemeManager.lightTheme,
       ),
     );
   }
