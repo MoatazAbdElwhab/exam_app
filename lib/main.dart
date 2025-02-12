@@ -1,4 +1,5 @@
 // main.dart
+import 'package:exam_app/core/resources/themeing.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -77,9 +78,11 @@ class _MyHomePageState extends State<MyHomePage> {
       splitScreenMode: true,
       builder: (_, __) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: Routes.login,
+        //initialRoute: Routes.login,
+        initialRoute: Routes.navbar,
         onGenerateRoute: generateRoute,
-        theme: ThemeData(),
+        // theme: ThemeData(),
+        theme: ThemeManager.lightTheme,
       ),
     );
   }

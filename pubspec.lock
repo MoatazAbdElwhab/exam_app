@@ -73,8 +73,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     version: "1.18.0"
 =======
+=======
+>>>>>>> Stashed changes
     version: "1.19.0"
   connectivity_plus:
     dependency: transitive
@@ -193,6 +196,9 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.3-main.0"
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   matcher:
     dependency: transitive
@@ -231,8 +237,11 @@ packages:
     description: flutter
     source: sdk
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     version: "0.0.99"
 =======
+=======
+>>>>>>> Stashed changes
     version: "0.0.0"
   source_gen:
     dependency: transitive
@@ -291,8 +300,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     version: "0.7.2"
 =======
+=======
+>>>>>>> Stashed changes
     version: "0.7.3"
   timing:
     dependency: transitive
@@ -359,8 +371,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     version: "14.2.5"
 =======
+=======
+>>>>>>> Stashed changes
     version: "14.3.0"
   watcher:
     dependency: transitive
