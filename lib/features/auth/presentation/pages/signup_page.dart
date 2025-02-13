@@ -32,12 +32,6 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController phoneNumberController = TextEditingController();
 
   @override
-  void dispose() {
-    context.read<AuthCubit>().disposeSignUpControllers();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
@@ -138,7 +132,7 @@ class _SignupPageState extends State<SignupPage> {
                   title: 'Signup',
                   onTap: () async {
                     if (formKey.currentState!.validate()) {
-                     await context.read<AuthCubit>().signUp(
+                      await context.read<AuthCubit>().signUp(
                           email: emailController.text,
                           password: passwordController.text,
                           userName: userNameController.text,

@@ -14,24 +14,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
 import '../di/injectable.dart';
 
-
 Route<dynamic>? generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case Routes.login:
-     return MaterialPageRoute(
+      return MaterialPageRoute(
         builder: (_) => BlocProvider(
           create: (context) => getIt<AuthCubit>(),
           child: const LoginPage(),
         ),
       );
     case Routes.signup:
-      return
-        MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (context) => getIt<AuthCubit>(),
-            child: const SignupPage(),
-          ),
-        );
+      return MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (context) => getIt<AuthCubit>(),
+          child: const SignupPage(),
+        ),
+      );
     case Routes.forgetPassword:
       return MaterialPageRoute(builder: (_) => const ForgetpasswordPage());
     case Routes.pinCode:
@@ -39,7 +37,17 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
     case Routes.resetPassword:
       return MaterialPageRoute(builder: (_) => const ResetPasswordPage());
     case Routes.profile:
-      return MaterialPageRoute(builder: (_) => const ProfilePage());
+      return MaterialPageRoute(
+        builder: (_) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => getIt<AuthCubit>()..getLoggedUserInfo(),
+              child: const ProfilePage(),
+            ),
+          ],
+          child: const ProfilePage(),
+        ),
+      );
     case Routes.profileResetPassword:
       return MaterialPageRoute(builder: (_) => const ResetpasswordPage());
     case Routes.navbar:

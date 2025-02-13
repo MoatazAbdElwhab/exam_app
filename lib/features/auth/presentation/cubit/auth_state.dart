@@ -8,6 +8,7 @@ class AuthState extends Equatable {
   final String? successMessage;
   final String? forgetPasswordMessage;
   final int? resetPasswordCode;
+  final bool rememberMe;
 
   const AuthState(
       {this.status = AuthStatus.initial,
@@ -15,7 +16,8 @@ class AuthState extends Equatable {
       this.errorMessage,
       this.forgetPasswordMessage,
       this.resetPasswordCode,
-      this.successMessage});
+      this.successMessage,
+      this.rememberMe = false});
 
   AuthState copyWith({
     AuthStatus? status,
@@ -24,20 +26,22 @@ class AuthState extends Equatable {
     String? successMessage,
     String? forgetPasswordMessage,
     int? resetPasswordCode,
+    bool? rememberMe
   }) {
     return AuthState(
       status: status ?? this.status,
       user: user ?? this.user,
       errorMessage: errorMessage,
       successMessage: successMessage,
-      forgetPasswordMessage: forgetPasswordMessage,
-      resetPasswordCode: resetPasswordCode,
+      forgetPasswordMessage: forgetPasswordMessage?? this.forgetPasswordMessage,
+      resetPasswordCode: resetPasswordCode?? this.resetPasswordCode,
+      rememberMe: rememberMe?? this.rememberMe
     );
   }
 
   @override
   List<Object?> get props =>
-      [status, user, errorMessage, forgetPasswordMessage, resetPasswordCode,successMessage];
+      [status,rememberMe, user, errorMessage, forgetPasswordMessage, resetPasswordCode,successMessage];
 }
 
 enum AuthStatus {
@@ -46,7 +50,7 @@ enum AuthStatus {
   success,
   loginSuccess,
   signUpSuccess,
-  failure
+  failure,
 }
 
 extension AuthStatusExtensions on AuthStatus {

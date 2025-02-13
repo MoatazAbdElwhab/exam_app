@@ -11,7 +11,8 @@ class SignInUseCase {
 
   SignInUseCase(this.authRepository);
 
-  Future<Either<Exception, SignInResponse>> execute(String email, String password) async {
-    return await authRepository.signIn(email, password);
+  Future<Either<Exception, SignInResponse>> execute(String email, String password,
+      bool rememberMe) async {
+    return await authRepository.signIn(email, password, rememberMe);
   }
 }

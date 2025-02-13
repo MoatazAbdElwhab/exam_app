@@ -19,7 +19,7 @@ class _NavbarPageState extends State<NavbarPage> {
   final List _pages = [
     const ExplorePage(),
     const ResultPage(),
-    const ProfilePage(),
+     ProfilePage(),
   ];
   @override
   Widget build(BuildContext context) {

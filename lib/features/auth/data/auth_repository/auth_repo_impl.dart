@@ -17,6 +17,7 @@ import 'package:exam_app/features/auth/data/data_sources/auth_remote_data_source
 import 'package:injectable/injectable.dart';
 import '../../../../core/error_handling/exceptions/api_exception.dart';
 import '../../../../core/error_handling/exceptions/local_storage_exception.dart';
+import '../../../../core/logger/app_logger.dart';
 import '../../domain/auth_repository/auth_repository.dart';
 
 @Injectable(as: AuthRepository)
@@ -41,7 +42,6 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
       }else{
         return Left(apiResponse.left);
       }
-
     } catch (e) {
       rethrow;
     }
@@ -103,6 +103,7 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
   Future<Either<Exception, GetLoggedUserDataResponse>>
       getLoggedUserInfo() async {
     if (!isOnline) {
+      print({'isOnline $isOnline'});
       try {
         final response = await authLocalDataSource.getCachedUserInfo();
         final localResponse = GetLoggedUserDataResponse.fromJson(response!);
@@ -112,6 +113,7 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
             'Failed to get cached user info: ${e.toString()}'));
       }
     }
+    print({'isOnline $isOnline'});
 
     try {
       final apiResponse = await authRemoteDataSource.getLoggedUserInfo();
@@ -172,14 +174,16 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
 
   @override
   Future<Either<Exception, SignInResponse>> signIn(
-      String email, String password) async {
+      String email, String password, bool rememberMe) async {
     if (!isOnline) {
       return Left(NetworkException('No internet connection'));
     }
     try {
       final apiResponse = await authRemoteDataSource.signIn(email, password);
       if (apiResponse.isRight) {
-        await _cacheUserSigningData(apiResponse.right);
+        if(rememberMe) {
+          await _cacheUserSigningData(apiResponse.right);
+        }
         return Right(apiResponse.right);
       }
       return Left(apiResponse.left);
@@ -239,15 +243,18 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
   }
 
   Future<void> _cacheUserSigningData(dynamic response) async {
+    Log.i('will caching user data');
     try {
       if (response.token != null) {
         await authLocalDataSource.cacheToken(response.token!);
-        
+        Log.i('cached user token successfully');
       }
       if (response.user != null) {
         await authLocalDataSource.cacheUserProfileInfo(response.user!.toJson());
+        Log.i('cached user data successfully');
       }
     } catch (e) {
+      Log.e('Failed to cache user data: ${e.toString()}');
       throw LocalStorageException('Failed to cache user data: ${e.toString()}');
     }
   }

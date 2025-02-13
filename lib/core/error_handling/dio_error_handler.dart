@@ -19,10 +19,12 @@ class DioErrorHandler {
 
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
+      case DioExceptionType.connectionError:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
         return ApiException(message: 'Connection timeout. Please check your internet connection.');
-
+      case DioExceptionType.cancel:
+        return ApiException(message: 'Request is cancelled');
       case DioExceptionType.badResponse:
         switch (error.response?.statusCode) {
           case 400:
@@ -64,9 +66,6 @@ class DioErrorHandler {
               response: error.response?.data,
             );
         }
-
-      case DioExceptionType.cancel:
-        return ApiException(message: 'Request cancelled');
 
       case DioExceptionType.unknown:
         if (error.error != null && error.error.toString().contains('SocketException')) {

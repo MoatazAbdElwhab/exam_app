@@ -14,9 +14,10 @@ abstract class GetItRegisterModule {
   @singleton
   GlobalKey<NavigatorState> get navigatorKey => GlobalKey<NavigatorState>();
 
+  @preResolve
   @singleton
-  Future<SharedPreferences> get sharedPreferences =>
-      SharedPreferences.getInstance();
+  Future<SharedPreferences> get sharedPreferences async =>
+     await SharedPreferences.getInstance();
 
   @singleton
   FlutterSecureStorage get secureStorage =>

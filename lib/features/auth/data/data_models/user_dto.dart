@@ -9,6 +9,7 @@ class UserDto {
   final String? id;
   final String? createdAt;
   final String? passwordChangedAt;
+  final String? profilePic;
 
   UserDto({
     this.username,
@@ -21,6 +22,7 @@ class UserDto {
     this.id,
     this.createdAt,
     this.passwordChangedAt,
+    this.profilePic
   });
 
   factory UserDto.fromJson(Map<String, dynamic> json) {
@@ -64,6 +66,7 @@ class UserDto {
     String? id,
     String? createdAt,
     String? passwordChangedAt,
+    String? profilePic
   }) {
     return UserDto(
       username: username ?? this.username,
@@ -76,6 +79,7 @@ class UserDto {
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       passwordChangedAt: passwordChangedAt ?? this.passwordChangedAt,
+      profilePic: profilePic ?? this.profilePic,
     );
   }
 }

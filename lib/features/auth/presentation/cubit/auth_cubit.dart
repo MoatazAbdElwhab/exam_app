@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
+import '../../../../core/logger/app_logger.dart';
 import '../../../../core/utils/validator.dart';
 import '../../domain/use_cases/change_password_usecase.dart';
 import '../../domain/use_cases/delete_account_usecase.dart';
@@ -61,14 +62,15 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signIn() async {
     emit(state.copyWith(status: AuthStatus.loading));
     final response = await signInUseCase.execute(
-        loginEmailController.text.trim(), loginPasswordController.text.trim());
+        loginEmailController.text.trim(), loginPasswordController.text.trim(),
+        state.rememberMe);
     response.isLeft
         ? emit(state.copyWith(
             errorMessage: response.left.toString(), status: AuthStatus.failure))
-          : emit(state.copyWith(
+        : emit(state.copyWith(
             user: response.right.user!,
             status: AuthStatus.loginSuccess,
-            successMessage: 'logged in successfully'));
+            successMessage: 'logged in successfully',));
   }
 
   Future<void> signUp(
@@ -189,6 +191,10 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  updateRememberMe(bool value) {
+    emit(state.copyWith(rememberMe: value));
+  }
+
   bool isFormValid({required bool isLogin}) {
     if (isLogin) {
       var emailValidation =
@@ -221,7 +227,15 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  disposeSignUpControllers(){
+  @override
+  Future<void> close() {
+    Log.i('disposing controllers');
+    disposeSignUpControllers();
+    disposeSignInControllers();
+    return super.close();
+  }
+
+  disposeSignUpControllers() {
     signUpPhoneNumberController.dispose();
     signUpUserNameController.dispose();
     signUpConfirmPasswordController.dispose();
@@ -231,7 +245,7 @@ class AuthCubit extends Cubit<AuthState> {
     signUpPasswordController.dispose();
   }
 
-  disposeSignInControllers(){
+  disposeSignInControllers() {
     loginEmailController.dispose();
     loginPasswordController.dispose();
   }
