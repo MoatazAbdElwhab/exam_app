@@ -1,33 +1,23 @@
-
 class LogoutResponse {
+  final String? message;
+  final num? code;
+
   LogoutResponse({
-    String? message,
-    num? code,}){
-    _message = message;
-    _code = code;
+    this.message,
+    this.code,
+  });
+
+  factory LogoutResponse.fromJson(Map<String, dynamic> json) {
+    return LogoutResponse(
+      message: json['message'],
+      code: json['code'],
+    );
   }
-
-  LogoutResponse.fromJson(dynamic json) {
-    _message = json['message'];
-    _code = json['code'];
-  }
-  String? _message;
-  num? _code;
-
-  LogoutResponse copyWith({  String? message,
-    num? code,
-  }) => LogoutResponse(message: message ?? _message,
-    code: code ?? _code,
-  );
-
-  String? get message => _message;
-  num? get code => _code;
-
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['message'] = _message;
-    map['code'] = _code;
-    return map;
+    return {
+      'message': message,
+      'code': code,
+    };
   }
 }

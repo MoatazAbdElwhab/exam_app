@@ -1,5 +1,7 @@
+import 'package:either_dart/either.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../data/data_models/response/logout_response.dart';
 import '../auth_repository/auth_repository.dart';
 
 @injectable
@@ -8,7 +10,7 @@ class LogoutUseCase {
 
   LogoutUseCase(this.authRepository);
 
-  Future<void> execute() async {
-    await authRepository.logout();
+  Future<Either<Exception, LogoutResponse>> execute() async {
+    return await authRepository.logout();
   }
 }

@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:exam_app/core/error_handling/dio_error_handler.dart';
+import 'package:exam_app/core/logger/app_logger.dart';
 import 'package:injectable/injectable.dart';
 import '../../error_handling/exceptions/api_exception.dart';
 import '../local_storage/local_storage_client.dart';
@@ -8,10 +10,11 @@ import 'api_client.dart';
 class DioApiClient implements ApiClient {
   final Dio _dio;
   final LocalStorageClient localStorage;
+  final DioErrorHandler errorHandler;
 
-  DioApiClient(this.localStorage, {String? baseUrl})
+  DioApiClient(this.localStorage, this.errorHandler)
       : _dio = Dio(BaseOptions(
-          baseUrl: baseUrl ?? 'https://exam.elevateegy.com/api/v1/',
+          baseUrl: 'https://exam.elevateegy.com/api/v1/',
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
           responseType: ResponseType.json,
@@ -21,7 +24,7 @@ class DioApiClient implements ApiClient {
   Future<dynamic> get(
     String path, {
     Map<String, dynamic>? queryParameters,
-        bool requiresToken = false ,
+    bool requiresToken = false,
   }) async {
     try {
       await checkToken(requiresToken);
@@ -29,19 +32,20 @@ class DioApiClient implements ApiClient {
         path,
         queryParameters: queryParameters,
       );
+      Log.d(response);
+      Log.d(response.data);
       return response.data;
     } on DioException catch (e) {
-      _handleError(e);
+      Log.e(e.toString());
+      throw errorHandler.handle(e);
     }
   }
 
   @override
-  Future<dynamic> post(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-        bool requiresToken = false
-      }) async {
+  Future<dynamic> post(String path,
+      {dynamic data,
+      Map<String, dynamic>? queryParameters,
+      bool requiresToken = false}) async {
     try {
       await checkToken(requiresToken);
       final response = await _dio.post(
@@ -49,19 +53,19 @@ class DioApiClient implements ApiClient {
         data: data,
         queryParameters: queryParameters,
       );
+      Log.d(response.data);
       return response.data;
     } on DioException catch (e) {
-      _handleError(e);
+      Log.e(e.toString());
+      throw errorHandler.handle(e);
     }
   }
 
   @override
-  Future<dynamic> put(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-        bool requiresToken = false
-  }) async {
+  Future<dynamic> put(String path,
+      {dynamic data,
+      Map<String, dynamic>? queryParameters,
+      bool requiresToken = false}) async {
     try {
       await checkToken(requiresToken);
       final response = await _dio.put(
@@ -69,62 +73,66 @@ class DioApiClient implements ApiClient {
         data: data,
         queryParameters: queryParameters,
       );
+      Log.d(response.data);
       return response.data;
     } on DioException catch (e) {
-      _handleError(e);
+      Log.e(e.toString());
+      errorHandler.handle(e);
     }
   }
 
   @override
-  Future<dynamic> delete(
-    String path, {
-    Map<String, dynamic>? queryParameters,
-        bool requiresToken = false
-  }) async {
-    await checkToken(requiresToken);
+  Future<dynamic> patch(String path,
+      {dynamic data,
+      Map<String, dynamic>? queryParameters,
+      bool requiresToken = false}) async {
     try {
+      await checkToken(requiresToken);
+      final response = await _dio.patch(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+      );
+      Log.d(response.data);
+      return response.data;
+    } on DioException catch (e) {
+      Log.e(e.toString());
+      errorHandler.handle(e);
+    }
+  }
+
+  @override
+  Future<dynamic> delete(String path,
+      {Map<String, dynamic>? queryParameters,
+      bool requiresToken = false}) async {
+    try {
+      await checkToken(requiresToken);
       final response = await _dio.delete(
         path,
         queryParameters: queryParameters,
       );
+      Log.d(response.data);
       return response.data;
     } on DioException catch (e) {
-      _handleError(e);
+      Log.e(e.toString());
+      errorHandler.handle(e);
     }
   }
 
-  Future<Map?> checkToken(bool requiresToken) async {
-    try{
-      if(requiresToken){
+  Future<void> checkToken(bool requiresToken) async {
+    try {
+      if (requiresToken) {
         final token = await localStorage.getSecuredData('token');
-        if(token != null) {
+        if (token != null) {
           _dio.options.headers.addAll({'token': token});
-        }else{
-          throw('error getting user token .. token = null');
+        } else {
+          Log.e('throwing ApiException(message: User token is null)');
+          throw ApiException(message: 'User token is null');
         }
       }
-    }catch(e){
-      rethrow;
-    }
-    return null;
-  }
-  _handleError(DioException error) {
-    switch (error.type) {
-      case DioExceptionType.connectionTimeout:
-      case DioExceptionType.sendTimeout:
-      case DioExceptionType.receiveTimeout:
-        throw ApiException(message: 'Connection timeout');
-      case DioExceptionType.badResponse:
-        throw ApiException(
-          message: 'Server error',
-          statusCode: error.response?.statusCode,
-          response: error.response?.data,
-        );
-      case DioExceptionType.cancel:
-        throw ApiException(message: 'Request cancelled');
-      default:
-        throw ApiException(message: 'Network error occurred');
+    } catch (e) {
+      Log.e('throwing ApiException(message: Failed to retrieve token: ${e.toString()}');
+      throw ApiException(message: 'Failed to retrieve token: ${e.toString()}');
     }
   }
-
 }

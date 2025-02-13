@@ -9,6 +9,7 @@ import 'package:exam_app/features/auth/data/data_models/response/reset_password_
 import 'package:injectable/injectable.dart';
 import '../../../../core/app_data/api/api_client.dart';
 import '../../../../core/error_handling/exceptions/api_exception.dart';
+import '../../../../core/logger/app_logger.dart';
 import '../data_models/response/sign_in_response.dart';
 import '../data_models/response/sign_up_response.dart';
 import '../data_models/response/verify_reset_code_response.dart';
@@ -47,15 +48,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<Either<ApiException, SignInResponse>> signIn(
       String email, String password) async {
-    final response = await _apiClient.post(
-      'auth/signin',
-      data: {
-        'email': email,
-        'password': password,
-      },
-      requiresToken: false,
-    );
-    return response;
+   // try {
+      final response = await _apiClient.post(
+        'auth/signin',
+        data: {
+          'email': email,
+          'password': password,
+        },
+        requiresToken: false,
+      );
+      Log.d('auth remote datasource got response / returns \n '
+          '${Right(SignInResponse.fromJson(response))}');
+      return Right(SignInResponse.fromJson(response));
+    // }catch(e){
+    //  rethrow;
+   // }
   }
 
   @override
@@ -66,105 +73,157 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       required String firstName,
       required String lastName,
       required String phone}) async {
-    final response = await _apiClient.post(
-      'auth/signup',
-      data: {
-        'username': userName,
-        'firstName': firstName,
-        'lastName': lastName,
-        'email': email,
-        'password': password,
-        'rePassword': password,
-        'phone': phone,
-      },
-      requiresToken: false,
-    );
-    return response;
+    try {
+      final response = await _apiClient.post(
+        'auth/signup',
+        data: {
+          'username': userName,
+          'firstName': firstName,
+          'lastName': lastName,
+          'email': email,
+          'password': password,
+          'rePassword': password,
+          'phone': phone,
+        },
+        requiresToken: false,
+      );
+      Log.d('auth remote datasource got response / returns \n '
+          '${Right(SignUpResponse.fromJson(response))}');
+      return Right(SignUpResponse.fromJson(response));
+    }catch(e){rethrow;}
   }
 
   @override
   Future<Either<ApiException, ForgetPasswordResponse>> forgotPassword(
       String email) async {
-    final response = await _apiClient.post(
-      'auth/forgotPassword',
-      data: {'email': email},
-    );
-    return response;
+    try{
+      final response = await _apiClient.post(
+        'auth/forgotPassword',
+        data: {'email': email},
+      );
+      Log.d('auth remote datasource got response / returns \n '
+          '${Right(ForgetPasswordResponse.fromJson(response))}');
+      return Right(ForgetPasswordResponse.fromJson(response));
+    }catch(e){
+      rethrow;
+    }
   }
 
   @override
   Future<Either<ApiException, ResetPasswordResponse>> resetPassword(
       String email, String resetCode, String newPassword) async {
-    final response = await _apiClient.post(
-      'auth/resetPassword',
-      data: {
-        'email': email,
-        'resetCode': resetCode,
-        'newPassword': newPassword,
-      },
-    );
-    return response;
+    try{
+      final response = await _apiClient.post(
+        'auth/resetPassword',
+        data: {
+          'email': email,
+          'resetCode': resetCode,
+          'newPassword': newPassword,
+        },
+      );
+      Log.d('auth remote datasource got response / returns \n '
+          '${Right(ResetPasswordResponse.fromJson(response))}');
+      return Right(ResetPasswordResponse.fromJson(response));
+    }catch(e){
+      rethrow;
+    }
   }
 
   @override
   Future<Either<ApiException, ChangePasswordResponse>> changePassword(
       String oldPassword, String newPassword) async {
-    final response = await _apiClient.post(
-      'auth/changePassword',
-      data: {
-        'oldPassword': oldPassword,
-        'newPassword': newPassword,
-        'rePassword': newPassword,
-      },
-      requiresToken: true,
-    );
-    return response;
+    try{
+      final response = await _apiClient.post(
+        'auth/changePassword',
+        data: {
+          'oldPassword': oldPassword,
+          'newPassword': newPassword,
+          'rePassword': newPassword,
+        },
+        requiresToken: true,
+      );
+      Log.d('auth remote datasource got response / returns \n '
+          '${Right(ChangePasswordResponse.fromJson(response))}');
+      return Right(ChangePasswordResponse.fromJson(response));
+    }catch(e){
+      rethrow;
+    }
   }
 
   @override
   Future<Either<ApiException, DeleteAccountResponse>> deleteAccount() async {
-    final response = await _apiClient.delete(
-      'auth/deleteMe',
-      requiresToken: true,
-    );
-    return response;
+    try{
+      final response = await _apiClient.delete(
+        'auth/deleteMe',
+        requiresToken: true,
+      );
+      Log.d('auth remote datasource got response / returns \n '
+          '${Right(DeleteAccountResponse.fromJson(response))}');
+      return Right(DeleteAccountResponse.fromJson(response));
+    }catch(e){
+      rethrow;
+    }
   }
 
   @override
   Future<Either<ApiException, EditProfileResponse>> editProfile(
       {required Map<String, String> changedFields}) async {
-    final response = await _apiClient.put(
-      'auth/editProfile',
-      data: changedFields,
-      requiresToken: true,
-    );
-    return response;
+    try{
+      final response = await _apiClient.put(
+        'auth/editProfile',
+        data: changedFields,
+        requiresToken: true,
+      );
+      Log.d('auth remote datasource got response / returns \n '
+          '${Right(EditProfileResponse.fromJson(response))}');
+      return Right(EditProfileResponse.fromJson(response));
+    }catch(e){
+      rethrow;
+    }
   }
 
   @override
   Future<Either<ApiException, LogoutResponse>> logout() async {
-    final result = await _apiClient.post(
-      'auth/logout',
-      requiresToken: true,
-    );
-    return result;
+    try{
+      final response = await _apiClient.post(
+        'auth/logout',
+        requiresToken: true,
+      );
+      Log.d('auth remote datasource got response / returns \n '
+          '${Right(LogoutResponse.fromJson(response))}');
+      return Right(LogoutResponse.fromJson(response));
+    }catch(e){
+      rethrow;
+    }
   }
 
   @override
   Future<Either<ApiException, GetLoggedUserDataResponse>>
       getLoggedUserInfo() async {
-    final response = await _apiClient.get(
-      'auth/profileData',
-      requiresToken: true,
-    );
-    return response;
+    try{
+      final response = await _apiClient.get(
+        'auth/profileData',
+        requiresToken: true,
+      );
+      Log.d('auth remote datasource got response / returns \n '
+          '${Right(GetLoggedUserDataResponse.fromJson(response))}');
+      return Right(GetLoggedUserDataResponse.fromJson(response));
+    }catch(e){
+      rethrow;
+    }
   }
 
   @override
   Future<Either<ApiException, VerifyResetCodeResponse>> verifyResetCodeResponse(
       String otp) async {
-    final response =
-        await _apiClient.post('auth/verifyResetCode', data: {'resetCode': otp});
-    return response;
+    try{
+      final response = await _apiClient
+          .post('auth/verifyResetCode', data: {'resetCode': otp});
+      Log.d('auth remote datasource got response / returns \n '
+          '${Right(VerifyResetCodeResponse.fromJson(response))}');
+      return Right(VerifyResetCodeResponse.fromJson(response));
+    }catch(e){
+      rethrow;
+    }
   }
 }

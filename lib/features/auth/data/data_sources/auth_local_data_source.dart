@@ -1,16 +1,15 @@
 import 'dart:convert';
-
 import 'package:injectable/injectable.dart';
-
 import '../../../../core/app_data/local_storage/local_storage_client.dart';
 
 abstract class AuthLocalDataSource {
   Future<void> cacheToken(String token);
   Future<String?> getCachedToken();
   Future<void> removeToken();
-  Future<void> cacheUserInfo(Map<String, dynamic> userInfo);
+  Future<void> cacheUserProfileInfo(Map<String, dynamic> userInfo);
   Future<Map<String, dynamic>?> getCachedUserInfo();
-  Future<void> removeUserInfo();
+  Future<void> removeCachedUserInfo();
+  Future<void> deleteUserAccount();
 }
 
 @Injectable(as: AuthLocalDataSource)
@@ -31,11 +30,11 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<void> removeToken() async {
-    await _localStorageClient.storage.delete(key: 'token');
+    await _localStorageClient.secureStorage.delete(key: 'token');
   }
 
   @override
-  Future<void> cacheUserInfo(Map<String, dynamic> userInfo) async {
+  Future<void> cacheUserProfileInfo(Map<String, dynamic> userInfo) async {
     final jsonString = json.encode(userInfo);
     await _localStorageClient.saveData('userInfo', jsonString);
   }
@@ -50,7 +49,13 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
-  Future<void> removeUserInfo() async {
+  Future<void> removeCachedUserInfo() async {
     await _localStorageClient.sharedPreferences.remove('userInfo');
+  }
+
+  @override
+  Future<void> deleteUserAccount() async {
+    await _localStorageClient.sharedPreferences.remove('userInfo');
+    await _localStorageClient.secureStorage.delete(key: 'token');
   }
 }

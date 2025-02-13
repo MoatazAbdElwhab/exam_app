@@ -16,12 +16,12 @@ class Validator {
 
   static String? phoneNumberValidation(String? number) {
     final RegExp numberRegex = RegExp(
-      r"^[0-9]{10,15}$",
+      r"^01[0125][0-9]{8}$",
     );
     if (number == null || number.trim().isEmpty) {
       return 'please enter your phone number';
     } else if (numberRegex.hasMatch(number) == false) {
-      return 'enter valid phone number';
+      return 'Phone number must start with 01 and be 11 digits';
     } else {
       return null;
     }
@@ -68,15 +68,14 @@ class Validator {
 
   static String? emailValidate(String? email) {
     final RegExp emailRegex = RegExp(
-      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+      r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
     );
 
     if (email == null || email.trim().isEmpty) {
       return 'please enter your email';
     } else if (emailRegex.hasMatch(email) == false) {
-      return 'This Email is not valid';
+      return 'Please enter a valid email address';
     } else {
       return null;
-    }
-  }
+    }}
 }

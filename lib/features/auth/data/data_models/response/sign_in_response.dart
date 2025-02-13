@@ -1,51 +1,33 @@
-
-import 'package:exam_app/features/auth/data/data_models/user_dto.dart';
+import '../user_dto.dart';
 
 class SignInResponse {
+  final String? message;
+  final num? code;
+  final String? token;
+  final UserDto? user;
+
   SignInResponse({
-    String? message,
-    String? token,
-    int? code,
-    UserDto? user,
-  }) {
-    _message = message;
-    _code = code;
-    _token = token;
-    _user = user;
-  }
+    this.message,
+    this.code,
+    this.token,
+    this.user,
+  });
 
-  SignInResponse.fromJson(dynamic json) {
-    _message = json['message'];
-    _token = json['token'];
-    _user = json['user'] != null ? UserDto.fromJson(json['user']) : null;
-    _code = json['code'];
+  factory SignInResponse.fromJson(Map<String, dynamic> json) {
+    return SignInResponse(
+      message: json['message'],
+      code: json['code'],
+      token: json['token'],
+      user: json['user'] != null ? UserDto.fromJson(json['user']) : null,
+    );
   }
-  String? _message;
-  String? _token;
-  UserDto? _user;
-  int? _code;
-// SignIpResponse copyWith({  String? message,
-//   String? token,
-//   UserDto? user,
-// }) => SignUpResponse(  message: message ?? _message,
-//   token: token ?? _token,
-//   user: user ?? _user,
-// );
-
-  String? get message => _message;
-  String? get token => _token;
-  UserDto? get user => _user;
-  int? get code => _code;
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['message'] = _message;
-    map['token'] = _token;
-    if (_user != null) {
-      map['user'] = _user?.toJson();
-    }
-    map['code'] = _code;
-
-    return map;
+    return {
+      'message': message,
+      'code': code,
+      'token': token,
+      'user': user?.toJson(),
+    };
   }
 }

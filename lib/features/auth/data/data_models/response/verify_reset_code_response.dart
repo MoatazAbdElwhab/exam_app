@@ -1,43 +1,27 @@
 class VerifyResetCodeResponse {
+  final String? message;
+  final num? code;
+  final String? status;
+
   VerifyResetCodeResponse({
-    String? message,
-    String? status,
-    num? code,
-  }) {
-    _message = message;
-    _code = code;
-    _status = status;
+    this.message,
+    this.code,
+    this.status,
+  });
+
+  factory VerifyResetCodeResponse.fromJson(Map<String, dynamic> json) {
+    return VerifyResetCodeResponse(
+      message: json['message'],
+      code: json['code'],
+      status: json['status'],
+    );
   }
-
-  VerifyResetCodeResponse.fromJson(dynamic json) {
-    _message = json['message'];
-    _code = json['code'];
-    _status = json['status'];
-  }
-  String? _message;
-  String? _status;
-  num? _code;
-
-  VerifyResetCodeResponse copyWith({
-    String? message,
-    String? status,
-    num? code,
-  }) =>
-      VerifyResetCodeResponse(
-        message: message ?? _message,
-        status: status ?? _status,
-        code: code ?? _code,
-      );
-
-  String? get message => _message;
-  String? get status => _status;
-  num? get code => _code;
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['message'] = _message;
-    map['status'] = _status;
-    map['code'] = _code;
-    return map;
+    return {
+      'message': message,
+      'code': code,
+      'status': status,
+    };
   }
 }

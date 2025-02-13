@@ -4,8 +4,10 @@ import 'package:exam_app/core/routes/routes.dart';
 import 'package:exam_app/core/utils/validator.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
 import 'package:exam_app/core/widgets/custom_text_form_field.dart';
+import 'package:exam_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 
@@ -31,16 +33,9 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   void dispose() {
-    userNameController.dispose();
-    firstNameController.dispose();
-    lastNameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
-    phoneNumberController.dispose();
+    context.read<AuthCubit>().disposeSignUpControllers();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +46,7 @@ class _SignupPageState extends State<SignupPage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 16.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
           child: Form(
             key: formKey,
             child: Column(
@@ -141,9 +136,16 @@ class _SignupPageState extends State<SignupPage> {
                 //signUp button
                 CustomElevatedButton(
                   title: 'Signup',
-                  onTap: () {
+                  onTap: () async {
                     if (formKey.currentState!.validate()) {
-                      Navigator.pushNamed(context, Routes.profile);
+                     await context.read<AuthCubit>().signUp(
+                          email: emailController.text,
+                          password: passwordController.text,
+                          userName: userNameController.text,
+                          firstName: firstNameController.text,
+                          lastName: lastNameController.text,
+                          phone: phoneNumberController.text);
+                      // Navigator.pushNamed(context, Routes.profile);
                     }
                   },
                 ),
@@ -176,4 +178,3 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 }
-

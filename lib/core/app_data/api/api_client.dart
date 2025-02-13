@@ -24,6 +24,11 @@ abstract class ApiClient {
     Map<String, dynamic>? queryParameters,
          bool requiresToken = false ,
   });
+
+  Future<dynamic> patch(String path,
+      {dynamic data,
+        Map<String, dynamic>? queryParameters,
+        bool requiresToken = false});
 }
 
 

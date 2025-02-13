@@ -7,8 +7,9 @@ import 'core/di/injectable.dart';
 import 'core/routes/app_router.dart';
 import 'core/routes/routes.dart';
 
-void main() {
-  configureDependencies();
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureDependencies();
   runApp(const MyApp());
 }
 
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, __) =>  MaterialApp(
+        navigatorKey: getIt<GlobalKey<NavigatorState>>(),
         debugShowCheckedModeBanner: false,
         initialRoute: Routes.login,
         onGenerateRoute: generateRoute,

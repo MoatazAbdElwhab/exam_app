@@ -20,8 +20,10 @@ class CustomElevatedButton extends StatelessWidget {
     this.backgroundColor,
   });
 
-  void setColor(bool isValid) {
-    _isValidNotifier.value = isValid;
+  void isFormValid(bool isValid) {
+    if(_isValidNotifier.value != isValid) {
+      _isValidNotifier.value = isValid;
+    }
   }
 
   @override

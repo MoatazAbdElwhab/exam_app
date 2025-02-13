@@ -1,36 +1,29 @@
 import '../user_dto.dart';
 
 class GetLoggedUserDataResponse {
+  final String? message;
+  final num? code;
+  final UserDto? user;
+
   GetLoggedUserDataResponse({
-    String? message,
-    int? code,
-    UserDto? user,
-  }) {
-    _message = message;
-    _user = user;
-    _code = code;
-  }
+    this.message,
+    this.code,
+    this.user,
+  });
 
-  GetLoggedUserDataResponse.fromJson(dynamic json) {
-    _message = json['message'];
-    _code = json['code'];
-    _user = json['user'] != null ? UserDto.fromJson(json['user']) : null;
+  factory GetLoggedUserDataResponse.fromJson(Map<String, dynamic> json) {
+    return GetLoggedUserDataResponse(
+      message: json['message'],
+      code: json['code'],
+      user: json['user'] != null ? UserDto.fromJson(json['user']) : null,
+    );
   }
-  String? _message;
-  int? _code;
-  UserDto? _user;
-
-  String? get message => _message;
-  int? get code => _code;
-  UserDto? get user => _user;
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['message'] = _message;
-    map['code'] = _code;
-    if (_user != null) {
-      map['user'] = _user?.toJson();
-    }
-    return map;
+    return {
+      'message': message,
+      'code': code,
+      'user': user?.toJson(),
+    };
   }
 }

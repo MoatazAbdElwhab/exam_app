@@ -10,14 +10,28 @@ import 'package:exam_app/features/profile/presentation/pages/resetpassword_page.
 import 'package:exam_app/features/nav/navbar_page.dart';
 import 'package:exam_app/features/explore/presentation/pages/explore_page.dart';
 import 'package:exam_app/features/result/presentation/pages/result_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../features/auth/presentation/cubit/auth_cubit.dart';
+import '../di/injectable.dart';
 
 
 Route<dynamic>? generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case Routes.login:
-      return MaterialPageRoute(builder: (_) => const LoginPage());
+     return MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (context) => getIt<AuthCubit>(),
+          child: const LoginPage(),
+        ),
+      );
     case Routes.signup:
-      return MaterialPageRoute(builder: (_) => const SignupPage());
+      return
+        MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<AuthCubit>(),
+            child: const SignupPage(),
+          ),
+        );
     case Routes.forgetPassword:
       return MaterialPageRoute(builder: (_) => const ForgetpasswordPage());
     case Routes.pinCode:
