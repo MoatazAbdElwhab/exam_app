@@ -7,5 +7,5 @@ final getIt = GetIt.instance;
 
 @InjectableInit()
 Future<void> configureDependencies() async {
-  await initGetIt(getIt);
+  await getIt.init();
 }
