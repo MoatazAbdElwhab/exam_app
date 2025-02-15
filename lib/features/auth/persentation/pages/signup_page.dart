@@ -43,7 +43,7 @@ class _SignupPageState extends State<SignupPage> {
     confirmPasswordController.dispose();
     phoneNumberController.dispose();
     super.dispose();
-  }
+  } 
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +146,7 @@ class _SignupPageState extends State<SignupPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Signup successful!')),
                     );
+
                     Navigator.pushNamed(context, Routes.profile);
                   } else if (state.status.isFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -191,6 +192,7 @@ class _SignupPageState extends State<SignupPage> {
                             color: ColorManager.blue, fontSize: 16.sp),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () => Navigator.pop(context),
+                        // ..onTap = () => Routes.login,
                       ),
                     ],
                   ),

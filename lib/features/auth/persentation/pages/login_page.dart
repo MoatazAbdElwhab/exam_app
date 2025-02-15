@@ -1,4 +1,5 @@
 // features/auth/persentation/pages/login_page.dart
+import 'package:dio/dio.dart';
 import 'package:exam_app/core/di/injectable.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/style_manager.dart';
@@ -33,8 +34,15 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void didChangeDependencies() {
-    cubit = context.read<AuthCubit>();
+    // cubit = context.read<AuthCubit>();
     super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    cubit = context.read<AuthCubit>();
+    super.initState();
   }
 
   @override
@@ -58,79 +66,76 @@ class _LoginPageState extends State<LoginPage> {
                       customElevatedButton!.isFormValid(
                           context.read<AuthCubit>().isFormValid(isLogin: true));
                     }
-               
                   },
                   key: formKey,
-                  child: Column(
-                    children: [
-                      Gap(32.h),
-                      CustomTextFormField(
-                        label: 'Email',
-                        hint: 'Enter you email',
-                        controller: cubit.loginEmailController,
-                        validator: Validator.emailValidate,
-               
-                      ),
-                      Gap(24.h),
-                      CustomTextFormField(
-                        label: 'Password',
-                        hint: 'Enter you password',
-                        isPass: true,
-                        controller: cubit.loginPasswordController,
-                        validator: Validator.passwordValidation,
-                   
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          RememberMeWidget(
-                            value: value??false,
-                            onChanged: onChanged,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, Routes.forgetPassword);
-                            },
-                            child: Text(
-                              'Forget password?',
-                              style:
-                                  getTextUnderLine(color: ColorManager.black),
-                            ),
-                          )
-                        ],
-                      ),
-                      Gap(24.h),
-                      customElevatedButton = CustomElevatedButton(
-                        title: 'Login',
-                        onTap: () async {
-                          if (formKey.currentState!.validate()) {
-                         
-                            await cubit.signIn();
-                          }
-                        
-                        },
-                      ),
-                      Gap(16.h),
-                      RichText(
-                        text: TextSpan(
-                          style: getRegularStyle(
-                              color: ColorManager.black, fontSize: 16.sp),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Gap(32.h),
+                        CustomTextFormField(
+                          label: 'Email',
+                          hint: 'Enter you email',
+                          controller: cubit.loginEmailController,
+                          validator: Validator.emailValidate,
+                        ),
+                        Gap(24.h),
+                        CustomTextFormField(
+                          label: 'Password',
+                          hint: 'Enter you password',
+                          isPass: true,
+                          controller: cubit.loginPasswordController,
+                          validator: Validator.passwordValidation,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const TextSpan(text: "Don't have an account? "),
-                            TextSpan(
-                              text: 'Sign up',
-                              style: getTextUnderLine(
-                                  color: ColorManager.blue, fontSize: 16.sp),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.pushNamed(context, Routes.signup);
-                                },
+                            RememberMeWidget(
+                              value: value ?? false,
+                              onChanged: onChanged,
                             ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, Routes.forgetPassword);
+                              },
+                              child: Text(
+                                'Forget password?',
+                                style:
+                                    getTextUnderLine(color: ColorManager.black),
+                              ),
+                            )
                           ],
                         ),
-                      ),
-                    ],
+                        Gap(24.h),
+                        customElevatedButton = CustomElevatedButton(
+                          title: 'Login',
+                          onTap: () async {
+                            if (formKey.currentState!.validate()) {
+                              await cubit.signIn();
+                            }
+                          },
+                        ),
+                        Gap(16.h),
+                        RichText(
+                          text: TextSpan(
+                            style: getRegularStyle(
+                                color: ColorManager.black, fontSize: 16.sp),
+                            children: [
+                              const TextSpan(text: "Don't have an account? "),
+                              TextSpan(
+                                text: 'Sign up',
+                                style: getTextUnderLine(
+                                    color: ColorManager.blue, fontSize: 16.sp),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.pushNamed(context, Routes.signup);
+                                  },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               }
@@ -139,10 +144,25 @@ class _LoginPageState extends State<LoginPage> {
               if (state.status.isLoginSuccess) {
                 Navigator.of(context).pushReplacementNamed(Routes.profile);
               } else if (state.errorMessage != null) {
-                getIt<DialogUtils>().showSnackBar(
-                    textColor: Colors.red,
-                    message: state.errorMessage!,
-                    context: context);
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Error'),
+                      content: const Text("Invalid email or password"),
+                      actions: [
+                        TextButton(
+                          child: const Text('OK'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+
+                print(state.errorMessage);
               } else if (state.successMessage != null) {
                 getIt<DialogUtils>().showSnackBar(
                     textColor: Colors.green,
@@ -158,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
 
   onChanged(bool? newValue) {
     value = newValue;
-    if(value != null) {
+    if (value != null) {
       cubit.updateRememberMe(value!);
     }
   }

@@ -4,6 +4,7 @@ import 'package:exam_app/core/error_handling/dio_error_exception.dart';
 import 'package:exam_app/core/error_handling/exceptions/api_exceptions.dart';
 import 'package:exam_app/core/logger/app_logger.dart';
 import 'package:injectable/injectable.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../local_storage/local_storage_client.dart';
 import 'api_client.dart';
 
@@ -19,24 +20,38 @@ class DioApiClient implements ApiClient {
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
           responseType: ResponseType.json,
-        ));
+        )) {
+    _dio.interceptors.add(_dioPrettyLogger());
+  }
+
+  Interceptor _dioPrettyLogger() {
+    return PrettyDioLogger(
+      request: true,
+      requestHeader: true,
+      requestBody: true,
+      responseHeader: false,
+      responseBody: true,
+      error: true,
+      compact: true,
+      maxWidth: 90,
+    );
+  }
 
   @override
-@override
-Future<T> get<T>(
-  String path, {
-  Map<String, dynamic>? queryParameters,
-  bool requiresToken = false,
-}) async {
-  return _handleRequest<T>(// Specify the generic type T when calling _handleRequest
-    () async {
-      final options = await _buildOptions(requiresToken);
-      final response = await _dio.get(path, queryParameters: queryParameters, options: options);
-      Log.d(response.data);
-      return response.data as T; // Casting the response to type T
-    },
-  );
-}
+  Future<T> get<T>(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+    bool requiresToken = false,
+  }) async {
+    return _handleRequest<T>(
+      () async {
+        final options = await _buildOptions(requiresToken);
+        final response = await _dio.get(path, queryParameters: queryParameters, options: options);
+        Log.d(response.data);
+        return response.data as T;
+      },
+    );
+  }
 
   @override
   Future<T> post<T>(
@@ -50,7 +65,7 @@ Future<T> get<T>(
         final options = await _buildOptions(requiresToken);
         final response = await _dio.post(path, data: data, queryParameters: queryParameters, options: options);
         Log.d(response.data);
-        return response.data as T; // Casting the response to type T
+        return response.data as T;
       },
     );
   }
@@ -67,7 +82,7 @@ Future<T> get<T>(
         final options = await _buildOptions(requiresToken);
         final response = await _dio.put(path, data: data, queryParameters: queryParameters, options: options);
         Log.d(response.data);
-        return response.data as T;  // Casting the response to type T
+        return response.data as T;
       },
     );
   }
@@ -84,7 +99,7 @@ Future<T> get<T>(
         final options = await _buildOptions(requiresToken);
         final response = await _dio.patch(path, data: data, queryParameters: queryParameters, options: options);
         Log.d(response.data);
-        return response.data as T;  // Casting the response to type T
+        return response.data as T;
       },
     );
   }
@@ -100,35 +115,31 @@ Future<T> get<T>(
         final options = await _buildOptions(requiresToken);
         final response = await _dio.delete(path, queryParameters: queryParameters, options: options);
         Log.d(response.data);
-        return response.data as T;  // Casting the response to type T
+        return response.data as T;
       },
     );
   }
 
-   /// Builds request options including authorization header if needed.
   Future<Options?> _buildOptions(bool requiresToken) async {
-    if (!requiresToken) return null; // No token required, return null for options
+    if (!requiresToken) return null;
 
-    final token = await localStorage.getSecuredData('token'); // Retrieve token from local storage
+    final token = await localStorage.getSecuredData('token');
     if (token == null) {
-      Log.e('User token is null'); // Log error if no token is found
-      throw ApiException(message: 'User token is null'); // Throw custom exception
+      Log.e('User token is null');
+      throw ApiException(message: 'User token is null');
     }
-    return Options(headers: {'Authorization': 'Bearer $token'}); // Set Authorization header if token exists
+    return Options(headers: {'Authorization': 'Bearer $token'});
   }
 
-  /// Handles API request with error handling.
-Future<T> _handleRequest<T>(Future<T> Function() request) async {
-  try {
-    return await request(); // This will return a Future<T>, ensuring the correct type is used
-  } on DioException catch (e) {
-    Log.e('DioException: ${e.message}');
-    throw errorHandler.handle(e); // Handle Dio-specific errors and rethrow them
-  } catch (e) {
-    Log.e('Unexpected error: $e');
-    throw ApiException(message: 'Unexpected error: $e'); // Handle unexpected errors
+  Future<T> _handleRequest<T>(Future<T> Function() request) async {
+    try {
+      return await request();
+    } on DioException catch (e) {
+      Log.e('DioException: ${e.message}');
+      throw errorHandler.handle(e);
+    } catch (e) {
+      Log.e('Unexpected error: $e');
+      throw ApiException(message: 'Unexpected error: $e');
+    }
   }
-}
-
-
 }

@@ -1,4 +1,5 @@
 // features/auth/persentation/cubit/auth_cubit.dart
+import 'package:exam_app/core/error_handling/exceptions/api_exceptions.dart';
 import 'package:exam_app/features/auth/domain/use_cases/forget_password_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
@@ -63,7 +64,8 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signIn() async {
     emit(state.copyWith(status: AuthStatus.loading));
     final response = await signInUseCase.execute(
-        loginEmailController.text.trim(), loginPasswordController.text.trim(),
+        loginEmailController.text.trim(),
+        loginPasswordController.text.trim(),
         state.rememberMe);
     response.isLeft
         ? emit(state.copyWith(
@@ -71,7 +73,8 @@ class AuthCubit extends Cubit<AuthState> {
         : emit(state.copyWith(
             user: response.right.user!,
             status: AuthStatus.loginSuccess,
-            successMessage: 'logged in successfully',));
+            successMessage: 'logged in successfully',
+          ));
   }
 
   Future<void> signUp(
