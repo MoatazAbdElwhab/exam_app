@@ -33,17 +33,7 @@ class _SignupPageState extends State<SignupPage> {
       TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
 
-  @override
-  void dispose() {
-    userNameController.dispose();
-    firstNameController.dispose();
-    lastNameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
-    phoneNumberController.dispose();
-    super.dispose();
-  } 
+
 
   @override
   Widget build(BuildContext context) {
