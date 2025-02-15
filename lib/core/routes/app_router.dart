@@ -1,6 +1,15 @@
 // core/routes/app_router.dart
 import 'package:exam_app/core/routes/routes.dart';
 import 'package:exam_app/features/auth/persentation/cubit/auth_cubit.dart';
+import 'package:exam_app/features/auth/persentation/pages/forgetpassword_page.dart';
+import 'package:exam_app/features/auth/persentation/pages/login_page.dart';
+import 'package:exam_app/features/auth/persentation/pages/pin_code_page.dart';
+import 'package:exam_app/features/auth/persentation/pages/reset_password_page.dart';
+import 'package:exam_app/features/auth/persentation/pages/signup_page.dart';
+import 'package:exam_app/features/nav/navbar_page.dart';
+import 'package:exam_app/features/profile/changepassword_page.dart';
+import 'package:exam_app/features/profile/profile_page.dart';
+import 'package:exam_app/features/result/result_page.dart';
 import 'package:flutter/material.dart';
 import 'package:exam_app/features/explore/presentation/pages/explore_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,15 +81,15 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
+               const Icon(
                   Icons.error,
                   size: 50,
                   color: Colors.red,
                 ),
-                SizedBox(height: 10),
+               const SizedBox(height: 10),
                 Text(
                   'No route defined for ${settings.name}',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style:const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
             ),

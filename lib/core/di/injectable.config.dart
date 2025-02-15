@@ -1,4 +1,3 @@
-// core/di/injectable.config.dart
 // dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
@@ -15,7 +14,7 @@ import 'package:exam_app/core/app_data/api/dio_client.dart' as _i797;
 import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart'
     as _i73;
 import 'package:exam_app/core/di/modules.dart' as _i81;
-import 'package:exam_app/core/error_handling/dio_error_exception.dart';
+import 'package:exam_app/core/error_handling/dio_error_exception.dart' as _i384;
 import 'package:exam_app/features/auth/data/auth_repository/auth_repo_impl.dart'
     as _i122;
 import 'package:exam_app/features/auth/data/data_sources/auth_local_data_source.dart'
@@ -30,7 +29,8 @@ import 'package:exam_app/features/auth/domain/use_cases/delete_account_usecase.d
     as _i997;
 import 'package:exam_app/features/auth/domain/use_cases/edit_profile_usecase.dart'
     as _i710;
-import 'package:exam_app/features/auth/domain/use_cases/forget_password_usecase.dart';
+import 'package:exam_app/features/auth/domain/use_cases/forget_password_usecase.dart'
+    as _i879;
 import 'package:exam_app/features/auth/domain/use_cases/get_logged_user_info_usecase.dart'
     as _i306;
 import 'package:exam_app/features/auth/domain/use_cases/logout_usecase.dart'
@@ -43,6 +43,8 @@ import 'package:exam_app/features/auth/domain/use_cases/sign_up_usecase.dart'
     as _i756;
 import 'package:exam_app/features/auth/domain/use_cases/verify_reset_code_usecase.dart'
     as _i923;
+import 'package:exam_app/features/auth/persentation/cubit/auth_cubit.dart'
+    as _i485;
 import 'package:flutter/material.dart' as _i409;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
@@ -50,9 +52,6 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:internet_connection_checker/internet_connection_checker.dart'
     as _i973;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
-
-import '../../features/auth/domain/use_cases/forget_password_usecase.dart';
-import '../error_handling/dio_error_exception.dart';
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -66,30 +65,29 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final getItRegisterModule = _$GetItRegisterModule();
-    gh.singleton<_i973.InternetConnectionChecker>(
-        () => getItRegisterModule.internetConnectionChecker);
-    gh.singleton<_i409.GlobalKey<_i409.NavigatorState>>(
-        () => getItRegisterModule.navigatorKey);
     await gh.singletonAsync<_i460.SharedPreferences>(
       () => getItRegisterModule.sharedPreferences,
       preResolve: true,
     );
-    gh.singleton<_i558.FlutterSecureStorage>(
+    gh.singleton<_i384.DioErrorHandler>(() => _i384.DioErrorHandler());
+    gh.lazySingleton<_i973.InternetConnectionChecker>(
+        () => getItRegisterModule.internetConnectionChecker);
+    gh.lazySingleton<_i409.GlobalKey<_i409.NavigatorState>>(
+        () => getItRegisterModule.navigatorKey);
+    gh.lazySingleton<_i558.FlutterSecureStorage>(
         () => getItRegisterModule.secureStorage);
-    gh.singleton<_i32.DioErrorHandler>(() => _i32.DioErrorHandler());
-    gh.singleton<_i985.DialogUtils>(() => _i985.DialogUtils());
     gh.lazySingleton<_i73.LocalStorageClient>(() => _i73.LocalStorageClient(
           gh<_i460.SharedPreferences>(),
           gh<_i558.FlutterSecureStorage>(),
         ));
     gh.factory<_i93.ApiClient>(() => _i797.DioApiClient(
           gh<_i73.LocalStorageClient>(),
-          gh<_i32.DioErrorHandler>(),
+          gh<_i384.DioErrorHandler>(),
         ));
-    gh.factory<_i937.AuthLocalDataSource>(
-        () => _i937.AuthLocalDataSourceImpl(gh<_i73.LocalStorageClient>()));
     gh.factory<_i583.AuthRemoteDataSource>(
         () => _i583.AuthRemoteDataSourceImpl(gh<_i93.ApiClient>()));
+    gh.factory<_i937.AuthLocalDataSource>(
+        () => _i937.AuthLocalDataSourceImpl(gh<_i73.LocalStorageClient>()));
     gh.factory<_i24.AuthRepository>(() => _i122.AuthRepositoryImpl(
           gh<_i937.AuthLocalDataSource>(),
           gh<_i583.AuthRemoteDataSource>(),
@@ -115,7 +113,7 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i756.SignUpUseCase(gh<_i24.AuthRepository>()));
     gh.factory<_i923.VerifyResetCodeUseCase>(
         () => _i923.VerifyResetCodeUseCase(gh<_i24.AuthRepository>()));
-    gh.singleton<_i533.AuthCubit>(() => _i533.AuthCubit(
+    gh.singleton<_i485.AuthCubit>(() => _i485.AuthCubit(
           signInUseCase: gh<_i937.SignInUseCase>(),
           signUpUseCase: gh<_i756.SignUpUseCase>(),
           forgotPasswordUseCase: gh<_i879.ForgotPasswordUseCase>(),
