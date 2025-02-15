@@ -38,10 +38,12 @@ class DioApiClient implements ApiClient {
   }
 
   @override
-  Future<dynamic> post(String path,
-      {dynamic data,
-      Map<String, dynamic>? queryParameters,
-      bool requiresToken = false}) async {
+  Future<dynamic> post(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    bool requiresToken = false,
+  }) async {
     try {
       await checkToken(requiresToken);
       final response = await _dio.post(
@@ -56,10 +58,12 @@ class DioApiClient implements ApiClient {
   }
 
   @override
-  Future<dynamic> put(String path,
-      {dynamic data,
-      Map<String, dynamic>? queryParameters,
-      bool requiresToken = false}) async {
+  Future<dynamic> put(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    bool requiresToken = false,
+  }) async {
     try {
       await checkToken(requiresToken);
       final response = await _dio.put(
@@ -74,9 +78,11 @@ class DioApiClient implements ApiClient {
   }
 
   @override
-  Future<dynamic> delete(String path,
-      {Map<String, dynamic>? queryParameters,
-      bool requiresToken = false}) async {
+  Future<dynamic> delete(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+    bool requiresToken = false,
+  }) async {
     await checkToken(requiresToken);
     try {
       final response = await _dio.delete(

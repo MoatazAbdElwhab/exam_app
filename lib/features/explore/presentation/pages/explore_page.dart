@@ -3,8 +3,7 @@
 // features/explore/presentation/pages/explore_page.dart
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
-import 'package:exam_app/core/routes/routes.dart';
-import 'package:exam_app/core/widgets/custom_app_bar.dart';
+
 import 'package:exam_app/features/explore/data/model/subject_class.dart';
 import 'package:exam_app/features/explore/presentation/widget/subject_card.dart';
 import 'package:flutter/material.dart';
