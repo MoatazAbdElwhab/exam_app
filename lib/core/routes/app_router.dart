@@ -42,12 +42,22 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
 
       //pin code page
     case Routes.pinCode:
-      return MaterialPageRoute(builder: (_) => const PinCodePage());
+     final args = settings.arguments as Map<String, dynamic>;
+  final email = args['email'] ?? ''; // Retrieve email from arguments
+      return MaterialPageRoute(builder: (_) =>  PinCodePage(email: email,));
 
-      //reset password page
-    case Routes.resetPassword:
-      return MaterialPageRoute(builder: (_) => const ResetPasswordPage());
+//resetpassword
+  case Routes.resetPassword:
+  final args = settings.arguments as Map<String, dynamic>;
+  final email = args['email'] ?? ''; // Retrieve email from arguments
+  final resetCode = args['resetCode'] ?? ''; // Retrieve reset code from arguments
 
+  return MaterialPageRoute(
+    builder: (_) => ResetPasswordPage(
+      email: email, // Pass the email to the page
+      resetCode: resetCode, // Pass the resetCode to the page
+    ),
+  );
       //profile page
     case Routes.profile:
       return MaterialPageRoute(

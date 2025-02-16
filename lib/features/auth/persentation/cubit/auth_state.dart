@@ -10,6 +10,8 @@ class AuthState extends Equatable {
   final String? forgetPasswordMessage;
   final int? resetPasswordCode;
   final bool rememberMe;
+  final String? email;
+  final String? resetCode;
 
   const AuthState(
       {this.status = AuthStatus.initial,
@@ -18,6 +20,8 @@ class AuthState extends Equatable {
       this.forgetPasswordMessage,
       this.resetPasswordCode,
       this.successMessage,
+      this.email,
+      this.resetCode,
       this.rememberMe = false});
 
   AuthState copyWith({
@@ -27,22 +31,34 @@ class AuthState extends Equatable {
     String? successMessage,
     String? forgetPasswordMessage,
     int? resetPasswordCode,
-    bool? rememberMe
+    bool? rememberMe,
+    String? email,
+    String ? resetCode
   }) {
     return AuthState(
-      status: status ?? this.status,
-      user: user ?? this.user,
-      errorMessage: errorMessage,
-      successMessage: successMessage,
-      forgetPasswordMessage: forgetPasswordMessage?? this.forgetPasswordMessage,
-      resetPasswordCode: resetPasswordCode?? this.resetPasswordCode,
-      rememberMe: rememberMe?? this.rememberMe
-    );
+        status: status ?? this.status,
+        user: user ?? this.user,
+        errorMessage: errorMessage,
+        successMessage: successMessage,
+        forgetPasswordMessage:
+            forgetPasswordMessage ?? this.forgetPasswordMessage,
+        resetPasswordCode: resetPasswordCode ?? this.resetPasswordCode,
+        rememberMe: rememberMe ?? this.rememberMe,
+        email: email ?? this.email,
+        resetCode: resetCode ?? this.resetCode
+        );
   }
 
   @override
-  List<Object?> get props =>
-      [status,rememberMe, user, errorMessage, forgetPasswordMessage, resetPasswordCode,successMessage];
+  List<Object?> get props => [
+        status,
+        rememberMe,
+        user,
+        errorMessage,
+        forgetPasswordMessage,
+        resetPasswordCode,
+        successMessage
+      ];
 }
 
 enum AuthStatus {

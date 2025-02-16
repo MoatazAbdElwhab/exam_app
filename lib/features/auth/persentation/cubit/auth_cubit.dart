@@ -61,6 +61,7 @@ class AuthCubit extends Cubit<AuthState> {
     required this.verifyResetCodeUseCase,
   }) : super(const AuthState());
 
+//signin
   Future<void> signIn() async {
     emit(state.copyWith(status: AuthStatus.loading));
     final response = await signInUseCase.execute(
@@ -77,6 +78,7 @@ class AuthCubit extends Cubit<AuthState> {
           ));
   }
 
+//sigup
   Future<void> signUp(
       {required String email,
       required String password,
@@ -101,18 +103,28 @@ class AuthCubit extends Cubit<AuthState> {
             successMessage: 'signed up successfully'));
   }
 
+//forget password
   Future<void> forgotPassword(String email) async {
     emit(state.copyWith(status: AuthStatus.loading));
     final response = await forgotPasswordUseCase.execute(email);
-    response.isLeft
-        ? emit(state.copyWith(
-            errorMessage: response.left.toString(), status: AuthStatus.failure))
-        : emit(
-            state.copyWith(
-                forgetPasswordMessage: response.right.info,
-                status: AuthStatus.success),
-          );
+    if (response.isLeft) {
+      // If error occurs, emit failure state and show error message
+      emit(state.copyWith(
+          errorMessage: response.left.toString(), status: AuthStatus.failure));
+    } else {
+      // If the password reset request is successful, emit success state
+      emit(state.copyWith(
+          forgetPasswordMessage: response.right.info,
+          status: AuthStatus.success));
+
+      // Show a success message and push to the PinCodePage
+      if (response.right.info != null) {
+        emit(state.copyWith(status: AuthStatus.success));
+      }
+    }
   }
+
+//reset password
 
   Future<void> resetPassword(
       String email, String resetCode, String newPassword) async {
@@ -127,6 +139,8 @@ class AuthCubit extends Cubit<AuthState> {
           ));
   }
 
+  //change password
+
   Future<void> changePassword(String oldPassword, String newPassword) async {
     emit(state.copyWith(status: AuthStatus.loading));
     final response =
@@ -137,6 +151,7 @@ class AuthCubit extends Cubit<AuthState> {
         : emit(state.copyWith(status: AuthStatus.success));
   }
 
+//delete account
   Future<void> deleteAccount() async {
     emit(state.copyWith(status: AuthStatus.loading));
     final response = await deleteAccountUseCase.execute();
@@ -146,6 +161,7 @@ class AuthCubit extends Cubit<AuthState> {
         : emit(state.copyWith(status: AuthStatus.success, user: null));
   }
 
+//edit profile
   Future<void> editProfile({required Map<String, String> changedFields}) async {
     emit(state.copyWith(status: AuthStatus.loading));
     final response =
@@ -157,6 +173,7 @@ class AuthCubit extends Cubit<AuthState> {
             status: AuthStatus.success, user: response.right.user));
   }
 
+  //logout
   Future<void> logout() async {
     emit(state.copyWith(status: AuthStatus.loading));
     final response = await logoutUseCase.execute();
@@ -166,6 +183,7 @@ class AuthCubit extends Cubit<AuthState> {
         : emit(state.copyWith(status: AuthStatus.success, user: null));
   }
 
+//get user info
   Future<void> getLoggedUserInfo() async {
     emit(state.copyWith(status: AuthStatus.loading));
     final response = await getLoggedUserInfoUseCase.execute();
@@ -178,22 +196,35 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> verifyResetCode(String otp) async {
-    emit(state.copyWith(status: AuthStatus.loading));
-    final response = await verifyResetCodeUseCase.execute(otp);
-    if (response.isLeft) {
-      emit(state.copyWith(
-          errorMessage: response.left.toString(), status: AuthStatus.failure));
-    } else {
-      if (response.right.status != null) {
+  //verify reset code
+  Future<void> verifyResetCode(String otp, String email) async {
+  emit(state.copyWith(status: AuthStatus.loading));
+
+  final response = await verifyResetCodeUseCase.execute(otp);
+
+  if (response.isLeft) {
+    emit(state.copyWith(
+        errorMessage: response.left.toString(), status: AuthStatus.failure));
+  } else {
+    if (response.right.status != null) {
+      if (response.right.status == "Success") {
+        // Save the email in the state for later use
         emit(state.copyWith(
-            status: AuthStatus.success,
-            resetPasswordCode: int.parse(response.right.status!)));
+          status: AuthStatus.success,
+          email: email, // Store email in state
+          resetCode: otp, // Store resetCode in state
+        ));
       } else {
-        emit(state.copyWith(errorMessage: 'null status from api'));
+        emit(state.copyWith(
+            errorMessage: 'Failed: ${response.right.status}',
+            status: AuthStatus.failure));
       }
+    } else {
+      emit(state.copyWith(errorMessage: 'null status from API', status: AuthStatus.failure));
     }
   }
+}
+
 
   updateRememberMe(bool value) {
     emit(state.copyWith(rememberMe: value));
