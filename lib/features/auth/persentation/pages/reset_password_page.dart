@@ -10,7 +10,9 @@ import '../../../../core/routes/routes.dart';
 class ResetPasswordPage extends StatefulWidget {
   final String email;
   final String resetCode;
-  const ResetPasswordPage({super.key, required this.email, required this.resetCode});
+
+  const ResetPasswordPage(
+      {super.key, required this.email, required this.resetCode});
 
   @override
   State<ResetPasswordPage> createState() => _ResetPasswordPageState();
@@ -28,12 +30,22 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   void initState() {
     super.initState();
+  }
 
-    // Get email & resetCode passed from PinCodePage
-    final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    email = args?['email'];
-    resetCode = args?['resetCode'];
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Only retrieve arguments once the widget has been fully initialized
+    if (email == null || resetCode == null) {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      email = args?['email'];
+      resetCode = args?['resetCode'];
+
+      if (email == null || resetCode == null) {
+        _showErrorDialog('Missing email or reset code.');
+      }
+    }
   }
 
   void _resetPassword() {
@@ -61,13 +73,20 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.status.isLoading) {
-          setState(() => isLoading = true);
+          // Delay the setState to avoid the issue during build
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            setState(() => isLoading = true);
+          });
         } else {
-          setState(() => isLoading = false);
+          // Delay the setState to avoid the issue during build
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            setState(() => isLoading = false);
+          });
         }
 
         if (state.status.isSuccess) {
@@ -100,7 +119,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               const SizedBox(height: 24),
               CustomElevatedButton(
                 title: isLoading ? 'Resetting...' : 'Reset Password',
-               onTap: ()=>isLoading ? null : _resetPassword(),
+                onTap: () => isLoading ? null : _resetPassword(),
               ),
             ],
           ),

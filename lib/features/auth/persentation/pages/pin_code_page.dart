@@ -13,37 +13,26 @@ import '../../../../core/routes/routes.dart';
 import '../cubit/auth_cubit.dart';
 
 class PinCodePage extends StatefulWidget {
-  String? email;
-   PinCodePage({super.key,required this.email});
+  final String email; // Email is passed through the constructor
+
+  const PinCodePage({super.key, required this.email});
 
   @override
   State<PinCodePage> createState() => _PinCodePageState();
 }
+
 class _PinCodePageState extends State<PinCodePage> {
   AuthCubit? cubit;
   final TextEditingController pinController = TextEditingController();
   bool isLoading = false;
 
-  // Variable to store the email passed from ForgetPasswordPage
-  //String? email;
-
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    // Safe to use context here
-    cubit ??= context.read<AuthCubit>();
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    widget.email = args?['email'];
-
-    // Make sure email is not null
-    if (widget.email == null) {
-      //_showErrorDialog(context, 'Email is missing');
+    cubit ??= context.read<AuthCubit>(); // Get the AuthCubit instance
+    // No need to use ModalRoute for fetching email, it's already passed in constructor
+    if (widget.email.isEmpty) {
+      _showErrorDialog(context, 'Email is missing');
     }
   }
 
@@ -52,28 +41,21 @@ class _PinCodePageState extends State<PinCodePage> {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.status.isLoading) {
-          // Use addPostFrameCallback to schedule the setState after the build phase
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) {
-              setState(() => isLoading = true);
-            }
-          });
+          setState(() => isLoading = true);
         } else {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) {
-              setState(() => isLoading = false);
-            }
-          });
+          setState(() => isLoading = false);
         }
 
         if (state.status.isSuccess) {
+          // After success, navigate to the next page
           Navigator.pushNamed(
             context,
-            Routes.resetPassword,
+            Routes.resetPassword, // Ensure this route is correct
             arguments: {
-              'email':widget.email,
-              'resetCode': pinController.text,
-            },
+              'email': widget.email,
+              'resetCode': state.resetCode
+
+            }, // Use the email from widget
           );
         } else if (state.status.isFailure) {
           _showErrorDialog(context, state.errorMessage ?? 'Invalid PIN');
@@ -89,13 +71,15 @@ class _PinCodePageState extends State<PinCodePage> {
               SizedBox(height: 40.h),
               Text(
                 'Email verification',
-                style: getMediumStyle(color: ColorManager.black, fontSize: 18.sp),
+                style:
+                    getMediumStyle(color: ColorManager.black, fontSize: 18.sp),
               ),
               SizedBox(height: 16.h),
               Text(
                 'Please enter the code sent to your email address',
                 textAlign: TextAlign.center,
-                style: getRegularStyle(color: ColorManager.grey, fontSize: 14.sp),
+                style:
+                    getRegularStyle(color: ColorManager.grey, fontSize: 14.sp),
               ),
               SizedBox(height: 32.h),
               Pinput(
@@ -105,7 +89,8 @@ class _PinCodePageState extends State<PinCodePage> {
                 defaultPinTheme: PinTheme(
                   width: 74.w,
                   height: 68.h,
-                  textStyle: getSemiBoldStyle(color: ColorManager.black, fontSize: 22.sp),
+                  textStyle: getSemiBoldStyle(
+                      color: ColorManager.black, fontSize: 22.sp),
                   decoration: BoxDecoration(
                     color: ColorManager.pincode,
                     borderRadius: BorderRadius.circular(20),
@@ -114,7 +99,8 @@ class _PinCodePageState extends State<PinCodePage> {
                 errorPinTheme: PinTheme(
                   width: 74.w,
                   height: 68.h,
-                  textStyle: getSemiBoldStyle(color: ColorManager.black, fontSize: 22.sp),
+                  textStyle: getSemiBoldStyle(
+                      color: ColorManager.black, fontSize: 22.sp),
                   decoration: BoxDecoration(
                     color: ColorManager.white,
                     borderRadius: BorderRadius.circular(20),
@@ -122,8 +108,9 @@ class _PinCodePageState extends State<PinCodePage> {
                   ),
                 ),
                 onCompleted: (pin) {
-                  if (pin.isNotEmpty && widget. email != null) {
-                    cubit?.verifyResetCode(pin, widget.email!);
+                  if (pin.isNotEmpty && widget.email.isNotEmpty) {
+                    cubit?.verifyResetCode(
+                        pin, widget.email); // Use email from widget
                   } else {
                     _showErrorDialog(context, 'Invalid PIN or missing email');
                   }
@@ -133,8 +120,11 @@ class _PinCodePageState extends State<PinCodePage> {
               CustomElevatedButton(
                 title: isLoading ? 'Verifying...' : 'Verify PIN',
                 onTap: () {
-                  if (pinController.text.isNotEmpty && widget.email != null && !isLoading) {
-                    cubit?.verifyResetCode(pinController.text, widget.email!);
+                  if (pinController.text.isNotEmpty &&
+                      widget.email.isNotEmpty &&
+                      !isLoading) {
+                    cubit?.verifyResetCode(pinController.text,
+                        widget.email); // Use email from widget
                   } else {
                     _showErrorDialog(context, 'Invalid PIN or missing email');
                   }
@@ -143,11 +133,12 @@ class _PinCodePageState extends State<PinCodePage> {
               SizedBox(height: 24.h),
               TextButton(
                 onPressed: () {
-                  // Handle resend logic here (if needed)
+                  // Handle resend logic here
                 },
                 child: Text(
                   "Didn't receive code? Resend",
-                  style: getTextUnderLine(color: ColorManager.blue, fontSize: 16.sp),
+                  style: getTextUnderLine(
+                      color: ColorManager.blue, fontSize: 16.sp),
                 ),
               ),
             ],

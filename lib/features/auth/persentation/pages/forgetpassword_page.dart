@@ -66,7 +66,9 @@ class _ForgetpasswordPageState extends State<ForgetpasswordPage> {
                   onTap: () {
                     if (formKey.currentState!.validate()) {
                       // Call the Cubit to trigger the forgot password logic
-                      context.read<AuthCubit>().forgotPassword(emailController.text);
+                      context
+                          .read<AuthCubit>()
+                          .forgotPassword(emailController.text);
                     }
                   },
                 ),
@@ -74,18 +76,18 @@ class _ForgetpasswordPageState extends State<ForgetpasswordPage> {
                   listener: (context, state) {
                     if (state.status == AuthStatus.success) {
                       if (state.forgetPasswordMessage != null) {
-                        // Show a dialog on success
-                        _showDialog(context, 'Success', state.forgetPasswordMessage!);
-                        // Navigate to the pin code page with the email
+                        print(
+                            "Password reset success, navigating to pin code"); // Add print statement
                         Navigator.pushNamed(
                           context,
                           Routes.pinCode,
-                          arguments: emailController.text, // Pass email to PinCodePage
+                          arguments: {'email': emailController.text},
                         );
                       }
                     } else if (state.status == AuthStatus.failure) {
                       // Show an error dialog when the password reset fails
-                      _showDialog(context, 'Error', state.errorMessage ?? 'An error occurred');
+                      _showDialog(context, 'Error',
+                          state.errorMessage ?? 'An error occurred');
                     }
                   },
                   child: Container(),
