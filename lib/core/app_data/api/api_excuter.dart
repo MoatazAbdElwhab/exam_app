@@ -21,6 +21,7 @@ Future<Result<T>> executeApi<T>(Future<T> Function() apiCall) async {
         {
           var responseCode = ex.response?.statusCode ?? 0;
           var errorModel = ErrorModel.fromJson(ex.response?.data);
+          print(errorModel.message);
           if (responseCode >= 400 && responseCode < 500) {
             return Error(ClientError(errorModel));
           }

@@ -1,43 +1,64 @@
-import 'package:either_dart/either.dart';
-import 'package:exam_app/core/di/injectable.dart';
-import 'package:exam_app/core/error_handling/exceptions/api_exception.dart';
+import 'package:exam_app/core/app_data/api/api_constants.dart';
+import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
+import 'package:exam_app/core/app_data/result.dart';
+import 'package:exam_app/features/auth/data/models/auth_response.dart';
 import 'package:exam_app/features/auth/data/models/sign_in_request.dart';
 import 'package:exam_app/features/auth/data/models/sign_up_request.dart';
 import 'package:exam_app/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/auth_repository/auth_repository.dart';
 
-@Injectable(as: AuthRepository)
+@Singleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
+  final LocalStorageClient _localStorageClient;
 
-  AuthRepositoryImpl(this._remoteDataSource);
+  AuthRepositoryImpl(this._remoteDataSource, this._localStorageClient);
 
   @override
-  Future<Either<ApiException, Null>> signIn(
+  Future<Result<Null>> signIn(
     SignInRequest request,
   ) async {
+    // final response = await _remoteDataSource.signIn(request);
+    // if (response is Success<AuthResponse>) {
+    //   final authResponse = response.data;
+    //   if (authResponse != null) {
+    //     await _localStorageClient.saveSecuredData(
+    //       ApiConstants.tokenKey,
+    //       authResponse.token,
+    //     );
+    //     print(authResponse.token);
+    //   }
+    //   return Success(null);
+    // }
+
+    // return Error((response as Error).exception);
+
     try {
       final response = await _remoteDataSource.signIn(request);
-      getIt.get<SharedPreferences>().setString('token', response.token);
-      return const Right(null);
-    } on ApiException catch (e) {
-      return Left(ApiException(message: 'message'));
+      response.data;
+      return Success;
+    } catch (e) {
+      return Error();
     }
   }
 
   @override
-  Future<Either<ApiException, Null>> signUp(
-    SignUpRequest request,
-  ) async {
-    try {
-      final response = await _remoteDataSource.signUp(request);
-      getIt.get<SharedPreferences>().setString('token', response.token);
-      return const Right(null);
-    } on ApiException catch (e) {
-      return Left(ApiException(message: 'message'));
+  Future<Result<Null>> signUp(SignUpRequest request) async {
+    final response = await _remoteDataSource.signUp(request);
+
+    if (response is Success<AuthResponse>) {
+      final authResponse = response.data;
+      if (authResponse != null) {
+        await _localStorageClient.saveSecuredData(
+          ApiConstants.tokenKey,
+          authResponse.token,
+        );
+      }
+      return Success(null);
     }
+
+    return Error((response as Error).exception);
   }
 
   // @override

@@ -1,14 +1,12 @@
-import 'package:either_dart/either.dart';
+import 'package:exam_app/core/app_data/result.dart';
 import 'package:exam_app/features/auth/data/models/sign_in_request.dart';
 import 'package:exam_app/features/auth/data/models/sign_up_request.dart';
 
-import '../../../../core/error_handling/exceptions/api_exception.dart';
-
 abstract class AuthRepository {
-  Future<Either<ApiException, Null>> signIn(
+  Future<Result<Null>> signIn(
     SignInRequest request,
   );
-  Future<Either<ApiException, Null>> signUp(
+  Future<Result<Null>> signUp(
     SignUpRequest request,
   );
   // Future<Either<ApiException, ForgetPasswordResponse>> forgotPassword(

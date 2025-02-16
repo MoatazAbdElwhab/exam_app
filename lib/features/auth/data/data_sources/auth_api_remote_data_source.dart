@@ -1,46 +1,45 @@
-import 'package:exam_app/core/app_data/api/api_client.dart';
+import 'package:dio/dio.dart';
 import 'package:exam_app/core/app_data/api/api_constants.dart';
-import 'package:exam_app/core/error_handling/exceptions/api_exception.dart';
+import 'package:exam_app/core/app_data/api/api_excuter.dart';
+import 'package:exam_app/core/app_data/result.dart';
 import 'package:exam_app/features/auth/data/models/sign_in_request.dart';
 import 'package:exam_app/features/auth/data/models/sign_up_request.dart';
 import 'package:exam_app/features/auth/data/models/auth_response.dart';
 import 'package:exam_app/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:injectable/injectable.dart';
 
-@Injectable(as: AuthRemoteDataSource)
+@Singleton(as: AuthRemoteDataSource)
 class AuthApiRemoteDataSource implements AuthRemoteDataSource {
-  final ApiClient _apiClient;
+  final Dio _dio;
 
-  AuthApiRemoteDataSource(this._apiClient);
+  AuthApiRemoteDataSource(this._dio);
 
   @override
-  Future<AuthResponse> signIn(SignInRequest request) async {
-    try {
-      final response = await _apiClient.post(
-        ApiConstants.signInEndpoint,
-        data: request.toJson(),
-        requiresToken: false,
-      );
-      return AuthResponse.fromJson(response);
-    } on Exception catch (e) {
-      throw ApiException(message: 'message');
-    }
+  Future<Result<AuthResponse>> signIn(SignInRequest request) async {
+    return executeApi(
+      () async {
+        final response = await _dio.post(
+          ApiConstants.signInEndpoint,
+          data: request.toJson(),
+        );
+        return AuthResponse.fromJson(response.data);
+      },
+    );
   }
 
   @override
-  Future<AuthResponse> signUp(
+  Future<Result<AuthResponse>> signUp(
     SignUpRequest request,
   ) async {
-    try {
-      final response = await _apiClient.post(
-        ApiConstants.signUpEndpoint,
-        data: request.toJson(),
-        requiresToken: false,
-      );
-      return AuthResponse.fromJson(response);
-    } on Exception catch (e) {
-      throw ApiException(message: 'message');
-    }
+    return executeApi(
+      () async {
+        final response = await _dio.post(
+          ApiConstants.signUpEndpoint,
+          data: request.toJson(),
+        );
+        return AuthResponse.fromJson(response.data);
+      },
+    );
   }
 
   // @override

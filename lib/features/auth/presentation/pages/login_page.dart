@@ -1,3 +1,4 @@
+import 'package:exam_app/core/di/injectable.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:exam_app/core/routes/routes.dart';
@@ -5,9 +6,11 @@ import 'package:exam_app/core/utils/validator.dart';
 import 'package:exam_app/core/widgets/custom_app_bar.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
 import 'package:exam_app/core/widgets/custom_text_form_field.dart';
+import 'package:exam_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:exam_app/features/auth/presentation/widgets/remember_me_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 
@@ -25,6 +28,11 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
   bool? value = false;
   CustomElevatedButton? customElevatedButton;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -76,16 +84,6 @@ class _LoginPageState extends State<LoginPage> {
                 isPass: true,
                 controller: passwordController,
                 validator: Validator.passwordValidation,
-                // onChanged: (val) {
-                //   passwordValidationReturn = Validator.passwordValidation(
-                //       passwordController.text.trim());
-                //   if (passwordValidationReturn == null &&
-                //       emailValidationReturn == null) {
-                //     customElevatedButton!.setColor(true);
-                //   } else {
-                //     customElevatedButton!.setColor(false);
-                //   }
-                // },
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,12 +107,13 @@ class _LoginPageState extends State<LoginPage> {
               customElevatedButton = CustomElevatedButton(
                 title: 'Login',
                 onTap: () async {
-                  if (formKey.currentState!.validate()) {
-                    // if (customElevatedButton != null) {
-                    //   customElevatedButton!.setColor(true);
-                    // }
-                    Navigator.pushNamed(context, Routes.profile);
-                  }
+                  context.read<AuthCubit>().signIn();
+                  // if (formKey.currentState!.validate()) {
+                  //   // if (customElevatedButton != null) {
+                  //   //   customElevatedButton!.setColor(true);
+                  //   // }
+                  //   Navigator.pushNamed(context, Routes.profile);
+                  // }
                   // else {
                   //   if (customElevatedButton != null) {
                   //     customElevatedButton!.setColor(false);

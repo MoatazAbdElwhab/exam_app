@@ -1,13 +1,14 @@
+import 'package:exam_app/core/app_data/result.dart';
 import 'package:exam_app/features/auth/data/models/sign_in_request.dart';
 import 'package:exam_app/features/auth/data/models/sign_up_request.dart';
 import 'package:exam_app/features/auth/data/models/auth_response.dart';
 
 abstract class AuthRemoteDataSource {
-  Future<AuthResponse> signIn(
+  Future<Result<AuthResponse>> signIn(
     SignInRequest request,
   );
 
-  Future<AuthResponse> signUp(
+  Future<Result<AuthResponse>> signUp(
     SignUpRequest request,
   );
 

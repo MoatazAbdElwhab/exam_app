@@ -1,3 +1,8 @@
+import 'package:exam_app/core/app_data/api/api_constants.dart';
+import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
+import 'package:exam_app/core/app_data/result.dart';
+import 'package:exam_app/core/di/injectable.dart';
+import 'package:exam_app/core/utils/error_message_handler.dart';
 import 'package:exam_app/features/auth/data/models/sign_in_request.dart';
 import 'package:exam_app/features/auth/data/models/sign_up_request.dart';
 import 'package:exam_app/features/auth/domain/use_cases/sign_in_use_case.dart';
@@ -6,43 +11,63 @@ import 'package:injectable/injectable.dart';
 import 'auth_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-@injectable
+@singleton
 class AuthCubit extends Cubit<AuthState> {
   final SignInUseCase _signInUseCase;
   final SignUpUseCase _signUpUseCase;
-  AuthCubit(this._signInUseCase, this._signUpUseCase) : super(AuthInitial());
+  AuthCubit(this._signInUseCase, this._signUpUseCase)
+      : super(const AuthState(status: Status.loading));
 
   Future<void> signIn() async {
-    emit(AuthLoading());
+    emit(state.copyWith(status: Status.loading));
     final result = await _signInUseCase(
       SignInRequest(
-        email: 'email',
-        password: 'password',
+        email: 'moatazAbdElwhabb@gmail.com',
+        password: 'moataz@A21',
       ),
     );
-    result.fold(
-      (fail) => emit(AuthFailure(fail.message)),
-      (right) => emit(AuthSuccess()),
-    );
+    switch (result) {
+      case Success():
+        emit(state.copyWith(status: Status.success));
+        print('success');
+        final token = await getIt
+            .get<LocalStorageClient>()
+            .getSecuredData(ApiConstants.tokenKey);
+        print(token);
+
+      case Error():
+        emit(state.copyWith(status: Status.error, exception: result.exception));
+        print(handleErrorMessage(result.exception));
+
+        break;
+      default:
+    }
   }
 
   Future<void> signUp() async {
-    emit(AuthLoading());
+    emit(state.copyWith(status: Status.loading));
     final result = await _signUpUseCase(
       SignUpRequest(
-        username: 'username',
-        firstName: 'firstName',
-        lastName: 'lastName',
-        email: 'email',
-        password: 'password',
-        rePassword: 'rePassword',
-        phone: 'phone',
+        username: 'moatazsz',
+        firstName: 'moataz',
+        lastName: 'moataz',
+        email: 'moatazAbdElwhabb@gmail.com',
+        password: 'moataz@A1',
+        rePassword: 'moataz@A21',
+        phone: '01023541303',
       ),
     );
-    result.fold(
-      (fail) => emit(AuthFailure(fail.message)),
-      (right) => emit(AuthSuccess()),
-    );
+    switch (result) {
+      case Success():
+        emit(state.copyWith(status: Status.success));
+        print('success');
+
+      case Error():
+        emit(state.copyWith(status: Status.error, exception: result.exception));
+        print(handleErrorMessage(result.exception));
+        break;
+      default:
+    }
   }
 
   // Future<void> forgotPassword(String email) async {
