@@ -19,28 +19,20 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<Null>> signIn(
     SignInRequest request,
   ) async {
-    // final response = await _remoteDataSource.signIn(request);
-    // if (response is Success<AuthResponse>) {
-    //   final authResponse = response.data;
-    //   if (authResponse != null) {
-    //     await _localStorageClient.saveSecuredData(
-    //       ApiConstants.tokenKey,
-    //       authResponse.token,
-    //     );
-    //     print(authResponse.token);
-    //   }
-    //   return Success(null);
-    // }
-
-    // return Error((response as Error).exception);
-
-    try {
-      final response = await _remoteDataSource.signIn(request);
-      response.data;
-      return Success;
-    } catch (e) {
-      return Error();
+    final response = await _remoteDataSource.signIn(request);
+    if (response is Success<AuthResponse>) {
+      final authResponse = response.data;
+      if (authResponse != null) {
+        await _localStorageClient.saveSecuredData(
+          ApiConstants.tokenKey,
+          authResponse.token,
+        );
+        print(authResponse.token);
+      }
+      return Success(null);
     }
+
+    return Error((response as Error).exception);
   }
 
   @override
