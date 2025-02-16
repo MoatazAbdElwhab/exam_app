@@ -24,7 +24,7 @@ abstract class AuthRepository {
   Future<Either<Exception, ForgetPasswordResponse>> forgotPassword(
       String email);
   Future<Either<Exception, ResetPasswordResponse>> resetPassword(
-      String email, String resetCode, String newPassword);
+      String email, dynamic resetCode, String newPassword);
   Future<Either<Exception, ChangePasswordResponse>> changePassword(
       String oldPassword, String newPassword);
   Future<Either<Exception, DeleteAccountResponse>> deleteAccount();

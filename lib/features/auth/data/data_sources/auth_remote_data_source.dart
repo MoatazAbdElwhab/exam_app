@@ -116,7 +116,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<Either<ApiException, ResetPasswordResponse>> resetPassword(
       String email, String resetCode, String newPassword) async {
     try {
-      final response = await _apiClient.post(
+      final response = await _apiClient.put(
         'auth/resetPassword',
         data: {
           'email': email,
@@ -136,7 +136,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<Either<ApiException, ChangePasswordResponse>> changePassword(
       String oldPassword, String newPassword) async {
     try {
-      final response = await _apiClient.post(
+      final response = await _apiClient.patch(
         'auth/changePassword',
         data: {
           'oldPassword': oldPassword,
@@ -188,7 +188,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<Either<ApiException, LogoutResponse>> logout() async {
     try {
-      final response = await _apiClient.post(
+      final response = await _apiClient.get(
         'auth/logout',
         requiresToken: true,
       );

@@ -12,6 +12,7 @@ class AuthState extends Equatable {
   final bool rememberMe;
   final String? email;
   final String? resetCode;
+  final String? token;
 
   const AuthState(
       {this.status = AuthStatus.initial,
@@ -22,6 +23,7 @@ class AuthState extends Equatable {
       this.successMessage,
       this.email,
       this.resetCode,
+      this.token,
       this.rememberMe = false});
 
   AuthState copyWith({

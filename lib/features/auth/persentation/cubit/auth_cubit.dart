@@ -1,4 +1,5 @@
 // features/auth/persentation/cubit/auth_cubit.dart
+import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
 import 'package:exam_app/core/error_handling/exceptions/api_exceptions.dart';
 import 'package:exam_app/features/auth/domain/use_cases/forget_password_usecase.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,11 @@ class AuthCubit extends Cubit<AuthState> {
   final TextEditingController signUpPhoneNumberController =
       TextEditingController();
 
+  final TextEditingController resetPasswordEmailController =
+      TextEditingController();
+
+
+
   AuthCubit({
     required this.signInUseCase,
     required this.signUpUseCase,
@@ -68,6 +74,7 @@ class AuthCubit extends Cubit<AuthState> {
         loginEmailController.text.trim(),
         loginPasswordController.text.trim(),
         state.rememberMe);
+
     response.isLeft
         ? emit(state.copyWith(
             errorMessage: response.left.toString(), status: AuthStatus.failure))
@@ -125,19 +132,28 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
 //reset password
+Future<void> resetPassword(
+    String email, String resetCode, String newPassword) async {
+  emit(state.copyWith(status: AuthStatus.loading));
 
-  Future<void> resetPassword(
-      String email, String resetCode, String newPassword) async {
-    emit(state.copyWith(status: AuthStatus.loading));
-    final response =
-        await resetPasswordUseCase.execute(email, resetCode, newPassword);
+  try {
+    final response = await resetPasswordUseCase.execute(email, resetCode, newPassword);
+    
     response.isLeft
         ? emit(state.copyWith(
-            errorMessage: response.left.toString(), status: AuthStatus.failure))
-        : emit(state.copyWith(
-            status: AuthStatus.success,
-          ));
+            errorMessage: response.left.toString(),
+            status: AuthStatus.failure,
+          ))
+        : emit(state.copyWith(status: AuthStatus.success));
+  } catch (e) {
+    emit(state.copyWith(
+      errorMessage: "Something went wrong. Please try again.",
+      status: AuthStatus.failure,
+    ));
+    debugPrint("Reset Password Error: $e");
   }
+}
+
 
   //change password
 
@@ -197,7 +213,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   //verify reset code
-  Future<void> verifyResetCode(String otp, String email) async {
+Future<void> verifyResetCode(String otp, String email) async {
   emit(state.copyWith(status: AuthStatus.loading));
 
   final response = await verifyResetCodeUseCase.execute(otp);

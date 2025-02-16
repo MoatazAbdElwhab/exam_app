@@ -151,7 +151,7 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
 
   @override
   Future<Either<Exception, ResetPasswordResponse>> resetPassword(
-      String email, String resetCode, String newPassword) async {
+      String email, dynamic resetCode, String newPassword) async {
     if (!isOnline) {
       return Left(NetworkException('No internet connection'));
     }

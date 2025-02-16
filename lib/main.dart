@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    isUserLoggedIn = _isUserLoggedIn(); // Perform login check on initialization
+    isUserLoggedIn = _isUserLoggedIn(); 
   }
 
   Future<bool> _isUserLoggedIn() async {
@@ -42,10 +42,10 @@ class _MyAppState extends State<MyApp> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, __) => FutureBuilder<bool>(
-        future: isUserLoggedIn, // Use FutureBuilder to await the login check
+        future: isUserLoggedIn,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator(); // Show loading indicator while checking login status
+            return const CircularProgressIndicator();
           }
 
           if (snapshot.hasError) {

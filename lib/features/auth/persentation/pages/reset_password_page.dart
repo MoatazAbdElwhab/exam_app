@@ -18,41 +18,53 @@ class ResetPasswordPage extends StatefulWidget {
 }
 
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
-  // form key for validation
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isLoading = false;
-
-  // New password and confirm password variables
   String password = '';
   String confirmPassword = '';
 
   void _resetPassword() {
     if (_formKey.currentState?.validate() ?? false) {
-      // If form is valid, proceed with the password reset
-      context
-          .read<AuthCubit>()
-          .resetPassword(widget.email, widget.resetCode, password);
+      print({
+        'email': widget.email,
+        'resetCode': widget.resetCode,
+        'newPassword': password,
+      });
+
+      context.read<AuthCubit>().resetPassword(
+            widget.email,
+            widget.resetCode,
+            password,
+          );
     } else {
       _showErrorDialog('Please fill in all fields correctly.');
     }
+  }
+
+  late final AuthCubit cubit;
+
+  @override
+  void initState() {
+    cubit = context.read<AuthCubit>();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state.status.isLoading) {
-          setState(() => isLoading = true);
-        } else {
-          setState(() => isLoading = false);
-        }
-
         if (state.status.isSuccess) {
-          // Navigate to login after successful password reset
-          Navigator.pushNamedAndRemoveUntil(
-              context, Routes.login, (route) => false);
+          Future.delayed(Duration(milliseconds: 300), () {
+            Navigator.pushNamedAndRemoveUntil(
+                context, Routes.login, (route) => false);
+          });
         } else if (state.status.isFailure) {
-          _showErrorDialog(state.errorMessage ?? 'Failed to reset password.');
+          if (state.errorMessage?.contains('404') ?? false) {
+            _showErrorDialog(
+                'The reset password endpoint was not found. Please contact support.');
+          } else {
+            _showErrorDialog(state.errorMessage ?? 'Failed to reset password.');
+          }
         }
       },
       child: Scaffold(
@@ -63,8 +75,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             key: _formKey,
             child: Column(
               children: [
-                // New Password input field
-
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'New Password',
@@ -75,7 +85,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   validator: Validator.passwordValidation,
                 ),
                 const SizedBox(height: 16),
-                // Confirm Password input field
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Confirm Password',
@@ -94,9 +103,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   },
                 ),
                 const SizedBox(height: 24),
-                CustomElevatedButton(
-                  title: isLoading ? 'Resetting...' : 'Reset Password',
-                  onTap: () => isLoading ? null : _resetPassword(),
+                BlocBuilder<AuthCubit, AuthState>(
+                  builder: (context, state) {
+                    return CustomElevatedButton(
+                      title: state.status.isLoading
+                          ? 'Resetting...'
+                          : 'Reset Password',
+                      onTap: state.status.isLoading ? () {} : _resetPassword,
+                    );
+                  },
                 ),
               ],
             ),
