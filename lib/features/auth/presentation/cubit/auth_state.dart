@@ -6,42 +6,59 @@ class AuthState extends Equatable {
   final UserDto? user;
   final String? errorMessage;
   final String? successMessage;
-  final String? forgetPasswordMessage;
+  final       bool? shouldSendOtp
+  ;
   final int? resetPasswordCode;
-  final bool rememberMe;
+  final bool shouldRememberUser;
+  final bool? shouldUpdatePassword;
+  final String? forgetPasswordEmail;
 
   const AuthState(
       {this.status = AuthStatus.initial,
       this.user,
       this.errorMessage,
-      this.forgetPasswordMessage,
+      this.shouldSendOtp,
       this.resetPasswordCode,
       this.successMessage,
-      this.rememberMe = false});
+      this.forgetPasswordEmail,
+      this.shouldUpdatePassword = false,
+      this.shouldRememberUser = false});
 
-  AuthState copyWith({
-    AuthStatus? status,
-    UserDto? user,
-    String? errorMessage,
-    String? successMessage,
-    String? forgetPasswordMessage,
-    int? resetPasswordCode,
-    bool? rememberMe
-  }) {
+  AuthState copyWith(
+      {AuthStatus? status,
+      UserDto? user,
+      String? errorMessage,
+      String? successMessage,
+        bool? shouldSendOtp,
+      int? resetPasswordCode,
+      bool? shouldUpdatePassword,
+      String? forgetPasswordEmail,
+      bool? shouldRememberUser}) {
     return AuthState(
-      status: status ?? this.status,
-      user: user ?? this.user,
-      errorMessage: errorMessage,
-      successMessage: successMessage,
-      forgetPasswordMessage: forgetPasswordMessage?? this.forgetPasswordMessage,
-      resetPasswordCode: resetPasswordCode?? this.resetPasswordCode,
-      rememberMe: rememberMe?? this.rememberMe
-    );
+        status: status ?? this.status,
+        user: user ?? this.user,
+        errorMessage: errorMessage,
+        successMessage: successMessage,
+        shouldSendOtp: shouldSendOtp,
+        shouldUpdatePassword: shouldUpdatePassword,
+        forgetPasswordEmail: forgetPasswordEmail ?? this.forgetPasswordEmail,
+        resetPasswordCode: resetPasswordCode ?? this.resetPasswordCode,
+        shouldRememberUser: shouldRememberUser ?? this.shouldRememberUser);
   }
 
   @override
-  List<Object?> get props =>
-      [status,rememberMe, user, errorMessage, forgetPasswordMessage, resetPasswordCode,successMessage];
+  List<Object?> get props => [
+        status,
+        shouldRememberUser,
+        user,
+        errorMessage,
+        shouldSendOtp,
+        resetPasswordCode,
+        successMessage,
+        shouldUpdatePassword,
+        shouldRememberUser,
+        forgetPasswordEmail
+      ];
 }
 
 enum AuthStatus {
@@ -51,6 +68,7 @@ enum AuthStatus {
   loginSuccess,
   signUpSuccess,
   failure,
+  loggedOut
 }
 
 extension AuthStatusExtensions on AuthStatus {
@@ -60,4 +78,5 @@ extension AuthStatusExtensions on AuthStatus {
   bool get isFailure => this == AuthStatus.failure;
   bool get isLoginSuccess => this == AuthStatus.loginSuccess;
   bool get isSignUpSuccess => this == AuthStatus.signUpSuccess;
+  bool get isLoggedOut => this == AuthStatus.loggedOut;
 }

@@ -10,8 +10,7 @@ class AppRepository {
   bool _checkOnline() {
     checker.onStatusChange.listen((
         status)  {
-      bool isCheckerConnected =  status == InternetConnectionStatus.connected?
-      true : false;
+      bool isCheckerConnected =  status == InternetConnectionStatus.connected;
 
       if (isOnline != isCheckerConnected){
         isOnline = isCheckerConnected;

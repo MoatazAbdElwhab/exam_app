@@ -1,3 +1,4 @@
+import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/image_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
@@ -11,9 +12,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import '../../../../core/di/injectable.dart';
+import '../../../../core/logger/app_logger.dart';
+import '../../../../core/widgets/dialog_utils.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -52,8 +57,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void didChangeDependencies() {
-    authCubit = context.read<AuthCubit>();
     super.didChangeDependencies();
+    authCubit = context.read<AuthCubit>();
   }
 
   @override
@@ -65,11 +70,10 @@ class _ProfilePageState extends State<ProfilePage> {
           title: 'Profile',
           canPop: false,
         ),
-
         //body
         body: BlocConsumer<AuthCubit, AuthState>(
           builder: (context, state) {
-            if (state.user == null) {
+            if (state.status.isLoading ) {
               return const Center(child: CircularProgressIndicator());
             }
             return SingleChildScrollView(
@@ -78,6 +82,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
+                      ElevatedButton(
+                          onPressed:() async {
+                           // await getIt<LocalStorageClient>().saveRememberMe(false);
+                           await  context
+                                .read<AuthCubit>()
+                                .logout();
+                          },
+                          child: Text('data')),
                       Stack(
                         alignment: Alignment.bottomRight,
                         children: [
@@ -177,12 +189,30 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           },
           listener: (context, state) {
-            _fullNameController.text = authCubit.state.user!.username!;
-            _firstNameController.text = authCubit.state.user!.firstName!;
-            _lastNameController.text = authCubit.state.user!.lastName!;
-            _emailController.text = authCubit.state.user!.email!;
-            _passwordController.text = '*********';
-            _phoneController.text = authCubit.state.user!.phone!;
+              if(state.user != null) {
+              _fullNameController.text = state.user!.username!;
+              _firstNameController.text = state.user!.firstName!;
+              _lastNameController.text = state.user!.lastName!;
+              _emailController.text = state.user!.email!;
+              _passwordController.text = '*********';
+              _phoneController.text = state.user!.phone!;
+            }
+            if (state.errorMessage != null) {
+              getIt<DialogUtils>().showSnackBar(
+                  textColor: Colors.red,
+                  message: state.errorMessage!,
+                  context: context);
+            }
+            if (state.successMessage != null) {
+              getIt<DialogUtils>().showSnackBar(
+                  textColor: Colors.green,
+                  message: state.successMessage!,
+                  context: context);
+            }
+            if (state.status.isLoggedOut) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, Routes.login, (route) => false);
+            }
           },
         ),
       ),

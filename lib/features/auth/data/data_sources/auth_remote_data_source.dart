@@ -27,7 +27,7 @@ abstract class AuthRemoteDataSource {
   Future<Either<ApiException, ForgetPasswordResponse>> forgotPassword(
       String email);
   Future<Either<ApiException, ResetPasswordResponse>> resetPassword(
-      String email, String resetCode, String newPassword);
+      String email,String newPassword);
   Future<Either<ApiException, ChangePasswordResponse>> changePassword(
       String oldPassword, String newPassword);
   Future<Either<ApiException, DeleteAccountResponse>> deleteAccount();
@@ -48,7 +48,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<Either<ApiException, SignInResponse>> signIn(
       String email, String password) async {
-   // try {
+   try {
       final response = await _apiClient.post(
         'auth/signin',
         data: {
@@ -60,9 +60,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       Log.d('auth remote datasource got response / returns \n '
           '${Right(SignInResponse.fromJson(response))}');
       return Right(SignInResponse.fromJson(response));
-    // }catch(e){
-    //  rethrow;
-   // }
+    }catch(e){
+     rethrow;
+   }
   }
 
   @override
@@ -111,13 +111,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<Either<ApiException, ResetPasswordResponse>> resetPassword(
-      String email, String resetCode, String newPassword) async {
+      String email,  String newPassword) async {
     try{
-      final response = await _apiClient.post(
+      final response = await _apiClient.put(
         'auth/resetPassword',
         data: {
           'email': email,
-          'resetCode': resetCode,
           'newPassword': newPassword,
         },
       );
@@ -185,11 +184,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<Either<ApiException, LogoutResponse>> logout() async {
     try{
-      final response = await _apiClient.post(
+      final response = await _apiClient.get(
         'auth/logout',
         requiresToken: true,
       );
-      Log.d('auth remote datasource got response / returns \n '
+      Log.d('auth remote datasource got response / returns \n'
           '${Right(LogoutResponse.fromJson(response))}');
       return Right(LogoutResponse.fromJson(response));
     }catch(e){

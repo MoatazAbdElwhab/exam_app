@@ -39,7 +39,7 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
       if (apiResponse.isRight && apiResponse.right.token != null) {
         await authLocalDataSource.cacheToken(apiResponse.right.token!);
         return Right(apiResponse.right);
-      }else{
+      } else {
         return Left(apiResponse.left);
       }
     } catch (e) {
@@ -54,7 +54,7 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
     }
     try {
       final apiResponse = await authRemoteDataSource.deleteAccount();
-      await authLocalDataSource.deleteUserAccount();
+      await authLocalDataSource.deleteUser();
       return apiResponse;
     } catch (e) {
       return Left(
@@ -74,7 +74,7 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
       if (apiResponse.isRight) {
         await authLocalDataSource
             .cacheUserProfileInfo(apiResponse.right.toJson());
-      }else{
+      } else {
         return Left(apiResponse.left);
       }
       return apiResponse;
@@ -103,7 +103,7 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
   Future<Either<Exception, GetLoggedUserDataResponse>>
       getLoggedUserInfo() async {
     if (!isOnline) {
-      print({'isOnline $isOnline'});
+      Log.d({'isOnline $isOnline'});
       try {
         final response = await authLocalDataSource.getCachedUserInfo();
         final localResponse = GetLoggedUserDataResponse.fromJson(response!);
@@ -113,18 +113,16 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
             'Failed to get cached user info: ${e.toString()}'));
       }
     }
-    print({'isOnline $isOnline'});
-
     try {
+      Log.d({'isOnline $isOnline'});
       final apiResponse = await authRemoteDataSource.getLoggedUserInfo();
       if (apiResponse.isRight) {
         await authLocalDataSource
             .cacheUserProfileInfo(apiResponse.right.toJson());
         return Right(apiResponse.right);
-      }else{
+      } else {
         return Left(apiResponse.left);
       }
-
     } catch (e) {
       return Left(
           ApiException(message: 'Get user info failed: ${e.toString()}'));
@@ -138,10 +136,12 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
     }
     try {
       final apiResponse = await authRemoteDataSource.logout();
-      if(apiResponse.isRight){
-        await authLocalDataSource.deleteUserAccount();
+      if (apiResponse.isRight) {
+        await authLocalDataSource.getRememberMe() == 'true'
+            ? await authLocalDataSource.deleteUser()
+            : await authLocalDataSource.removeToken();
         return apiResponse;
-      }else{
+      } else {
         return Left(apiResponse.left);
       }
     } catch (e) {
@@ -151,21 +151,20 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
 
   @override
   Future<Either<Exception, ResetPasswordResponse>> resetPassword(
-      String email, String resetCode, String newPassword) async {
+      String email, String newPassword) async {
     if (!isOnline) {
       return Left(NetworkException('No internet connection'));
     }
     try {
       final response = await authRemoteDataSource.resetPassword(
-          email, resetCode, newPassword);
+          email,  newPassword);
 
       if (response.isRight && response.right.token != null) {
         await authLocalDataSource.cacheToken(response.right.token!);
         return Right(response.right);
-      }else{
+      } else {
         return Left(response.left);
       }
-
     } catch (e) {
       return Left(
           ApiException(message: 'Reset password failed: ${e.toString()}'));
@@ -174,16 +173,14 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
 
   @override
   Future<Either<Exception, SignInResponse>> signIn(
-      String email, String password, bool rememberMe) async {
+      String email, String password, bool shouldRememberUser) async {
     if (!isOnline) {
       return Left(NetworkException('No internet connection'));
     }
     try {
       final apiResponse = await authRemoteDataSource.signIn(email, password);
       if (apiResponse.isRight) {
-        if(rememberMe) {
-          await _cacheUserSigningData(apiResponse.right);
-        }
+        await _cacheUserSigningData(apiResponse.right, shouldRememberUser);
         return Right(apiResponse.right);
       }
       return Left(apiResponse.left);
@@ -213,7 +210,7 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
           phone: phone);
 
       if (apiResponse.isRight) {
-        await _cacheUserSigningData(apiResponse.right);
+        await _cacheUserSigningData(apiResponse.right, true);
         return Right(apiResponse.right);
       }
       return Left(apiResponse.left);
@@ -231,9 +228,9 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
     try {
       final apiResponse =
           await authRemoteDataSource.verifyResetCodeResponse(otp);
-      if(apiResponse.isRight){
+      if (apiResponse.isRight) {
         return apiResponse;
-      }else{
+      } else {
         return Left(apiResponse.left);
       }
     } catch (e) {
@@ -242,14 +239,14 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
     }
   }
 
-  Future<void> _cacheUserSigningData(dynamic response) async {
-    Log.i('will caching user data');
+  Future<void> _cacheUserSigningData(dynamic response, bool rememberMe) async {
     try {
+      await authLocalDataSource.cacheRememberMe(rememberMe);
       if (response.token != null) {
         await authLocalDataSource.cacheToken(response.token!);
         Log.i('cached user token successfully');
       }
-      if (response.user != null) {
+      if (response.user != null && rememberMe) {
         await authLocalDataSource.cacheUserProfileInfo(response.user!.toJson());
         Log.i('cached user data successfully');
       }

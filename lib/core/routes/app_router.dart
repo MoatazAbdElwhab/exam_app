@@ -17,18 +17,13 @@ import '../di/injectable.dart';
 Route<dynamic>? generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case Routes.login:
+
       return MaterialPageRoute(
-        builder: (_) => BlocProvider(
-          create: (context) => getIt<AuthCubit>(),
-          child: const LoginPage(),
-        ),
+        builder: (_) => const LoginPage(),
       );
     case Routes.signup:
       return MaterialPageRoute(
-        builder: (_) => BlocProvider(
-          create: (context) => getIt<AuthCubit>(),
-          child: const SignupPage(),
-        ),
+        builder: (con) => const SignupPage(),
       );
     case Routes.forgetPassword:
       return MaterialPageRoute(builder: (_) => const ForgetpasswordPage());
@@ -38,15 +33,9 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const ResetPasswordPage());
     case Routes.profile:
       return MaterialPageRoute(
-        builder: (_) => MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) => getIt<AuthCubit>()..getLoggedUserInfo(),
-              child: const ProfilePage(),
-            ),
-          ],
-          child: const ProfilePage(),
-        ),
+        builder: (con) => BlocProvider.value(
+            value: con.read<AuthCubit>()..getLoggedUserInfo(),
+            child: const ProfilePage()),
       );
     case Routes.profileResetPassword:
       return MaterialPageRoute(builder: (_) => const ResetpasswordPage());

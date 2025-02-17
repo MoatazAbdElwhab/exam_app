@@ -77,5 +77,18 @@ class Validator {
       return 'Please enter a valid email address';
     } else {
       return null;
-    }}
+    }
+  }
+
+  static String? validateOtp(String? value) {
+    if (value == null || value.isEmpty) {
+      return null;
+    }
+
+    if (value.length == 4 ) {
+      return 'Invalid PIN code';
+    }
+
+    return null;
+  }
 }

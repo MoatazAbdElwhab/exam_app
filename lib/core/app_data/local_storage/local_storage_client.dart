@@ -5,9 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../error_handling/exceptions/local_storage_exception.dart';
-
-/// keys
-// 'token' => secure
+import '../../logger/app_logger.dart';
 
 @LazySingleton()
 class LocalStorageClient {
@@ -19,9 +17,10 @@ class LocalStorageClient {
     this.secureStorage,
   );
 
-  Future<void> saveData(String key, String value) async {
+  Future<bool>? saveData(String key, String value) async {
     try {
-      await sharedPreferences.setString(key, value);
+      Log.d('saving $key');
+      return await sharedPreferences.setString(key, value);
     } catch (e) {
       throw LocalStorageException('Failed to save data: ${e.toString()}');
     }
@@ -29,34 +28,69 @@ class LocalStorageClient {
 
   Future<String?> getData(String key) async {
     try {
-     return sharedPreferences.getString(key,);
+      Log.d('getting $key');
+      return sharedPreferences.getString(
+        key,
+      );
     } catch (e) {
       throw LocalStorageException('Failed to get data: ${e.toString()}');
-
     }
   }
 
   Future<void> saveSecuredData(String key, String value) async {
     try {
+      Log.d('saving $key');
       return await secureStorage.write(key: key, value: value);
-    }catch (e){
+    } catch (e) {
       throw LocalStorageException('Failed to save data: ${e.toString()}');
     }
   }
 
   Future<String?> getSecuredData(String key) async {
     try {
+      Log.d('getting $key');
       return await secureStorage.read(key: key);
-    }catch (e){
+    } catch (e) {
       throw LocalStorageException('Failed to get data: ${e.toString()}');
     }
   }
 
-  Future<void>? deleteSecuredData(String key, String value) async {
-    try{
-      return await secureStorage.delete(key: key);
-    }catch(e){
+  Future<void>? deleteData(String key) async {
+    try {
+      Log.d('deleting $key');
+      await sharedPreferences.remove(key);
+    } catch (e) {
       throw LocalStorageException('Failed to delete data: ${e.toString()}');
+    }
+  }
+
+  Future<void>? deleteSecuredData(String key) async {
+    try {
+      Log.d('deleting $key');
+      await secureStorage.delete(key: key);
+    } catch (e) {
+      throw LocalStorageException('Failed to delete data: ${e.toString()}');
+    }
+  }
+
+  Future<bool?> getRememberMe() async {
+    try {
+      String rememberMe = sharedPreferences.getString('rememberMe') ?? 'false';
+      Log.i('got rememberMe with $rememberMe');
+      return rememberMe == 'true'? true: false;
+    } catch (e) {
+      Log.e('message');
+      Log.e(e.toString());
+      throw LocalStorageException('Failed to get data: ${e.toString()}');
+    }
+  }
+
+  Future<void> saveRememberMe(bool rememberMe) async {
+    try {
+      Log.d('saving rememberMe with $rememberMe');
+      await sharedPreferences.setString('rememberMe', rememberMe.toString());
+    } catch (e) {
+      throw LocalStorageException('Failed to save data: ${e.toString()}');
     }
   }
 }

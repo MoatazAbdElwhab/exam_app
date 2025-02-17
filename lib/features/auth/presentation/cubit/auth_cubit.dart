@@ -1,6 +1,7 @@
+import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
+import 'package:exam_app/core/logger/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import '../../../../core/logger/app_logger.dart';
 import '../../../../core/utils/validator.dart';
 import '../../domain/use_cases/change_password_usecase.dart';
 import '../../domain/use_cases/delete_account_usecase.dart';
@@ -46,6 +47,8 @@ class AuthCubit extends Cubit<AuthState> {
   final TextEditingController signUpPhoneNumberController =
       TextEditingController();
 
+  final LocalStorageClient storageClient;
+
   AuthCubit({
     required this.signInUseCase,
     required this.signUpUseCase,
@@ -57,64 +60,87 @@ class AuthCubit extends Cubit<AuthState> {
     required this.logoutUseCase,
     required this.getLoggedUserInfoUseCase,
     required this.verifyResetCodeUseCase,
-  }) : super(const AuthState());
+    required this.storageClient,
+  }) : super(const AuthState()) {
+    if (state.status.isLoginSuccess) getLoggedUserInfo();
+  }
 
   Future<void> signIn() async {
     emit(state.copyWith(status: AuthStatus.loading));
     final response = await signInUseCase.execute(
-        loginEmailController.text.trim(), loginPasswordController.text.trim(),
-        state.rememberMe);
-    response.isLeft
-        ? emit(state.copyWith(
-            errorMessage: response.left.toString(), status: AuthStatus.failure))
-        : emit(state.copyWith(
-            user: response.right.user!,
-            status: AuthStatus.loginSuccess,
-            successMessage: 'logged in successfully',));
+        loginEmailController.text.trim(),
+        loginPasswordController.text.trim(),
+        state.shouldRememberUser);
+    if (response.isLeft) {
+      emit(state.copyWith(
+          errorMessage: response.left.toString(), status: AuthStatus.failure));
+    } else {
+      emit(state.copyWith(
+          user: state.shouldRememberUser ? response.right.user! : null,
+          status: AuthStatus.loginSuccess,
+          successMessage: 'logged in successfully'));
+      loginEmailController.clear();
+      loginPasswordController.clear();
+    }
   }
 
-  Future<void> signUp(
-      {required String email,
-      required String password,
-      required String userName,
-      required String firstName,
-      required String lastName,
-      required String phone}) async {
+  Future<void> signUp() async {
     emit(state.copyWith(status: AuthStatus.loading));
     final response = await signUpUseCase.execute(
-        email: email,
-        password: password,
-        userName: userName,
-        firstName: firstName,
-        lastName: lastName,
-        phone: phone);
-    response.isLeft
-        ? emit(state.copyWith(
-            errorMessage: response.left.toString(), status: AuthStatus.failure))
-        : emit(state.copyWith(
-            user: response.right.user,
-            status: AuthStatus.signUpSuccess,
-            successMessage: 'signed up successfully'));
+        email: signUpEmailController.text.trim(),
+        password: signUpPasswordController.text.trim(),
+        userName: signUpUserNameController.text.trim(),
+        firstName: signUpFirstNameController.text.trim(),
+        lastName: signUpLastNameController.text.trim(),
+        phone: signUpPhoneNumberController.text.trim());
+    if (response.isLeft) {
+      emit(state.copyWith(
+          errorMessage: response.left.toString(), status: AuthStatus.failure));
+    } else {
+      emit(state.copyWith(
+          user: response.right.user,
+          status: AuthStatus.signUpSuccess,
+          successMessage: 'signed up successfully'));
+      signUpEmailController.clear();
+      signUpPasswordController.clear();
+      signUpConfirmPasswordController.clear();
+      signUpFirstNameController.clear();
+      signUpLastNameController.clear();
+      signUpPhoneNumberController.clear();
+      signUpUserNameController.clear();
+    }
   }
 
   Future<void> forgotPassword(String email) async {
-    emit(state.copyWith(status: AuthStatus.loading));
+    emit(
+        state.copyWith(status: AuthStatus.loading, forgetPasswordEmail: email));
     final response = await forgotPasswordUseCase.execute(email);
     response.isLeft
         ? emit(state.copyWith(
             errorMessage: response.left.toString(), status: AuthStatus.failure))
         : emit(
-            state.copyWith(
-                forgetPasswordMessage: response.right.info,
-                status: AuthStatus.success),
+            state.copyWith(shouldSendOtp: true, status: AuthStatus.success),
           );
   }
 
-  Future<void> resetPassword(
-      String email, String resetCode, String newPassword) async {
+  Future<void> resendForgetPassword() async {
+    if (state.forgetPasswordEmail == null) {
+      emit(state.copyWith(errorMessage: 'no email provided to send code'));
+    }
+    await forgotPassword(state.forgetPasswordEmail!);
+    if (state.shouldUpdatePassword == true) {
+      emit(state.copyWith(forgetPasswordEmail: null));
+    }
+  }
+
+  Future<void> resetPassword(String newPassword) async {
     emit(state.copyWith(status: AuthStatus.loading));
-    final response =
-        await resetPasswordUseCase.execute(email, resetCode, newPassword);
+    final email = state.forgetPasswordEmail;
+    if (email == null) {
+      Log.e('user email is null');
+    }
+    Log.d('message');
+    final response = await resetPasswordUseCase.execute(email!, newPassword);
     response.isLeft
         ? emit(state.copyWith(
             errorMessage: response.left.toString(), status: AuthStatus.failure))
@@ -159,22 +185,31 @@ class AuthCubit extends Cubit<AuthState> {
     response.isLeft
         ? emit(state.copyWith(
             errorMessage: response.left.toString(), status: AuthStatus.failure))
-        : emit(state.copyWith(status: AuthStatus.success, user: null));
+        : emit(state.copyWith(
+            status: AuthStatus.loggedOut,
+            user: null,
+            successMessage: 'you logged out successfully',
+            shouldRememberUser: false));
   }
 
   Future<void> getLoggedUserInfo() async {
+    if (await storageClient.getRememberMe() == false) return;
     emit(state.copyWith(status: AuthStatus.loading));
     final response = await getLoggedUserInfoUseCase.execute();
+
     if (response.isLeft) {
       emit(state.copyWith(
           errorMessage: response.left.toString(), status: AuthStatus.failure));
     } else {
       emit(state.copyWith(
-          user: response.right.user, status: AuthStatus.success));
+        user: response.right.user,
+        status: AuthStatus.success,
+      ));
     }
   }
 
   Future<void> verifyResetCode(String otp) async {
+    emit(state.copyWith(shouldRememberUser: false, resetPasswordCode: null));
     emit(state.copyWith(status: AuthStatus.loading));
     final response = await verifyResetCodeUseCase.execute(otp);
     if (response.isLeft) {
@@ -184,56 +219,17 @@ class AuthCubit extends Cubit<AuthState> {
       if (response.right.status != null) {
         emit(state.copyWith(
             status: AuthStatus.success,
-            resetPasswordCode: int.parse(response.right.status!)));
+            successMessage: 'success',
+            shouldUpdatePassword: true,
+            resetPasswordCode: int.parse(otp)));
       } else {
         emit(state.copyWith(errorMessage: 'null status from api'));
       }
     }
   }
 
-  updateRememberMe(bool value) {
-    emit(state.copyWith(rememberMe: value));
-  }
-
-  bool isFormValid({required bool isLogin}) {
-    if (isLogin) {
-      var emailValidation =
-          Validator.emailValidate(loginEmailController.text.trim());
-      var passwordValidation =
-          Validator.passwordValidation(loginPasswordController.text.trim());
-
-      return emailValidation == null && passwordValidation == null;
-    } else {
-      var emailV = Validator.emailValidate(signUpEmailController.text.trim());
-      var passwordV =
-          Validator.passwordValidation(signUpPasswordController.text.trim());
-      var userNameV =
-          Validator.userNameValidation(signUpUserNameController.text.trim());
-      var firstNameV =
-          Validator.firstNameValidation(signUpFirstNameController.text.trim());
-      var lastNameV =
-          Validator.emailValidate(signUpLastNameController.text.trim());
-      var confirmPasswordV = Validator.passwordValidation(
-          signUpConfirmPasswordController.text.trim());
-      var phoneNumV = Validator.phoneNumberValidation(
-          signUpPhoneNumberController.text.trim());
-      return emailV == null &&
-          passwordV == null &&
-          userNameV == null &&
-          firstNameV == null &&
-          lastNameV == null &&
-          confirmPasswordV == null &&
-          phoneNumV == null;
-    }
-  }
-
-  @override
-  Future<void> close() {
-    Log.i('disposing controllers');
-    disposeSignUpControllers();
-    disposeSignInControllers();
-    return super.close();
-  }
+  updateRememberMe(bool value) =>
+      emit(state.copyWith(shouldRememberUser: value));
 
   disposeSignUpControllers() {
     signUpPhoneNumberController.dispose();
@@ -248,5 +244,40 @@ class AuthCubit extends Cubit<AuthState> {
   disposeSignInControllers() {
     loginEmailController.dispose();
     loginPasswordController.dispose();
+  }
+
+  bool isFormValid({
+    required bool isLogin,
+  }) {
+    if (isLogin) {
+      var emailValidation =
+      Validator.emailValidate(loginEmailController.text.trim());
+      var passwordValidation =
+      Validator.passwordValidation(loginPasswordController.text.trim());
+
+      return emailValidation == null && passwordValidation == null;
+    } else {
+      dynamic emailV =
+      Validator.emailValidate(signUpEmailController.text.trim());
+      dynamic passwordV =
+      Validator.passwordValidation(signUpPasswordController.text.trim());
+      dynamic userNameV =
+      Validator.userNameValidation(signUpUserNameController.text.trim());
+      dynamic firstNameV =
+      Validator.firstNameValidation(signUpFirstNameController.text.trim());
+      dynamic lastNameV =
+      Validator.lastNameValidation(signUpLastNameController.text.trim());
+      dynamic confirmPasswordV = Validator.passwordValidation(
+          signUpConfirmPasswordController.text.trim());
+      dynamic phoneNumV = Validator.phoneNumberValidation(
+          signUpPhoneNumberController.text.trim());
+      return emailV == null &&
+          passwordV == null &&
+          userNameV == null &&
+          firstNameV == null &&
+          lastNameV == null &&
+          confirmPasswordV == null &&
+          phoneNumV == null;
+    }
   }
 }

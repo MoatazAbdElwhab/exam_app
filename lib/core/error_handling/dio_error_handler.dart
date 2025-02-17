@@ -1,11 +1,19 @@
 import 'package:dio/dio.dart';
+import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
+import 'package:exam_app/core/routes/navigator_observer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:injectable/injectable.dart';
+import '../di/injectable.dart';
 import '../logger/app_logger.dart';
+import '../routes/routes.dart';
 import 'exceptions/api_exception.dart';
 
 @singleton
 class DioErrorHandler {
-  ApiException handle(DioException error) {
+  final AppNavigatorObserver _navigatorObserver;
+  final LocalStorageClient _localStorage;
+  DioErrorHandler(this._navigatorObserver,this._localStorage);
+  ApiException handle(DioException error)  {
     Log.e('DioErrorHandler: handling dio error, ${error.response?.data}');
 
     if (error.response?.data != null &&
@@ -22,7 +30,9 @@ class DioErrorHandler {
       case DioExceptionType.connectionError:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return ApiException(message: 'Connection timeout. Please check your internet connection.');
+        return ApiException(
+            message:
+                'Connection timeout. Please check your internet connection.');
       case DioExceptionType.cancel:
         return ApiException(message: 'Request is cancelled');
       case DioExceptionType.badResponse:
@@ -34,6 +44,13 @@ class DioErrorHandler {
               response: error.response?.data,
             );
           case 401:
+            if (_navigatorObserver.currentRoute != Routes.login &&
+                _navigatorObserver.currentRoute != Routes.signup) {
+               _localStorage.deleteSecuredData('token');
+              getIt<GlobalKey<NavigatorState>>()
+                  .currentState
+                  ?.pushNamedAndRemoveUntil(Routes.login, (route) => false);
+            }
             return ApiException(
               message: 'Unauthorized. Please login again.',
               statusCode: 401,
@@ -41,7 +58,8 @@ class DioErrorHandler {
             );
           case 403:
             return ApiException(
-              message: 'Access denied. You don\'t have permission for this action.',
+              message:
+                  'Access denied. You don\'t have permission for this action.',
               statusCode: 403,
               response: error.response?.data,
             );
@@ -68,11 +86,11 @@ class DioErrorHandler {
         }
 
       case DioExceptionType.unknown:
-        if (error.error != null && error.error.toString().contains('SocketException')) {
+        if (error.error != null &&
+            error.error.toString().contains('SocketException')) {
           return ApiException(message: 'No internet connection');
         }
         return ApiException(message: 'Network error occurred');
-
       default:
         return ApiException(message: 'Something went wrong');
     }

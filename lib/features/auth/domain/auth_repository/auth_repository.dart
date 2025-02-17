@@ -13,7 +13,7 @@ import '../../data/data_models/response/verify_reset_code_response.dart';
 
 abstract class AuthRepository {
   Future<Either<Exception, SignInResponse>> signIn(
-      String email, String password, bool rememberMe);
+      String email, String password, bool shouldRememberUser);
   Future<Either<Exception, SignUpResponse>> signUp(
       {required String email,
         required String password,
@@ -24,7 +24,7 @@ abstract class AuthRepository {
   Future<Either<Exception, ForgetPasswordResponse>> forgotPassword(
       String email);
   Future<Either<Exception, ResetPasswordResponse>> resetPassword(
-      String email, String resetCode, String newPassword);
+      String email, String newPassword);
   Future<Either<Exception, ChangePasswordResponse>> changePassword(
       String oldPassword, String newPassword);
   Future<Either<Exception, DeleteAccountResponse>> deleteAccount();

@@ -54,17 +54,9 @@ class _LoginPageState extends State<LoginPage> {
                 return Form(
                   onChanged: () {
                     if (customElevatedButton != null) {
-                      customElevatedButton!.isFormValid(
-                          context.read<AuthCubit>().isFormValid(isLogin: true));
+                      customElevatedButton!
+                          .isFormValid(cubit.isFormValid(isLogin: true));
                     }
-                    // var emailValidation = Validator.emailValidate(emailController.text.trim());
-                    //  var passwordV = Validator.passwordValidation(passwordController.text.trim());
-                    //  if(customElevatedButton != null && emailValidation == null
-                    //  && passwordV == null){
-                    //    customElevatedButton!.setColor(true);
-                    //  }else {
-                    //    customElevatedButton!.setColor(false);
-                    //  }
                   },
                   key: formKey,
                   child: Column(
@@ -75,18 +67,6 @@ class _LoginPageState extends State<LoginPage> {
                         hint: 'Enter you email',
                         controller: cubit.loginEmailController,
                         validator: Validator.emailValidate,
-                        // onChanged: (val) {
-                        //   if (customElevatedButton != null) {
-                        //     emailValidationReturn =
-                        //         Validator.emailValidate(emailController.text.trim());
-                        //     if (emailValidationReturn == null &&
-                        //         passwordValidationReturn == null) {
-                        //       customElevatedButton!.setColor(true);
-                        //     } else {
-                        //       customElevatedButton!.setColor(false);
-                        //     }
-                        //   }
-                        // },
                       ),
                       Gap(24.h),
                       CustomTextFormField(
@@ -95,16 +75,6 @@ class _LoginPageState extends State<LoginPage> {
                         isPass: true,
                         controller: cubit.loginPasswordController,
                         validator: Validator.passwordValidation,
-                        // onChanged: (val) {
-                        //   passwordValidationReturn = Validator.passwordValidation(
-                        //       passwordController.text.trim());
-                        //   if (passwordValidationReturn == null &&
-                        //       emailValidationReturn == null) {
-                        //     customElevatedButton!.setColor(true);
-                        //   } else {
-                        //     customElevatedButton!.setColor(false);
-                        //   }
-                        // },
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -191,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
 
   onChanged(bool? newValue) {
     value = newValue;
-    if(value != null) {
+    if (value != null) {
       cubit.updateRememberMe(value!);
     }
   }
