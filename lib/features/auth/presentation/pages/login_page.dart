@@ -107,18 +107,17 @@ class _LoginPageState extends State<LoginPage> {
               customElevatedButton = CustomElevatedButton(
                 title: 'Login',
                 onTap: () async {
-                  context.read<AuthCubit>().signIn();
-                  // if (formKey.currentState!.validate()) {
-                  //   // if (customElevatedButton != null) {
-                  //   //   customElevatedButton!.setColor(true);
-                  //   // }
-                  //   Navigator.pushNamed(context, Routes.profile);
-                  // }
-                  // else {
-                  //   if (customElevatedButton != null) {
-                  //     customElevatedButton!.setColor(false);
-                  //   }
-                  // }
+                  // context.read<AuthCubit>().signIn();
+                  if (formKey.currentState!.validate()) {
+                    // if (customElevatedButton != null) {
+                    //   customElevatedButton!.setColor(true);
+                    // }
+                    Navigator.pushNamed(context, Routes.navbar);
+                  } else {
+                    if (customElevatedButton != null) {
+                      customElevatedButton!.setColor(false);
+                    }
+                  }
                 },
               ),
               Gap(16.h),
