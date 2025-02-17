@@ -251,22 +251,22 @@ class AuthCubit extends Cubit<AuthState> {
   }) {
     if (isLogin) {
       var emailValidation =
-      Validator.emailValidate(loginEmailController.text.trim());
+          Validator.emailValidate(loginEmailController.text.trim());
       var passwordValidation =
-      Validator.passwordValidation(loginPasswordController.text.trim());
+          Validator.passwordValidation(loginPasswordController.text.trim());
 
       return emailValidation == null && passwordValidation == null;
     } else {
       dynamic emailV =
-      Validator.emailValidate(signUpEmailController.text.trim());
+          Validator.emailValidate(signUpEmailController.text.trim());
       dynamic passwordV =
-      Validator.passwordValidation(signUpPasswordController.text.trim());
+          Validator.passwordValidation(signUpPasswordController.text.trim());
       dynamic userNameV =
-      Validator.userNameValidation(signUpUserNameController.text.trim());
+          Validator.userNameValidation(signUpUserNameController.text.trim());
       dynamic firstNameV =
-      Validator.firstNameValidation(signUpFirstNameController.text.trim());
+          Validator.firstNameValidation(signUpFirstNameController.text.trim());
       dynamic lastNameV =
-      Validator.lastNameValidation(signUpLastNameController.text.trim());
+          Validator.lastNameValidation(signUpLastNameController.text.trim());
       dynamic confirmPasswordV = Validator.passwordValidation(
           signUpConfirmPasswordController.text.trim());
       dynamic phoneNumV = Validator.phoneNumberValidation(

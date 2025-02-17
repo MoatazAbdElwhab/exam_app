@@ -137,7 +137,7 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
     try {
       final apiResponse = await authRemoteDataSource.logout();
       if (apiResponse.isRight) {
-        await authLocalDataSource.getRememberMe() == 'true'
+        await authLocalDataSource.getRememberMe() == true
             ? await authLocalDataSource.deleteUser()
             : await authLocalDataSource.removeToken();
         return apiResponse;
@@ -178,6 +178,8 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
       return Left(NetworkException('No internet connection'));
     }
     try {
+      print('signIn');
+      Log.e('remember me: $shouldRememberUser');
       final apiResponse = await authRemoteDataSource.signIn(email, password);
       if (apiResponse.isRight) {
         await _cacheUserSigningData(apiResponse.right, shouldRememberUser);
@@ -241,6 +243,8 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
 
   Future<void> _cacheUserSigningData(dynamic response, bool rememberMe) async {
     try {
+      print('_cacheUserSigningData');
+      Log.e('remember me: $rememberMe');
       await authLocalDataSource.cacheRememberMe(rememberMe);
       if (response.token != null) {
         await authLocalDataSource.cacheToken(response.token!);

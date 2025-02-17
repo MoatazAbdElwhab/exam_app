@@ -126,7 +126,7 @@ class DioApiClient implements ApiClient {
   }
 
   Future<void> checkToken(bool requiresToken) async {
-    print('requires token : $requiresToken');
+    Log.i('requires token : $requiresToken');
     if (!requiresToken) return;
     try {
       final token = await localStorage.getSecuredData('token');

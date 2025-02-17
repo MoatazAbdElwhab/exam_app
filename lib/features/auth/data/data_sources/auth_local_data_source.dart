@@ -11,7 +11,7 @@ abstract class AuthLocalDataSource {
   Future<Map<String, dynamic>?> getCachedUserInfo();
   Future<void> deleteUser();
   Future<void> cacheRememberMe(bool rememberMe);
-  Future<String?> getRememberMe();
+  Future<bool?> getRememberMe();
 }
 
 @Injectable(as: AuthLocalDataSource)
@@ -57,17 +57,17 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
-  Future<void> removeCachedUserProfileInfo() async{
+  Future<void> removeCachedUserProfileInfo() async {
     await _localStorageClient.deleteData('userInfo');
   }
 
   @override
   Future<void> cacheRememberMe(bool rememberMe) async {
-    await _localStorageClient.saveData('rememberMe', '$rememberMe');
+    await _localStorageClient.saveRememberMe(rememberMe);
   }
 
   @override
-  Future<String?> getRememberMe() async {
-    return await _localStorageClient.getData('rememberMe');
+  Future<bool?> getRememberMe() async {
+    return await _localStorageClient.getRememberMe();
   }
 }

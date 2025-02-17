@@ -22,14 +22,21 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late final AuthCubit cubit;
-  CustomElevatedButton? customElevatedButton;
+  late CustomElevatedButton customElevatedButton;
 
   @override
   void didChangeDependencies() {
     cubit = context.read<AuthCubit>();
+    customElevatedButton = CustomElevatedButton(
+      title: 'Signup',
+      onTap: () async {
+        if (formKey.currentState!.validate()) {
+          await cubit.signUp();
+        }
+      },
+    );
     super.didChangeDependencies();
   }
 
@@ -70,10 +77,8 @@ class _SignupPageState extends State<SignupPage> {
                 ? const Center(child: CircularProgressIndicator())
                 : Form(
                     onChanged: () {
-                      if (customElevatedButton != null) {
-                        customElevatedButton!
-                            .isFormValid(cubit.isFormValid(isLogin: false));
-                      }
+                      customElevatedButton
+                          .isFormValid(cubit.isFormValid(isLogin: false));
                     },
                     key: formKey,
                     child: Column(
@@ -135,11 +140,13 @@ class _SignupPageState extends State<SignupPage> {
                                 label: 'Confirm Password',
                                 hint: 'Confirm password',
                                 isPass: true,
-                                controller: cubit.signUpConfirmPasswordController,
+                                controller:
+                                    cubit.signUpConfirmPasswordController,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return 'please enter your confirm password';
-                                  } else if (value != cubit.signUpPasswordController.text) {
+                                  } else if (value !=
+                                      cubit.signUpPasswordController.text) {
                                     return 'password not match';
                                   } else {
                                     return null;
@@ -161,14 +168,7 @@ class _SignupPageState extends State<SignupPage> {
                         SizedBox(height: 24.h),
 
                         //signUp button
-                        customElevatedButton = CustomElevatedButton(
-                          title: 'Signup',
-                          onTap: () async {
-                            if (formKey.currentState!.validate()) {
-                              await cubit.signUp();
-                            }
-                          },
-                        ),
+                        customElevatedButton,
                         SizedBox(height: 16.h),
 
                         //already have an account

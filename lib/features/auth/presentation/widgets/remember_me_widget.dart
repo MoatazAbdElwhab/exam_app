@@ -1,16 +1,14 @@
-// features/auth/presentation/widgets/remember_me_widget.dart
+import 'package:exam_app/core/logger/app_logger.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
+import 'package:exam_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RememberMeWidget extends StatefulWidget {
-  final bool? value;
-  final Function(bool?) onChanged;
 
   const RememberMeWidget({
     super.key,
-    required this.onChanged,
-    required this.value,
   });
 
   @override
@@ -18,7 +16,7 @@ class RememberMeWidget extends StatefulWidget {
 }
 
 class _RememberMeWidgetState extends State<RememberMeWidget> {
-  late bool? value = widget.value;
+  bool value = false;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -27,10 +25,10 @@ class _RememberMeWidgetState extends State<RememberMeWidget> {
         Checkbox(
           value: value,
           onChanged: (newValue) {
-            value = newValue;
-            widget.onChanged(newValue);
-
-            setState(() {});
+            setState(() {
+              value = newValue?? value;
+              context.read<AuthCubit>().updateRememberMe(newValue?? value);
+            });
           },
         ),
         Text(

@@ -1,8 +1,10 @@
 import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
+import 'package:exam_app/core/logger/app_logger.dart';
 import 'package:exam_app/core/routes/navigator_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'core/di/injectable.dart';
 import 'core/routes/app_router.dart';
 import 'core/routes/routes.dart';
@@ -12,10 +14,11 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
   await _isUserLoggedIn().then((value) => isUserLoggedIn = value ?? false);
+
   runApp(const MyApp());
 }
 
-bool? isUserLoggedIn;
+late final bool isUserLoggedIn;
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -25,20 +28,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
-      builder: (_, __) => BlocProvider(
+      builder: (_, __) =>
+          BlocProvider(
         create: (context) => getIt<AuthCubit>(),
         child: MaterialApp(
           color: Colors.white,
           navigatorObservers: [getIt<AppNavigatorObserver>()],
           navigatorKey: getIt<GlobalKey<NavigatorState>>(),
           debugShowCheckedModeBanner: false,
-          initialRoute: isUserLoggedIn! ? Routes.profile : Routes.login,
+          initialRoute: isUserLoggedIn ? Routes.profile : Routes.login,
           onGenerateRoute: generateRoute,
           theme: ThemeData(),
         ),

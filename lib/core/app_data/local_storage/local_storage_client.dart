@@ -75,9 +75,9 @@ class LocalStorageClient {
 
   Future<bool?> getRememberMe() async {
     try {
-      String rememberMe = sharedPreferences.getString('rememberMe') ?? 'false';
+      bool? rememberMe = sharedPreferences.getBool('rememberUser');
       Log.i('got rememberMe with $rememberMe');
-      return rememberMe == 'true'? true: false;
+      return rememberMe;
     } catch (e) {
       Log.e('message');
       Log.e(e.toString());
@@ -88,7 +88,7 @@ class LocalStorageClient {
   Future<void> saveRememberMe(bool rememberMe) async {
     try {
       Log.d('saving rememberMe with $rememberMe');
-      await sharedPreferences.setString('rememberMe', rememberMe.toString());
+      await sharedPreferences.setBool('rememberUser', rememberMe);
     } catch (e) {
       throw LocalStorageException('Failed to save data: ${e.toString()}');
     }

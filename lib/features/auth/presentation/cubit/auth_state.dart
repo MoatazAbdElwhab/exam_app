@@ -6,8 +6,7 @@ class AuthState extends Equatable {
   final UserDto? user;
   final String? errorMessage;
   final String? successMessage;
-  final       bool? shouldSendOtp
-  ;
+  final bool? shouldSendOtp;
   final int? resetPasswordCode;
   final bool shouldRememberUser;
   final bool? shouldUpdatePassword;
@@ -29,7 +28,7 @@ class AuthState extends Equatable {
       UserDto? user,
       String? errorMessage,
       String? successMessage,
-        bool? shouldSendOtp,
+      bool? shouldSendOtp,
       int? resetPasswordCode,
       bool? shouldUpdatePassword,
       String? forgetPasswordEmail,

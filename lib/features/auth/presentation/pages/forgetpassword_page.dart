@@ -49,14 +49,14 @@ class _ForgetpasswordPageState extends State<ForgetpasswordPage> {
         child: Center(
           child: BlocConsumer<AuthCubit, AuthState>(
             listener: (BuildContext context, AuthState state) {
-              final dialogUtilds = getIt<DialogUtils>();
+              final dialogUtils = getIt<DialogUtils>();
                if (state.errorMessage != null) {
-                dialogUtilds.showSnackBar(
+                dialogUtils.showSnackBar(
                     textColor: Colors.red,
                     message: state.errorMessage!,
                     context: context);
               } else if (state.successMessage != null) {
-                dialogUtilds.showSnackBar(
+                dialogUtils.showSnackBar(
                     textColor: Colors.green,
                     message: state.successMessage!,
                     context: context);

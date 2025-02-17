@@ -26,13 +26,19 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late final AuthCubit cubit;
-
-  bool? value = false;
-  CustomElevatedButton? customElevatedButton;
+  late CustomElevatedButton customElevatedButton;
 
   @override
   void didChangeDependencies() {
     cubit = context.read<AuthCubit>();
+    customElevatedButton = CustomElevatedButton(
+      title: 'Login',
+      onTap: () async {
+        if (formKey.currentState!.validate()) {
+          await cubit.signIn();
+        }
+      },
+    );
     super.didChangeDependencies();
   }
 
@@ -53,10 +59,8 @@ class _LoginPageState extends State<LoginPage> {
               } else {
                 return Form(
                   onChanged: () {
-                    if (customElevatedButton != null) {
-                      customElevatedButton!
-                          .isFormValid(cubit.isFormValid(isLogin: true));
-                    }
+                    customElevatedButton
+                        .isFormValid(cubit.isFormValid(isLogin: true));
                   },
                   key: formKey,
                   child: Column(
@@ -79,10 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          RememberMeWidget(
-                            value: value,
-                            onChanged: onChanged,
-                          ),
+                          const RememberMeWidget(),
                           GestureDetector(
                             onTap: () {
                               Navigator.pushNamed(
@@ -97,23 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                       Gap(24.h),
-                      customElevatedButton = CustomElevatedButton(
-                        title: 'Login',
-                        onTap: () async {
-                          if (formKey.currentState!.validate()) {
-                            // if (customElevatedButton != null) {
-                            //   customElevatedButton!.setColor(true);
-                            // }
-                            await cubit.signIn();
-                            // Navigator.pushNamed(context, Routes.profile);
-                          }
-                          // else {
-                          //   if (customElevatedButton != null) {
-                          //     customElevatedButton!.setColor(false);
-                          //   }
-                          // }
-                        },
-                      ),
+                      customElevatedButton,
                       Gap(16.h),
                       RichText(
                         text: TextSpan(
@@ -157,12 +142,5 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-  }
-
-  onChanged(bool? newValue) {
-    value = newValue;
-    if (value != null) {
-      cubit.updateRememberMe(value!);
-    }
   }
 }
