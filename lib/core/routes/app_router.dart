@@ -1,4 +1,6 @@
+// core/routes/app_router.dart
 import 'package:exam_app/core/routes/routes.dart';
+import 'package:exam_app/features/result/presentation/pages/result_page.dart';
 import 'package:flutter/material.dart';
 import 'package:exam_app/features/auth/presentation/pages/login_page.dart';
 import 'package:exam_app/features/auth/presentation/pages/signup_page.dart';
@@ -9,7 +11,6 @@ import 'package:exam_app/features/profile/presentation/pages/profile_page.dart';
 import 'package:exam_app/features/profile/presentation/pages/resetpassword_page.dart';
 import 'package:exam_app/features/nav/navbar_page.dart';
 import 'package:exam_app/features/explore/presentation/pages/explore_page.dart';
-import 'package:exam_app/features/result/presentation/pages/result_page.dart';
 
 Route<dynamic>? generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -32,7 +33,7 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
     case Routes.explore:
       return MaterialPageRoute(builder: (_) => const ExplorePage());
     case Routes.result:
-      return MaterialPageRoute(builder: (_) => const ResultPage());
+      return MaterialPageRoute(builder: (_) =>  ResultPage());
     default:
       return MaterialPageRoute(
         builder: (_) => Scaffold(

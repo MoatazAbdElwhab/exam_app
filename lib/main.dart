@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
       builder: (_, __) => MaterialApp(
         debugShowCheckedModeBanner: false,
         // initialRoute: Routes.login,
-        initialRoute: Routes.login,
+        initialRoute: Routes.navbar,
         onGenerateRoute: generateRoute,
         //theme: ThemeData(),
         theme: ThemeManager.lightTheme,
