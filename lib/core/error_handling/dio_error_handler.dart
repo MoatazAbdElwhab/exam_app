@@ -10,11 +10,9 @@ import 'exceptions/api_exception.dart';
 
 @singleton
 class DioErrorHandler {
-  final AppNavigatorObserver _navigatorObserver;
   final GlobalKey<NavigatorState> _navigatorKey;
   final LocalStorageClient _localStorage;
-  DioErrorHandler(
-      this._navigatorObserver, this._localStorage, this._navigatorKey);
+  DioErrorHandler( this._localStorage, this._navigatorKey);
   ApiException handle(DioException error) {
     Log.e('DioErrorHandler: handling dio error, ${error.response?.data}');
 
@@ -46,8 +44,8 @@ class DioErrorHandler {
               response: error.response?.data,
             );
           case 401:
-            if (_navigatorObserver.currentRoute != Routes.login &&
-                _navigatorObserver.currentRoute != Routes.signup) {
+            if (appCurrentRoute != Routes.login &&
+                appCurrentRoute != Routes.signup) {
               _localStorage.deleteSecuredData('token');
               _navigatorKey.currentState
                   ?.pushNamedAndRemoveUntil(Routes.login, (route) => false);

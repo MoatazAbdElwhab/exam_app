@@ -139,8 +139,8 @@ class DioApiClient implements ApiClient {
     } catch (e) {
       Log.e(
           'throwing ApiException(message: Failed to retrieve token: ${e.toString()}');
-      if (_navigatorObserver.currentRoute != Routes.login &&
-          _navigatorObserver.currentRoute != Routes.signup) {
+      if (appCurrentRoute != Routes.login &&
+          appCurrentRoute != Routes.signup) {
         await localStorage.saveRememberMe(false);
         _appNavigator.currentState
             ?.pushNamedAndRemoveUntil(Routes.login, (route) => false);

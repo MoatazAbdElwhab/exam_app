@@ -19,7 +19,6 @@ class LocalStorageClient {
 
   Future<bool>? saveData(String key, String value) async {
     try {
-      Log.d('saving $key');
       return await sharedPreferences.setString(key, value);
     } catch (e) {
       throw LocalStorageException('Failed to save data: ${e.toString()}');
@@ -28,7 +27,7 @@ class LocalStorageClient {
 
   Future<String?> getData(String key) async {
     try {
-      Log.d('getting $key');
+      Log.d('getting offline $key');
       return sharedPreferences.getString(
         key,
       );
@@ -39,7 +38,7 @@ class LocalStorageClient {
 
   Future<void> saveSecuredData(String key, String value) async {
     try {
-      Log.d('saving $key');
+      Log.d('saving offline $key');
       return await secureStorage.write(key: key, value: value);
     } catch (e) {
       throw LocalStorageException('Failed to save data: ${e.toString()}');
@@ -48,7 +47,7 @@ class LocalStorageClient {
 
   Future<String?> getSecuredData(String key) async {
     try {
-      Log.d('getting $key');
+      Log.d('getting offline $key');
       return await secureStorage.read(key: key);
     } catch (e) {
       throw LocalStorageException('Failed to get data: ${e.toString()}');
@@ -57,7 +56,7 @@ class LocalStorageClient {
 
   Future<void>? deleteData(String key) async {
     try {
-      Log.d('deleting $key');
+      Log.d('deleting offline $key');
       await sharedPreferences.remove(key);
     } catch (e) {
       throw LocalStorageException('Failed to delete data: ${e.toString()}');
@@ -66,7 +65,7 @@ class LocalStorageClient {
 
   Future<void>? deleteSecuredData(String key) async {
     try {
-      Log.d('deleting $key');
+      Log.d('deleting offline $key');
       await secureStorage.delete(key: key);
     } catch (e) {
       throw LocalStorageException('Failed to delete data: ${e.toString()}');

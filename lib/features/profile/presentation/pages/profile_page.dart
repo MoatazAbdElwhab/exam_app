@@ -25,7 +25,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late final AuthCubit authCubit;
+  // late final AuthCubit authCubit;
   late final TextEditingController _firstNameController;
   late final TextEditingController _lastNameController;
   late final TextEditingController _emailController;
@@ -55,11 +55,11 @@ class _ProfilePageState extends State<ProfilePage> {
     super.dispose();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    authCubit = context.read<AuthCubit>();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   authCubit = context.read<AuthCubit>();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -85,10 +85,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       ElevatedButton(
                           onPressed:() async {
                            // await getIt<LocalStorageClient>().saveRememberMe(false);
-                           await  context
-                                .read<AuthCubit>()
-                                .logout();
-                          },
+                           // await  context
+                           //      .read<AuthCubit>()
+                           //      .logout();
+                            Navigator.of(context).pushNamed(Routes.result);
+                            // await getIt<AuthCubit>().close();
+                            },
                           child: Text('data')),
                       Stack(
                         alignment: Alignment.bottomRight,
@@ -158,9 +160,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         controller: _passwordController,
                         isPass: true,
                         suffixIcon: TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, Routes.resetPassword);
+                            onPressed: () async {
+                             await context.read<AuthCubit>().logout();
+                              // Navigator.pushNamed(
+                              //     context, Routes.changePassword);
                             },
                             child: Text(
                               'change',

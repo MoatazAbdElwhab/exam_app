@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
 import 'package:exam_app/core/logger/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
+import '../../../../core/routes/navigator_observer.dart';
 import '../../../../core/utils/validator.dart';
 import '../../domain/use_cases/change_password_usecase.dart';
 import '../../domain/use_cases/delete_account_usecase.dart';
@@ -16,7 +18,7 @@ import '../../domain/use_cases/verify_reset_code_usecase.dart';
 import 'auth_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-@singleton
+@injectable
 class AuthCubit extends Cubit<AuthState> {
   // useCases
   final SignInUseCase signInUseCase;
@@ -62,7 +64,8 @@ class AuthCubit extends Cubit<AuthState> {
     required this.verifyResetCodeUseCase,
     required this.storageClient,
   }) : super(const AuthState()) {
-    if (state.status.isLoginSuccess) getLoggedUserInfo();
+    Log.i('created cubit ${runtimeType.toString()} previous page: '
+        '$appPreviousRoute current page $appCurrentRoute)}');
   }
 
   Future<void> signIn() async {
@@ -279,5 +282,12 @@ class AuthCubit extends Cubit<AuthState> {
           confirmPasswordV == null &&
           phoneNumV == null;
     }
+  }
+
+  @override
+  Future<void> close() {
+    Log.i('closed cubit ${runtimeType.toString()} previous page: '
+        '$appPreviousRoute current page: $appCurrentRoute)}');
+    return super.close();
   }
 }
