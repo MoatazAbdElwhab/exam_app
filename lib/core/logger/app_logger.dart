@@ -1,7 +1,7 @@
 // core/logger/app_logger.dart
 import 'package:logger/logger.dart';
 
-class Log {
+class Log<T> {
   static final Logger _logger = Logger(
     printer: PrettyPrinter(
       methodCount: 0,
@@ -14,9 +14,12 @@ class Log {
 
   Log._();
 
-  // Simple one-word logging methods with null safety
-  static void d(dynamic message) => _logger.d(message ?? 'No message');
-  static void i(dynamic message) => _logger.i(message ?? 'No message');
-  static void w(dynamic message) => _logger.w(message ?? 'No message');
-  static void e(dynamic message) => _logger.e(message ?? 'No message');
+  static void d<T>(dynamic message) => _logger.d(_formatMessage<T>(message));
+  static void i<T>(dynamic message) => _logger.i(_formatMessage<T>(message));
+  static void w<T>(dynamic message) => _logger.w(_formatMessage<T>(message));
+  static void e<T>(dynamic message) => _logger.e(_formatMessage<T>(message));
+
+  static String _formatMessage<T>(dynamic message) {
+    return '[${T.toString()}] ${message ?? 'No message'}';
+  }
 }

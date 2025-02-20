@@ -246,37 +246,30 @@ Future<void> verifyResetCode(String otp, String email) async {
     emit(state.copyWith(rememberMe: value));
   }
 
-  bool isFormValid({required bool isLogin}) {
-    if (isLogin) {
-      var emailValidation =
-          Validator.emailValidate(loginEmailController.text.trim());
-      var passwordValidation =
-          Validator.passwordValidation(loginPasswordController.text.trim());
+ bool isFormValid({required bool isLogin}) {
+  if (isLogin) {
+    return Validator.emailValidate(loginEmailController.text.trim()) == null &&
+        Validator.passwordValidation(loginPasswordController.text.trim()) == null;
+  } else {
+    String email = signUpEmailController.text.trim();
+    String password = signUpPasswordController.text.trim();
+    String confirmPassword = signUpConfirmPasswordController.text.trim();
+    String userName = signUpUserNameController.text.trim();
+    String firstName = signUpFirstNameController.text.trim();
+    String lastName = signUpLastNameController.text.trim();
+    String phoneNum = signUpPhoneNumberController.text.trim();
 
-      return emailValidation == null && passwordValidation == null;
-    } else {
-      var emailV = Validator.emailValidate(signUpEmailController.text.trim());
-      var passwordV =
-          Validator.passwordValidation(signUpPasswordController.text.trim());
-      var userNameV =
-          Validator.userNameValidation(signUpUserNameController.text.trim());
-      var firstNameV =
-          Validator.firstNameValidation(signUpFirstNameController.text.trim());
-      var lastNameV =
-          Validator.emailValidate(signUpLastNameController.text.trim());
-      var confirmPasswordV = Validator.passwordValidation(
-          signUpConfirmPasswordController.text.trim());
-      var phoneNumV = Validator.phoneNumberValidation(
-          signUpPhoneNumberController.text.trim());
-      return emailV == null &&
-          passwordV == null &&
-          userNameV == null &&
-          firstNameV == null &&
-          lastNameV == null &&
-          confirmPasswordV == null &&
-          phoneNumV == null;
-    }
+    return Validator.emailValidate(email) == null &&
+        Validator.passwordValidation(password) == null &&
+        Validator.userNameValidation(userName) == null &&
+        Validator.firstNameValidation(firstName) == null &&
+        Validator.lastNameValidation(lastName) == null &&
+        Validator.passwordValidation(confirmPassword) == null &&
+        Validator.phoneNumberValidation(phoneNum) == null &&
+        password == confirmPassword; 
   }
+}
+
 
   @override
   Future<void> close() {
