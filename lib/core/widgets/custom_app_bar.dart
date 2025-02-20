@@ -1,3 +1,5 @@
+import 'package:exam_app/core/logger/app_logger.dart';
+import 'package:exam_app/core/routes/navigator_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../resources/color_manager.dart';

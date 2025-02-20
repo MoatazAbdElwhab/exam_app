@@ -3,7 +3,6 @@ import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
 import 'package:exam_app/core/routes/navigator_observer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:injectable/injectable.dart';
-import '../di/injectable.dart';
 import '../logger/app_logger.dart';
 import '../routes/routes.dart';
 import 'exceptions/api_exception.dart';
@@ -32,7 +31,7 @@ class DioErrorHandler {
       case DioExceptionType.receiveTimeout:
         return ApiException(
             message:
-                'Connection timeout. Please check your internet connection.');
+                'No internet connection');
       case DioExceptionType.cancel:
         return ApiException(message: 'Request is cancelled');
       case DioExceptionType.badResponse:

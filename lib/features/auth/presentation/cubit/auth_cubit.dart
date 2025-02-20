@@ -21,6 +21,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 @injectable
 class AuthCubit extends Cubit<AuthState> {
   // useCases
+  final phoneC = TextEditingController();
   final SignInUseCase signInUseCase;
   final SignUpUseCase signUpUseCase;
   final ForgotPasswordUseCase forgotPasswordUseCase;
@@ -79,8 +80,8 @@ class AuthCubit extends Cubit<AuthState> {
           errorMessage: response.left.toString(), status: AuthStatus.failure));
     } else {
       emit(state.copyWith(
-          user: state.shouldRememberUser ? response.right.user! : null,
           status: AuthStatus.loginSuccess,
+          user: response.right.user,
           successMessage: 'logged in successfully'));
       loginEmailController.clear();
       loginPasswordController.clear();
@@ -196,10 +197,8 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> getLoggedUserInfo() async {
-    if (await storageClient.getRememberMe() == false) return;
     emit(state.copyWith(status: AuthStatus.loading));
     final response = await getLoggedUserInfoUseCase.execute();
-
     if (response.isLeft) {
       emit(state.copyWith(
           errorMessage: response.left.toString(), status: AuthStatus.failure));

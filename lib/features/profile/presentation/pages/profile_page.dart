@@ -1,4 +1,3 @@
-import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/image_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
@@ -16,16 +15,17 @@ import '../../../../core/di/injectable.dart';
 import '../../../../core/logger/app_logger.dart';
 import '../../../../core/widgets/dialog_utils.dart';
 
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
-
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  // late final AuthCubit authCubit;
+class _ProfilePageState extends State<ProfilePage>
+    with AutomaticKeepAliveClientMixin {
+  late final AuthCubit authCubit;
   late final TextEditingController _firstNameController;
   late final TextEditingController _lastNameController;
   late final TextEditingController _emailController;
@@ -42,6 +42,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _phoneController = TextEditingController();
+    Log.e('ProfilePage initState called');
   }
 
   @override
@@ -55,14 +56,29 @@ class _ProfilePageState extends State<ProfilePage> {
     super.dispose();
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   authCubit = context.read<AuthCubit>();
-  // }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // if (!_hasInitiallyLoaded) {
+      authCubit = context.read<AuthCubit>(); // Move this inside the if check
+      // Use addPostFrameCallback instead of microtask for better frame timing
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Log.i(authCubit.state.user != null);
+        if (mounted) {
+          Log.i('profileGetInfo');
+          authCubit.getLoggedUserInfo();
+          //     .then((_) =>
+          // _hasInitiallyLoaded = true
+          // );
+        }
+      });
+    // }
+  }
 
   @override
   Widget build(BuildContext context) {
+    Log.e('build called in profile');
+    super.build(context);
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -72,10 +88,20 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         //body
         body: BlocConsumer<AuthCubit, AuthState>(
+          // buildWhen: (previous, current) => _hasInitiallyLoaded,
+              // previous.status != current.status ||
+              // previous.user != current.user ||
+              // current.user != null || current.user != previous.user,
+          // listenWhen: (previous, current) =>
+          // previous.errorMessage != current.errorMessage ||
+          //     current.user != null ||
+          //     previous.successMessage != current.successMessage ||
+          //     previous.status.isLoggedOut != current.status.isLoggedOut,
           builder: (context, state) {
-            if (state.status.isLoading ) {
-              return const Center(child: CircularProgressIndicator());
-            }
+            Log.e('bloc builder in profile');
+            // if (state.status.isLoading) {
+            //   return const Center(child: CircularProgressIndicator());
+            // }
             return SingleChildScrollView(
               child: Center(
                 child: Padding(
@@ -83,14 +109,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Column(
                     children: [
                       ElevatedButton(
-                          onPressed:() async {
-                           // await getIt<LocalStorageClient>().saveRememberMe(false);
-                           // await  context
-                           //      .read<AuthCubit>()
-                           //      .logout();
+                          onPressed: () async {
+                            // await getIt<LocalStorageClient>().saveRememberMe(false);
+                            // await  context
+                            //      .read<AuthCubit>()
+                            //      .logout();
                             Navigator.of(context).pushNamed(Routes.result);
                             // await getIt<AuthCubit>().close();
-                            },
+                          },
                           child: Text('data')),
                       Stack(
                         alignment: Alignment.bottomRight,
@@ -109,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             child: CircleAvatar(
                               radius: 15,
                               backgroundColor:
-                                  Theme.of(context).scaffoldBackgroundColor,
+                              Theme.of(context).scaffoldBackgroundColor,
                               child: const Icon(
                                 Icons.camera_alt_rounded,
                                 size: 20,
@@ -161,7 +187,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         isPass: true,
                         suffixIcon: TextButton(
                             onPressed: () async {
-                             await context.read<AuthCubit>().logout();
+                              await context.read<AuthCubit>().logout();
                               // Navigator.pushNamed(
                               //     context, Routes.changePassword);
                             },
@@ -192,13 +218,14 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           },
           listener: (context, state) {
-              if(state.user != null) {
-              _fullNameController.text = state.user!.username!;
-              _firstNameController.text = state.user!.firstName!;
-              _lastNameController.text = state.user!.lastName!;
-              _emailController.text = state.user!.email!;
+            Log.e('listener build user != null ${state.user != null}');
+            if (state.user != null) {
+              _fullNameController.text = state.user!.username ?? '';
+              _firstNameController.text = state.user!.firstName ?? '';
+              _lastNameController.text = state.user!.lastName ?? '';
+              _emailController.text = state.user!.email ?? '';
               _passwordController.text = '*********';
-              _phoneController.text = state.user!.phone!;
+              _phoneController.text = state.user!.phone ?? '';
             }
             if (state.errorMessage != null) {
               getIt<DialogUtils>().showSnackBar(
@@ -221,4 +248,9 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
+// @override
+// bool get wantKeepAlive => true;
 }

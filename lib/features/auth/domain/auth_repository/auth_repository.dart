@@ -1,5 +1,4 @@
 import 'package:either_dart/either.dart';
-import '../../../../core/error_handling/exceptions/api_exception.dart';
 import '../../data/data_models/response/change_password_response.dart';
 import '../../data/data_models/response/delete_account_response.dart';
 import '../../data/data_models/response/edit_profile_response.dart';

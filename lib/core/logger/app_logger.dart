@@ -17,4 +17,5 @@ class Log {
   static void d<T>(T message) => _logger.d(message);
   static void i<T>(T message) => _logger.i(message);
   static void w<T>(T message) => _logger.w(message);
-  static void e<T>(T message) => _logger.e(message);}
+  static void e<T>(T message) => _logger.e(message);
+}

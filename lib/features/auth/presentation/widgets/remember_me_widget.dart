@@ -26,7 +26,7 @@ class _RememberMeWidgetState extends State<RememberMeWidget> {
           value: value,
           onChanged: (newValue) {
             setState(() {
-              value = newValue?? value;
+              value = newValue ?? value;
               context.read<AuthCubit>().updateRememberMe(newValue?? value);
             });
           },

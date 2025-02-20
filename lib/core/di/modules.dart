@@ -6,20 +6,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 @module
 abstract class GetItRegisterModule {
-
-  @singleton
-  InternetConnectionChecker get internetConnectionChecker =>
-      InternetConnectionChecker.createInstance();
-
   @singleton
   GlobalKey<NavigatorState> get navigatorKey => GlobalKey<NavigatorState>();
 
+  /// internet
+  @singleton
+  InternetConnectionChecker get checker =>
+      InternetConnectionChecker.createInstance();
+
+  /// local
   @preResolve
   @singleton
   Future<SharedPreferences> get sharedPreferences async =>
-     await SharedPreferences.getInstance();
+      SharedPreferences.getInstance();
 
   @singleton
-  FlutterSecureStorage get secureStorage =>
-      const FlutterSecureStorage();
+  FlutterSecureStorage get secureStorage => const FlutterSecureStorage();
 }

@@ -9,7 +9,7 @@ import '../../routes/routes.dart';
 import '../local_storage/local_storage_client.dart';
 import 'api_client.dart';
 
-@Injectable(as: ApiClient)
+@Singleton(as: ApiClient)
 class DioApiClient implements ApiClient {
   final Dio _dio;
   final LocalStorageClient localStorage;

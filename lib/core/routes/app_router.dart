@@ -17,36 +17,44 @@ import '../di/injectable.dart';
 Route<dynamic>? generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case Routes.login:
-
       return MaterialPageRoute(
+        settings: settings,
         builder: (_) => const LoginPage(),
       );
     case Routes.signup:
       return MaterialPageRoute(
+        settings: settings,
         builder: (con) => const SignupPage(),
       );
     case Routes.forgetPassword:
-      return MaterialPageRoute(builder: (_) => const ForgetpasswordPage());
+      return MaterialPageRoute(
+          settings: settings, builder: (_) => const ForgetpasswordPage());
     case Routes.pinCode:
-      return MaterialPageRoute(builder: (_) => const PinCodePage());
+      return MaterialPageRoute(
+          settings: settings, builder: (_) => const PinCodePage());
     case Routes.resetPassword:
-      return MaterialPageRoute(builder: (_) => const ResetPasswordPage());
+      return MaterialPageRoute(
+          settings: settings, builder: (_) => const ResetPasswordPage());
     case Routes.profile:
       return MaterialPageRoute(
-        builder: (con) => BlocProvider.value(
-            value: con.read<AuthCubit>()..getLoggedUserInfo(),
-            child: const ProfilePage()),
+        settings: settings,
+        builder: (con) => const ProfilePage(),
       );
     case Routes.profileResetPassword:
-      return MaterialPageRoute(builder: (_) => const ResetpasswordPage());
+      return MaterialPageRoute(
+          settings: settings, builder: (_) => const ResetpasswordPage());
     case Routes.navbar:
-      return MaterialPageRoute(builder: (_) => const NavbarPage());
+      return MaterialPageRoute(
+          settings: settings, builder: (_) => const NavbarPage());
     case Routes.explore:
-      return MaterialPageRoute(builder: (_) => const ExplorePage());
+      return MaterialPageRoute(
+          settings: settings, builder: (_) => const ExplorePage());
     case Routes.result:
-      return MaterialPageRoute(builder: (_) => const ResultPage());
+      return MaterialPageRoute(
+          settings: settings, builder: (_) => const ResultPage());
     default:
       return MaterialPageRoute(
+        settings: settings,
         builder: (_) => Scaffold(
           body: Center(
             child: Text('No route defined for ${settings.name}'),

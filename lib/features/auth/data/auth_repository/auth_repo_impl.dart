@@ -1,5 +1,4 @@
-import 'package:either_dart/src/either.dart';
-import 'package:exam_app/core/app_repository/app_repository.dart';
+import 'package:either_dart/either.dart';
 import 'package:exam_app/core/error_handling/exceptions/network_exception.dart';
 import 'package:exam_app/features/auth/data/data_models/response/change_password_response.dart';
 import 'package:exam_app/features/auth/data/data_models/response/delete_account_response.dart';
@@ -11,21 +10,20 @@ import 'package:exam_app/features/auth/data/data_models/response/reset_password_
 import 'package:exam_app/features/auth/data/data_models/response/sign_in_response.dart';
 import 'package:exam_app/features/auth/data/data_models/response/sign_up_response.dart';
 import 'package:exam_app/features/auth/data/data_models/response/verify_reset_code_response.dart';
-import 'package:exam_app/features/auth/data/data_models/user_dto.dart';
 import 'package:exam_app/features/auth/data/data_sources/auth_local_data_source.dart';
 import 'package:exam_app/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/error_handling/exceptions/api_exception.dart';
 import '../../../../core/error_handling/exceptions/local_storage_exception.dart';
 import '../../../../core/logger/app_logger.dart';
+import '../../../../main.dart';
 import '../../domain/auth_repository/auth_repository.dart';
 
 @Injectable(as: AuthRepository)
-class AuthRepositoryImpl extends AppRepository implements AuthRepository {
+class AuthRepositoryImpl implements AuthRepository {
   AuthRemoteDataSource authRemoteDataSource;
   AuthLocalDataSource authLocalDataSource;
-  AuthRepositoryImpl(
-      this.authLocalDataSource, this.authRemoteDataSource, super.checker);
+  AuthRepositoryImpl(this.authLocalDataSource, this.authRemoteDataSource);
 
   @override
   Future<Either<Exception, ChangePasswordResponse>> changePassword(
@@ -102,7 +100,8 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
   @override
   Future<Either<Exception, GetLoggedUserDataResponse>>
       getLoggedUserInfo() async {
-    if (!isOnline) {
+    Log.i('is user logged in : $isUserLoggedIn');
+    if (!isOnline || isUserLoggedIn) {
       try {
         Log.d('getting user info offline');
         final response = await authLocalDataSource.getCachedUserInfo();
@@ -121,7 +120,7 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
               .cacheUserProfileInfo(apiResponse.right.toJson());
           return Right(apiResponse.right);
         } else {
-          return Left(apiResponse.left);
+          throw Left(apiResponse.left);
         }
       } catch (e) {
         return Left(
@@ -133,19 +132,20 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
   @override
   Future<Either<Exception, LogoutResponse>> logout() async {
     if (!isOnline) {
+      Log.i('isonline : $isOnline');
       return Left(NetworkException('No internet connection'));
     }
     try {
       final apiResponse = await authRemoteDataSource.logout();
       if (apiResponse.isRight) {
-            await authLocalDataSource.deleteUser();
-            await authLocalDataSource.removeToken();
+        await authLocalDataSource.deleteUser();
+        await authLocalDataSource.removeToken();
         return apiResponse;
       } else {
         return Left(apiResponse.left);
       }
     } catch (e) {
-      return Left(ApiException(message: 'Logout failed: ${e.toString()}'));
+      return Left(ApiException(message: e.toString()));
     }
   }
 
@@ -249,7 +249,7 @@ class AuthRepositoryImpl extends AppRepository implements AuthRepository {
         await authLocalDataSource.cacheToken(response.token!);
         Log.i('cached user token successfully');
       }
-      if (response.user != null && rememberMe) {
+      if (response.user != null) {
         Log.i('cachingUserProfileInfo');
         await authLocalDataSource.cacheUserProfileInfo(response.user!.toJson());
         Log.i('cached user data successfully');
