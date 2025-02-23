@@ -127,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
             },
             listener: (BuildContext context, AuthState state) {
               if (state.status.isLoginSuccess) {
-                Navigator.of(context).pushReplacementNamed(Routes.profile);
+                Navigator.of(context).pushReplacementNamed(Routes.navbar);
               } else if (state.errorMessage != null) {
                 getIt<DialogUtils>().showSnackBar(
                     textColor: Colors.red,

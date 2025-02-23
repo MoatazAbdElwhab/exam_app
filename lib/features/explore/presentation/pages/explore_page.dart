@@ -4,7 +4,7 @@
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
 
-import 'package:exam_app/features/explore/data/model/subject_class.dart';
+import 'package:exam_app/features/explore/data/models/subject_class.dart';
 import 'package:exam_app/features/explore/presentation/widget/subject_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,10 +34,20 @@ class ExplorePage extends StatelessWidget {
             //search textfield and icon
             SizedBox(height: 16.h),
 
-            const TextField(
+            TextField(
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(
+                  Icons.search,
+                  size: 24,
+                ),
                 hintText: 'Search',
+                hintStyle: getMediumStyle(
+                  color: ColorManager.grey,
+                  fontSize: 14.sp,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
               ),
             ),
 

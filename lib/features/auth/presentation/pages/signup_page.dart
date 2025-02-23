@@ -82,7 +82,7 @@ class _SignupPageState extends State<SignupPage> {
                     },
                     key: formKey,
                     child: Column(
-                      spacing: 24.h,
+                      // spacing: 24.h,
                       children: [
                         //username
                         CustomTextFormField(
