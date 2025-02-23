@@ -21,7 +21,7 @@ class CustomElevatedButton extends StatelessWidget {
   });
 
   void isFormValid(bool isValid) {
-    if(_isValidNotifier.value != isValid) {
+    if (_isValidNotifier.value != isValid) {
       _isValidNotifier.value = isValid;
     }
   }

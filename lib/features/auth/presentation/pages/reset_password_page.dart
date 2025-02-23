@@ -56,9 +56,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     message: state.successMessage!,
                     context: context);
               } else if (state.status.isSuccess && context.mounted) {
-
-                  Navigator.pushNamed(context, Routes.profile);
-
+                Navigator.pushNamed(context, Routes.profile);
               }
             },
             builder: (context, state) => state.status.isLoading

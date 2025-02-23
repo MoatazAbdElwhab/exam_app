@@ -10,7 +10,8 @@ class ResetPasswordUseCase {
 
   ResetPasswordUseCase(this.authRepository);
 
-  Future<Either<Exception, ResetPasswordResponse>> execute(String email, String newPassword) async {
+  Future<Either<Exception, ResetPasswordResponse>> execute(
+      String email, String newPassword) async {
     return await authRepository.resetPassword(email, newPassword);
   }
 }

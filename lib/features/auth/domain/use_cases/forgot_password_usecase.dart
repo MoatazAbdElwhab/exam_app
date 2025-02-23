@@ -10,7 +10,8 @@ class ForgotPasswordUseCase {
 
   ForgotPasswordUseCase(this.authRepository);
 
-  Future<Either<Exception, ForgetPasswordResponse>> execute(String email) async {
+  Future<Either<Exception, ForgetPasswordResponse>> execute(
+      String email) async {
     return await authRepository.forgotPassword(email);
   }
 }

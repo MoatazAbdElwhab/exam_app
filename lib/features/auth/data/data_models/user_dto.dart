@@ -11,19 +11,18 @@ class UserDto {
   final String? passwordChangedAt;
   final String? profilePic;
 
-  UserDto({
-    this.username,
-    this.firstName,
-    this.lastName,
-    this.email,
-    this.phone,
-    this.role,
-    this.isVerified,
-    this.id,
-    this.createdAt,
-    this.passwordChangedAt,
-    this.profilePic
-  });
+  UserDto(
+      {this.username,
+      this.firstName,
+      this.lastName,
+      this.email,
+      this.phone,
+      this.role,
+      this.isVerified,
+      this.id,
+      this.createdAt,
+      this.passwordChangedAt,
+      this.profilePic});
 
   factory UserDto.fromJson(Map<String, dynamic> json) {
     return UserDto(
@@ -55,19 +54,18 @@ class UserDto {
     };
   }
 
-  UserDto copyWith({
-    String? username,
-    String? firstName,
-    String? lastName,
-    String? email,
-    String? phone,
-    String? role,
-    bool? isVerified,
-    String? id,
-    String? createdAt,
-    String? passwordChangedAt,
-    String? profilePic
-  }) {
+  UserDto copyWith(
+      {String? username,
+      String? firstName,
+      String? lastName,
+      String? email,
+      String? phone,
+      String? role,
+      bool? isVerified,
+      String? id,
+      String? createdAt,
+      String? passwordChangedAt,
+      String? profilePic}) {
     return UserDto(
       username: username ?? this.username,
       firstName: firstName ?? this.firstName,

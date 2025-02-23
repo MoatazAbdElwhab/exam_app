@@ -15,7 +15,6 @@ import '../../../../core/di/injectable.dart';
 import '../../../../core/logger/app_logger.dart';
 import '../../../../core/widgets/dialog_utils.dart';
 
-
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -60,18 +59,18 @@ class _ProfilePageState extends State<ProfilePage>
   void didChangeDependencies() {
     super.didChangeDependencies();
     // if (!_hasInitiallyLoaded) {
-      authCubit = context.read<AuthCubit>(); // Move this inside the if check
-      // Use addPostFrameCallback instead of microtask for better frame timing
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Log.i(authCubit.state.user != null);
-        if (mounted) {
-          Log.i('profileGetInfo');
-          authCubit.getLoggedUserInfo();
-          //     .then((_) =>
-          // _hasInitiallyLoaded = true
-          // );
-        }
-      });
+    authCubit = context.read<AuthCubit>(); // Move this inside the if check
+    // Use addPostFrameCallback instead of microtask for better frame timing
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Log.i(authCubit.state.user != null);
+      if (mounted) {
+        Log.i('profileGetInfo');
+        authCubit.getLoggedUserInfo();
+        //     .then((_) =>
+        // _hasInitiallyLoaded = true
+        // );
+      }
+    });
     // }
   }
 
@@ -89,9 +88,9 @@ class _ProfilePageState extends State<ProfilePage>
         //body
         body: BlocConsumer<AuthCubit, AuthState>(
           // buildWhen: (previous, current) => _hasInitiallyLoaded,
-              // previous.status != current.status ||
-              // previous.user != current.user ||
-              // current.user != null || current.user != previous.user,
+          // previous.status != current.status ||
+          // previous.user != current.user ||
+          // current.user != null || current.user != previous.user,
           // listenWhen: (previous, current) =>
           // previous.errorMessage != current.errorMessage ||
           //     current.user != null ||
@@ -135,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage>
                             child: CircleAvatar(
                               radius: 15,
                               backgroundColor:
-                              Theme.of(context).scaffoldBackgroundColor,
+                                  Theme.of(context).scaffoldBackgroundColor,
                               child: const Icon(
                                 Icons.camera_alt_rounded,
                                 size: 20,

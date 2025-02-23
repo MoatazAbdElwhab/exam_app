@@ -1,3 +1,4 @@
+import 'package:exam_app/core/app_bloc_observer.dart';
 import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
 import 'package:exam_app/core/routes/navigator_observer.dart';
 import 'package:exam_app/core/widgets/dialog_utils.dart';
@@ -16,6 +17,8 @@ late bool isOnline;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Bloc.observer = AppBlocObserver();
+
   await configureDependencies();
   isUserLoggedIn = await _isUserLoggedIn() ?? false;
   isOnline = await _initializeConnection();

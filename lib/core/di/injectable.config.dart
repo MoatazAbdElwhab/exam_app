@@ -46,6 +46,14 @@ import 'package:exam_app/features/auth/domain/use_cases/verify_reset_code_usecas
     as _i923;
 import 'package:exam_app/features/auth/presentation/cubit/auth_cubit.dart'
     as _i533;
+import 'package:exam_app/features/explore/data/data_source/remote/explore_api_remote_data_source.dart'
+    as _i779;
+import 'package:exam_app/features/explore/data/data_source/remote/explore_remote_data_source.dart'
+    as _i891;
+import 'package:exam_app/features/explore/data/repo/explore_repo_impl.dart'
+    as _i258;
+import 'package:exam_app/features/explore/presentation/cubit/explore_cubit.dart'
+    as _i68;
 import 'package:flutter/cupertino.dart' as _i719;
 import 'package:flutter/material.dart' as _i409;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
@@ -95,12 +103,18 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i69.AppNavigatorObserver>(),
           gh<_i719.GlobalKey<_i719.NavigatorState>>(),
         ));
+    gh.factory<_i891.ExploreRemoteDataSource>(
+        () => _i779.ExploreApiRemoteDataSource(gh<_i93.ApiClient>()));
     gh.factory<_i583.AuthRemoteDataSource>(
         () => _i583.AuthRemoteDataSourceImpl(gh<_i93.ApiClient>()));
+    gh.factory<_i258.ExploreRepoImpl>(
+        () => _i258.ExploreRepoImpl(gh<_i891.ExploreRemoteDataSource>()));
     gh.factory<_i24.AuthRepository>(() => _i122.AuthRepositoryImpl(
           gh<_i937.AuthLocalDataSource>(),
           gh<_i583.AuthRemoteDataSource>(),
         ));
+    gh.factory<_i68.ExploreCubit>(
+        () => _i68.ExploreCubit(gh<_i258.ExploreRepoImpl>()));
     gh.factory<_i879.ForgotPasswordUseCase>(
         () => _i879.ForgotPasswordUseCase(gh<_i24.AuthRepository>()));
     gh.factory<_i306.GetLoggedUserInfoUseCase>(

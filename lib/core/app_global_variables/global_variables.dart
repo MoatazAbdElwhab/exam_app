@@ -1,4 +1,3 @@
-
 /// global variables to use anywhere in the app
 
 // bool isOnline => injectable and use to check internet

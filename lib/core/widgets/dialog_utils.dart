@@ -4,7 +4,6 @@ import 'package:injectable/injectable.dart';
 
 @singleton
 class DialogUtils {
-
   void showSnackBar({
     required Color textColor,
     required String message,

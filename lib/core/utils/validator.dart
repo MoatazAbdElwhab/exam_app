@@ -85,7 +85,7 @@ class Validator {
       return null;
     }
 
-    if (value.length == 4 ) {
+    if (value.length == 4) {
       return 'Invalid PIN code';
     }
 
