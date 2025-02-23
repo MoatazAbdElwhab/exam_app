@@ -1,6 +1,6 @@
 import 'package:exam_app/core/app_data/api/api_constants.dart';
 
-import 'metadata_model.dart';
+import '../../../../../core/models/metadata_model.dart';
 import 'subject_model.dart';
 
 class SubjectsResponse {

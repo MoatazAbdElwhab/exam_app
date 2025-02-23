@@ -1,4 +1,5 @@
 import 'package:exam_app/core/routes/routes.dart';
+import 'package:exam_app/features/explore/presentation/pages/exams_page.dart';
 import 'package:flutter/material.dart';
 import 'package:exam_app/features/auth/presentation/pages/login_page.dart';
 import 'package:exam_app/features/auth/presentation/pages/signup_page.dart';
@@ -10,9 +11,6 @@ import 'package:exam_app/features/profile/presentation/pages/resetpassword_page.
 import 'package:exam_app/features/nav/navbar_page.dart';
 import 'package:exam_app/features/explore/presentation/pages/explore_page.dart';
 import 'package:exam_app/features/result/presentation/pages/result_page.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../features/auth/presentation/cubit/auth_cubit.dart';
-import '../di/injectable.dart';
 
 Route<dynamic>? generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -28,13 +26,19 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
       );
     case Routes.forgetPassword:
       return MaterialPageRoute(
-          settings: settings, builder: (_) => const ForgetpasswordPage());
+        settings: settings,
+        builder: (_) => const ForgetpasswordPage(),
+      );
     case Routes.pinCode:
       return MaterialPageRoute(
-          settings: settings, builder: (_) => const PinCodePage());
+        settings: settings,
+        builder: (_) => const PinCodePage(),
+      );
     case Routes.resetPassword:
       return MaterialPageRoute(
-          settings: settings, builder: (_) => const ResetPasswordPage());
+        settings: settings,
+        builder: (_) => const ResetPasswordPage(),
+      );
     case Routes.profile:
       return MaterialPageRoute(
         settings: settings,
@@ -42,16 +46,29 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
       );
     case Routes.profileResetPassword:
       return MaterialPageRoute(
-          settings: settings, builder: (_) => const ResetpasswordPage());
+        settings: settings,
+        builder: (_) => const ResetpasswordPage(),
+      );
     case Routes.navbar:
       return MaterialPageRoute(
-          settings: settings, builder: (_) => const NavbarPage());
+        settings: settings,
+        builder: (_) => const NavbarPage(),
+      );
     case Routes.explore:
       return MaterialPageRoute(
-          settings: settings, builder: (_) => const ExplorePage());
+        settings: settings,
+        builder: (_) => const ExplorePage(),
+      );
     case Routes.result:
       return MaterialPageRoute(
-          settings: settings, builder: (_) => const ResultPage());
+        settings: settings,
+        builder: (_) => const ResultPage(),
+      );
+    case Routes.exams:
+      return MaterialPageRoute(
+        settings: settings,
+        builder: (_) => const ExamsPage(),
+      );
     default:
       return MaterialPageRoute(
         settings: settings,

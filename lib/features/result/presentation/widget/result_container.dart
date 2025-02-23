@@ -55,7 +55,7 @@ class ResultContainer extends StatelessWidget {
                   ],
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.all(0.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

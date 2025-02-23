@@ -4,8 +4,8 @@
 import 'package:exam_app/core/di/injectable.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
+import 'package:exam_app/core/routes/routes.dart';
 
-import 'package:exam_app/features/explore/data/models/subject_class.dart';
 import 'package:exam_app/features/explore/presentation/cubit/explore_cubit.dart';
 import 'package:exam_app/features/explore/presentation/widget/subject_card.dart';
 import 'package:flutter/material.dart';
@@ -22,15 +22,16 @@ class ExplorePage extends StatefulWidget {
 class _ExplorePageState extends State<ExplorePage> {
   @override
   void dispose() {
-    exploreCubit.close();
+    // exploreCubit.close();
     super.dispose();
   }
 
   final exploreCubit = getIt.get<ExploreCubit>();
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: exploreCubit,
+    return BlocProvider(
+      create: (context) => exploreCubit,
+      // value: exploreCubit,
       child: Scaffold(
         backgroundColor: ColorManager.white,
         body: BlocBuilder<ExploreCubit, ExploreState>(
@@ -115,7 +116,16 @@ class _ExplorePageState extends State<ExplorePage> {
                         itemBuilder: (context, index) {
                           final subject = state.subjects[index];
                           return GestureDetector(
-                            onTap: () => {},
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                Routes.exams,
+                                arguments: ExamData(
+                                  subjectID: subject.id,
+                                  name: subject.name,
+                                  exploreCubit: exploreCubit,
+                                ),
+                              );
+                            },
                             child: SubjectCard(
                               iconUrl: subject.icon,
                               title: subject.name,
@@ -134,4 +144,16 @@ class _ExplorePageState extends State<ExplorePage> {
       ),
     );
   }
+}
+
+class ExamData {
+  final String subjectID;
+  final String name;
+  final ExploreCubit exploreCubit;
+
+  ExamData({
+    required this.subjectID,
+    required this.name,
+    required this.exploreCubit,
+  });
 }

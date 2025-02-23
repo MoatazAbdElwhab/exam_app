@@ -1,6 +1,7 @@
 // features/explore/presentation/widget/subject_card.dart
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 
 class SubjectCard extends StatelessWidget {
   final String title;
@@ -20,8 +21,8 @@ class SubjectCard extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: ColorManager.black.withOpacity(0.2),
-            blurRadius: 4,
-            spreadRadius: 2,
+            blurRadius: 8,
+            spreadRadius: 0,
             offset: const Offset(0, 0),
           )
         ],

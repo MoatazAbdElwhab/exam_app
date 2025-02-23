@@ -17,3 +17,17 @@ final class GetSubjetcsSuccess extends ExploreState {
 
   GetSubjetcsSuccess(this.subjects);
 }
+
+final class GetExamsLoading extends ExploreState {}
+
+final class GetExamsFail extends ExploreState {
+  final String errorMsg;
+
+  GetExamsFail(this.errorMsg);
+}
+
+final class GetExamsSuccess extends ExploreState {
+  final List<ExamModel> exams;
+
+  GetExamsSuccess(this.exams);
+}
