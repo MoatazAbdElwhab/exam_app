@@ -1,6 +1,8 @@
+// main.dart
 import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
 import 'package:exam_app/core/routes/navigator_observer.dart';
 import 'package:exam_app/core/widgets/dialog_utils.dart';
+import 'package:exam_app/features/result/presentation/cubit/result_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,8 +38,16 @@ class _MyAppState extends State<MyApp> {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
-      builder: (_, __) => BlocProvider(
-        create: (context) => getIt<AuthCubit>(),
+      builder: (_, __) => MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthCubit>(
+            create: (context) => getIt<AuthCubit>(),
+          ),
+
+          //result
+          BlocProvider(create: (context) => getIt<ResultCubit>()..fetchQuestions()),
+        ],
+       // create: (context) => getIt<AuthCubit>(),
         child: MaterialApp(
           color: Colors.white,
           navigatorObservers: [getIt<AppNavigatorObserver>()],

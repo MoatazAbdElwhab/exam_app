@@ -50,7 +50,7 @@ class _ForgetpasswordPageState extends State<ForgetpasswordPage> {
           child: BlocConsumer<AuthCubit, AuthState>(
             listener: (BuildContext context, AuthState state) {
               final dialogUtils = getIt<DialogUtils>();
-               if (state.errorMessage != null) {
+              if (state.errorMessage != null) {
                 dialogUtils.showSnackBar(
                     textColor: Colors.red,
                     message: state.errorMessage!,
@@ -62,7 +62,7 @@ class _ForgetpasswordPageState extends State<ForgetpasswordPage> {
                     context: context);
               } else if (state.shouldSendOtp == true) {
                 if (context.mounted) {
-                    Navigator.pushNamed(context, Routes.pinCode);
+                  Navigator.pushNamed(context, Routes.pinCode);
                 }
               }
             },

@@ -15,11 +15,11 @@ abstract class AuthRepository {
       String email, String password, bool shouldRememberUser);
   Future<Either<Exception, SignUpResponse>> signUp(
       {required String email,
-        required String password,
-        required String userName,
-        required String firstName,
-        required String lastName,
-        required String phone});
+      required String password,
+      required String userName,
+      required String firstName,
+      required String lastName,
+      required String phone});
   Future<Either<Exception, ForgetPasswordResponse>> forgotPassword(
       String email);
   Future<Either<Exception, ResetPasswordResponse>> resetPassword(

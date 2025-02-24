@@ -11,7 +11,7 @@ import 'exceptions/api_exception.dart';
 class DioErrorHandler {
   final GlobalKey<NavigatorState> _navigatorKey;
   final LocalStorageClient _localStorage;
-  DioErrorHandler( this._localStorage, this._navigatorKey);
+  DioErrorHandler(this._localStorage, this._navigatorKey);
   ApiException handle(DioException error) {
     Log.e('DioErrorHandler: handling dio error, ${error.response?.data}');
 
@@ -29,9 +29,7 @@ class DioErrorHandler {
       case DioExceptionType.connectionError:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return ApiException(
-            message:
-                'No internet connection');
+        return ApiException(message: 'No internet connection');
       case DioExceptionType.cancel:
         return ApiException(message: 'Request is cancelled');
       case DioExceptionType.badResponse:

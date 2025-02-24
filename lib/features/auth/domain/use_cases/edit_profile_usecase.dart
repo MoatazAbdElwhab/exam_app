@@ -10,7 +10,8 @@ class EditProfileUseCase {
 
   EditProfileUseCase(this.authRepository);
 
-  Future<Either<Exception, EditProfileResponse>> execute({required Map<String,String> changedFields}) async {
+  Future<Either<Exception, EditProfileResponse>> execute(
+      {required Map<String, String> changedFields}) async {
     return await authRepository.editProfile(changedFields: changedFields);
   }
 }

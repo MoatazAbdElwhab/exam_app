@@ -21,10 +21,12 @@ class _ResetpasswordPageState extends State<ResetpasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Reset Password',canPop: true,),
-
+      appBar: const CustomAppBar(
+        title: 'Reset Password',
+        canPop: true,
+      ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal:16.w,vertical: 16.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         child: Form(
           key: formKey,
           child: Column(

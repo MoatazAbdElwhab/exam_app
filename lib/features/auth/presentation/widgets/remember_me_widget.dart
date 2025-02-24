@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RememberMeWidget extends StatefulWidget {
-
   const RememberMeWidget({
     super.key,
   });
@@ -27,7 +26,7 @@ class _RememberMeWidgetState extends State<RememberMeWidget> {
           onChanged: (newValue) {
             setState(() {
               value = newValue ?? value;
-              context.read<AuthCubit>().updateRememberMe(newValue?? value);
+              context.read<AuthCubit>().updateRememberMe(newValue ?? value);
             });
           },
         ),

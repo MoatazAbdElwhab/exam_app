@@ -1,3 +1,4 @@
+// core/routes/app_router.dart
 import 'package:exam_app/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:exam_app/features/auth/presentation/pages/login_page.dart';
@@ -10,9 +11,7 @@ import 'package:exam_app/features/profile/presentation/pages/resetpassword_page.
 import 'package:exam_app/features/nav/navbar_page.dart';
 import 'package:exam_app/features/explore/presentation/pages/explore_page.dart';
 import 'package:exam_app/features/result/presentation/pages/result_page.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../features/auth/presentation/cubit/auth_cubit.dart';
-import '../di/injectable.dart';
+
 
 Route<dynamic>? generateRoute(RouteSettings settings) {
   switch (settings.name) {

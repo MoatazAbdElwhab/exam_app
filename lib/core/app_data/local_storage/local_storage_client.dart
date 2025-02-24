@@ -1,3 +1,4 @@
+// core/app_data/local_storage/local_storage_client.dart
 import 'dart:ffi';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,6 +10,8 @@ import '../../logger/app_logger.dart';
 
 @singleton
 class LocalStorageClient {
+  static const String tokenKey = 'token';
+
   SharedPreferences sharedPreferences;
   FlutterSecureStorage secureStorage;
 

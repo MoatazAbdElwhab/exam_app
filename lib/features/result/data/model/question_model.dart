@@ -9,25 +9,26 @@ class QuestionModel {
       required this.options,
       required this.correctIndex});
 }
+
 List questionList = [
   QuestionModel(
-      question: "Select the correctly punctuated sentence.",
-      options: [
-        "Its going to rain today.",
-        "It's going to rain today.",
-        "Its going to rain today.",
-        "Its going to rain today."
-      ],
-      correctIndex: 1,
-    ),
+    question: "Select the correctly punctuated sentence.",
+    options: [
+      "Its going to rain today.",
+      "It's going to rain today.",
+      "Its going to rain today.",
+      "Its going to rain today."
+    ],
+    correctIndex: 1,
+  ),
   QuestionModel(
-      question: "Select the correctly punctuated sentence.",
-      options: [
-        "Its going to rain today.",
-        "It's going to rain today.",
-        "Its going to rain today.",
-        "Its going to rain today."
-      ],
-      correctIndex: 2,
-    ),
+    question: "Select the correctly punctuated sentence.",
+    options: [
+      "Its going to rain today.",
+      "It's going to rain today.",
+      "Its going to rain today.",
+      "Its going to rain today."
+    ],
+    correctIndex: 2,
+  ),
 ];

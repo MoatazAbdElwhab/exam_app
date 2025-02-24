@@ -1,3 +1,4 @@
+// features/auth/presentation/cubit/auth_state.dart
 import 'package:equatable/equatable.dart';
 import 'package:exam_app/features/auth/data/data_models/user_dto.dart';
 

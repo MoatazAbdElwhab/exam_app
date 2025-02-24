@@ -47,6 +47,18 @@ import 'package:exam_app/features/auth/domain/use_cases/verify_reset_code_usecas
     as _i923;
 import 'package:exam_app/features/auth/presentation/cubit/auth_cubit.dart'
     as _i533;
+import 'package:exam_app/features/result/data/data_sources/result_remote_data_source.dart'
+    as _i933;
+import 'package:exam_app/features/result/data/result_repository/result_repo_imp.dart'
+    as _i805;
+import 'package:exam_app/features/result/domain/result_repository/result_repository.dart'
+    as _i451;
+import 'package:exam_app/features/result/domain/use_cases/get_result_usecase.dart'
+    as _i101;
+import 'package:exam_app/features/result/domain/use_cases/submit_answers.dart'
+    as _i389;
+import 'package:exam_app/features/result/presentation/cubit/result_cubit.dart'
+    as _i644;
 import 'package:flutter/cupertino.dart' as _i719;
 import 'package:flutter/material.dart' as _i409;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
@@ -102,6 +114,8 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i937.AuthLocalDataSource>(),
           gh<_i583.AuthRemoteDataSource>(),
         ));
+    gh.factory<_i933.ResultRemoteDataSource>(
+        () => _i933.ResultRemoteDataSourceImpl(gh<_i93.ApiClient>()));
     gh.factory<_i890.ChangePasswordUseCase>(
         () => _i890.ChangePasswordUseCase(gh<_i24.AuthRepository>()));
     gh.factory<_i997.DeleteAccountUseCase>(
@@ -135,6 +149,14 @@ extension GetItInjectableX on _i174.GetIt {
           verifyResetCodeUseCase: gh<_i923.VerifyResetCodeUseCase>(),
           storageClient: gh<_i73.LocalStorageClient>(),
         ));
+    gh.factory<_i451.ResultRepository>(
+        () => _i805.ResultRepositoryImpl(gh<_i933.ResultRemoteDataSource>()));
+    gh.singleton<_i101.FetchQuestions>(
+        () => _i101.FetchQuestions(gh<_i451.ResultRepository>()));
+    gh.singleton<_i389.SubmitAnswers>(
+        () => _i389.SubmitAnswers(gh<_i451.ResultRepository>()));
+    gh.factory<_i644.ResultCubit>(
+        () => _i644.ResultCubit(gh<_i451.ResultRepository>()));
     return this;
   }
 }

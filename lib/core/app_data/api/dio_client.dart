@@ -83,7 +83,7 @@ class DioApiClient implements ApiClient {
       return response.data;
     } on DioException catch (e) {
       Log.e(e.toString());
-     throw errorHandler.handle(e);
+      throw errorHandler.handle(e);
     }
   }
 
@@ -103,7 +103,7 @@ class DioApiClient implements ApiClient {
       return response.data;
     } on DioException catch (e) {
       Log.e(e.toString());
-     throw errorHandler.handle(e);
+      throw errorHandler.handle(e);
     }
   }
 
@@ -121,7 +121,7 @@ class DioApiClient implements ApiClient {
       return response.data;
     } on DioException catch (e) {
       Log.e(e.toString());
-     throw errorHandler.handle(e);
+      throw errorHandler.handle(e);
     }
   }
 
@@ -139,8 +139,7 @@ class DioApiClient implements ApiClient {
     } catch (e) {
       Log.e(
           'throwing ApiException(message: Failed to retrieve token: ${e.toString()}');
-      if (appCurrentRoute != Routes.login &&
-          appCurrentRoute != Routes.signup) {
+      if (appCurrentRoute != Routes.login && appCurrentRoute != Routes.signup) {
         await localStorage.saveRememberMe(false);
         _appNavigator.currentState
             ?.pushNamedAndRemoveUntil(Routes.login, (route) => false);

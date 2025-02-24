@@ -1,3 +1,4 @@
+// features/auth/data/data_sources/auth_local_data_source.dart
 import 'dart:convert';
 import 'package:injectable/injectable.dart';
 import '../../../../core/app_data/local_storage/local_storage_client.dart';
@@ -30,7 +31,6 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     return await _localStorageClient.getSecuredData('token');
   }
 
-  @override
   Future<void> removeToken() async {
     await _localStorageClient.secureStorage.delete(key: 'token');
   }
