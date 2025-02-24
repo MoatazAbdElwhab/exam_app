@@ -31,3 +31,17 @@ final class GetExamsSuccess extends ExploreState {
 
   GetExamsSuccess(this.exams);
 }
+
+final class GetQuestionsLoading extends ExploreState {}
+
+final class GetQuestionsFail extends ExploreState {
+  final String errorMsg;
+
+  GetQuestionsFail(this.errorMsg);
+}
+
+final class GetQuestionsSuccess extends ExploreState {
+  final List<QuestionModel> questions;
+
+  GetQuestionsSuccess(this.questions);
+}

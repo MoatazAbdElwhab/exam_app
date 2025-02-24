@@ -4,6 +4,7 @@ class ApiConstants {
   static const String signUpEndpoint = 'auth/signup';
   static const String getAllSubjectsEndpoint = 'subjects';
   static const String getAllExamsOnSubjectEndpoint = 'exams';
+  static const String getAllQuestionsOnExamEndpoint = 'questions';
 
   // ============= Api Keys =============
   static const String messageKey = 'message';
@@ -42,4 +43,13 @@ class ApiConstants {
   static const String subjectKey = 'subject';
   static const String numberOfQuestionsKey = 'numberOfQuestions';
   static const String activeKey = 'active';
+
+  static const String answerKey = 'answer';
+  static const String keyKey = 'key';
+  static const String answersKey = 'answers';
+  static const String typeKey = 'type';
+  static const String questionKey = 'question';
+  static const String correctKey = 'correct';
+  static const String questionsKey = 'questions';
+  static const String examKey = 'exam';
 }

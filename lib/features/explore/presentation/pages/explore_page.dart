@@ -117,11 +117,12 @@ class _ExplorePageState extends State<ExplorePage> {
                           final subject = state.subjects[index];
                           return GestureDetector(
                             onTap: () {
+                              exploreCubit.getAllExamOnSubject(subject.id);
                               Navigator.of(context).pushNamed(
                                 Routes.exams,
                                 arguments: ExamData(
                                   subjectID: subject.id,
-                                  name: subject.name,
+                                  subjectName: subject.name,
                                   exploreCubit: exploreCubit,
                                 ),
                               );
@@ -148,12 +149,12 @@ class _ExplorePageState extends State<ExplorePage> {
 
 class ExamData {
   final String subjectID;
-  final String name;
+  final String subjectName;
   final ExploreCubit exploreCubit;
 
   ExamData({
     required this.subjectID,
-    required this.name,
+    required this.subjectName,
     required this.exploreCubit,
   });
 }

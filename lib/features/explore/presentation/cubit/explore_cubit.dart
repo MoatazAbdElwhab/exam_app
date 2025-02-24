@@ -1,4 +1,5 @@
 import 'package:exam_app/features/explore/data/models/exam_response/exam_model.dart';
+import 'package:exam_app/features/explore/data/models/questions_response/question_model.dart';
 import 'package:exam_app/features/explore/data/models/subjects_response/subject_model.dart';
 import 'package:exam_app/features/explore/data/repo/explore_repo_impl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +29,15 @@ class ExploreCubit extends Cubit<ExploreState> {
     result.fold(
       (fail) => emit(GetExamsFail(fail.toString())),
       (exams) => emit(GetExamsSuccess(exams)),
+    );
+  }
+
+  Future<void> getAllQuestionsOnExam(String examID) async {
+    emit(GetQuestionsLoading());
+    final result = await _exploreRepoImpl.getAllQuestionsOnExam(examID);
+    result.fold(
+      (fail) => emit(GetQuestionsFail(fail.toString())),
+      (questions) => emit(GetQuestionsSuccess(questions)),
     );
   }
 }

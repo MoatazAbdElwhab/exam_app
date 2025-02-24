@@ -1,8 +1,9 @@
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
+import 'package:exam_app/core/routes/routes.dart';
 import 'package:exam_app/core/widgets/custom_app_bar.dart';
 import 'package:exam_app/core/widgets/exam_item.dart';
-import 'package:exam_app/core/widgets/section_exam.dart';
+import 'package:exam_app/features/explore/data/models/exam_response/exam_model.dart';
 import 'package:exam_app/features/explore/presentation/cubit/explore_cubit.dart';
 import 'package:exam_app/features/explore/presentation/pages/explore_page.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +17,11 @@ class ExamsPage extends StatelessWidget {
     final args = ModalRoute.of(context)?.settings.arguments as ExamData;
     return Scaffold(
       appBar: CustomAppBar(
-        title: args.name,
+        title: args.subjectName,
         canPop: true,
       ),
       body: BlocBuilder<ExploreCubit, ExploreState>(
-        bloc: args.exploreCubit..getAllExamOnSubject(args.subjectID),
+        bloc: args.exploreCubit,
         buildWhen: (previous, current) {
           if (current is GetExamsFail ||
               current is GetExamsLoading ||
@@ -55,11 +56,21 @@ class ExamsPage extends StatelessWidget {
                 children: [
                   Expanded(
                     child: ListView.separated(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      itemBuilder: (context, index) => ExamItem(
-                        examModel: state.exams[index],
-                        isResult: false,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      itemBuilder: (context, index) => InkWell(
+                        onTap: () => Navigator.of(context).pushNamed(
+                          Routes.startExam,
+                          arguments: ArgsObj(
+                            subjectName: args.subjectName,
+                            examModel: state.exams[index],
+                            exploreCubit: args.exploreCubit,
+                          ),
+                        ),
+                        child: ExamItem(
+                          examModel: state.exams[index],
+                          isResult: false,
+                        ),
                       ),
                       separatorBuilder: (context, index) =>
                           const SizedBox(height: 4),
@@ -75,4 +86,16 @@ class ExamsPage extends StatelessWidget {
       ),
     );
   }
+}
+
+class ArgsObj {
+  final String subjectName;
+  final ExamModel examModel;
+  final ExploreCubit exploreCubit;
+
+  ArgsObj({
+    required this.subjectName,
+    required this.examModel,
+    required this.exploreCubit,
+  });
 }
