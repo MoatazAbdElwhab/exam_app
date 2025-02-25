@@ -9,7 +9,6 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:dio/dio.dart' as _i361;
 import 'package:exam_app/core/app_data/api/api_client.dart' as _i93;
 import 'package:exam_app/core/app_data/api/dio_client.dart' as _i797;
 import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart'
@@ -60,8 +59,8 @@ import 'package:exam_app/features/result/domain/use_cases/get_result_usecase.dar
     as _i101;
 import 'package:exam_app/features/result/domain/use_cases/submit_answers.dart'
     as _i389;
-import 'package:exam_app/features/result/presentation/cubit/result_cubit.dart'
-    as _i644;
+import 'package:exam_app/features/results/presentation/cubit/result_cubit.dart'
+    as _i517;
 import 'package:flutter/cupertino.dart' as _i719;
 import 'package:flutter/material.dart' as _i409;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
@@ -95,10 +94,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => getItRegisterModule.secureStorage);
     gh.singleton<_i69.AppNavigatorObserver>(() => _i69.AppNavigatorObserver());
     gh.singleton<_i985.DialogUtils>(() => _i985.DialogUtils());
-    gh.factory<_i451.ResultRepository>(
-        () => _i161.ResultRepositoryImpl(gh<_i361.Dio>()));
-    gh.factory<_i644.ResultCubit>(
-        () => _i644.ResultCubit(gh<_i451.ResultRepository>()));
     gh.singleton<_i73.LocalStorageClient>(() => _i73.LocalStorageClient(
           gh<_i460.SharedPreferences>(),
           gh<_i558.FlutterSecureStorage>(),
@@ -107,28 +102,32 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i73.LocalStorageClient>(),
           gh<_i719.GlobalKey<_i719.NavigatorState>>(),
         ));
-    gh.singleton<_i101.FetchQuestions>(
-        () => _i101.FetchQuestions(gh<_i451.ResultRepository>()));
-    gh.singleton<_i389.SubmitAnswers>(
-        () => _i389.SubmitAnswers(gh<_i451.ResultRepository>()));
     gh.factory<_i937.AuthLocalDataSource>(
         () => _i937.AuthLocalDataSourceImpl(gh<_i73.LocalStorageClient>()));
-    gh.factory<_i696.CheckAnswersUseCase>(
-        () => _i696.CheckAnswersUseCase(gh<_i451.ResultRepository>()));
     gh.singleton<_i93.ApiClient>(() => _i797.DioApiClient(
           gh<_i73.LocalStorageClient>(),
           gh<_i32.DioErrorHandler>(),
           gh<_i69.AppNavigatorObserver>(),
           gh<_i719.GlobalKey<_i719.NavigatorState>>(),
         ));
+    gh.factory<_i933.ResultRemoteDataSource>(
+        () => _i933.ResultRemoteDataSource(gh<_i93.ApiClient>()));
+    gh.factory<_i451.ResultRepository>(
+        () => _i161.ResultRepositoryImpl(gh<_i933.ResultRemoteDataSource>()));
     gh.factory<_i583.AuthRemoteDataSource>(
         () => _i583.AuthRemoteDataSourceImpl(gh<_i93.ApiClient>()));
+    gh.singleton<_i101.GetResultUseCase>(
+        () => _i101.GetResultUseCase(gh<_i451.ResultRepository>()));
+    gh.singleton<_i389.SubmitAnswers>(
+        () => _i389.SubmitAnswers(gh<_i451.ResultRepository>()));
+    gh.factory<_i696.CheckAnswersUseCase>(
+        () => _i696.CheckAnswersUseCase(gh<_i451.ResultRepository>()));
     gh.factory<_i24.AuthRepository>(() => _i122.AuthRepositoryImpl(
           gh<_i937.AuthLocalDataSource>(),
           gh<_i583.AuthRemoteDataSource>(),
         ));
-    gh.factory<_i933.ResultRemoteDataSource>(
-        () => _i933.ResultRemoteDataSourceImpl(gh<_i93.ApiClient>()));
+    gh.factory<_i517.ResultCubit>(
+        () => _i517.ResultCubit(gh<_i451.ResultRepository>()));
     gh.factory<_i890.ChangePasswordUseCase>(
         () => _i890.ChangePasswordUseCase(gh<_i24.AuthRepository>()));
     gh.factory<_i997.DeleteAccountUseCase>(

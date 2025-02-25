@@ -12,7 +12,7 @@ class ResultInitial extends ResultState {}
 class ResultLoading extends ResultState {}
 
 class QuestionsLoaded extends ResultState {
-  final List<QuestionModel> questions;
+  final List<QuestionRequestModel> questions;
 
   const QuestionsLoaded(this.questions);
 
@@ -21,7 +21,7 @@ class QuestionsLoaded extends ResultState {
 }
 
 class ResultAnswerSubmitted extends ResultState {
-  final CheckAnswerResponseModel response;
+  final ResultResponseModel response;
 
   const ResultAnswerSubmitted(this.response);
 
@@ -30,12 +30,21 @@ class ResultAnswerSubmitted extends ResultState {
 }
 
 class ResultAllAnswersSubmitted extends ResultState {
-  final CheckAnswerResponseModel response;
+  final List<QuestionRequestModel> questions;
 
-  const ResultAllAnswersSubmitted(this.response);
+  const ResultAllAnswersSubmitted(this.questions);
 
   @override
-  List<Object?> get props => [response];
+  List<Object?> get props => [questions];
+}
+
+class HistoryLoaded extends ResultState {
+  final HistoryResponseModel history;
+
+  const HistoryLoaded(this.history);
+
+  @override
+  List<Object?> get props => [history];
 }
 
 class ResultError extends ResultState {
