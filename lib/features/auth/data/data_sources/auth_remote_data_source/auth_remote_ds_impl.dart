@@ -7,37 +7,13 @@ import 'package:exam_app/features/auth/data/data_models/response/get_logged_user
 import 'package:exam_app/features/auth/data/data_models/response/logout_response.dart';
 import 'package:exam_app/features/auth/data/data_models/response/reset_password_response.dart';
 import 'package:injectable/injectable.dart';
-import '../../../../core/app_data/api/api_client.dart';
-import '../../../../core/error_handling/exceptions/api_exception.dart';
-import '../../../../core/logger/app_logger.dart';
-import '../data_models/response/sign_in_response.dart';
-import '../data_models/response/sign_up_response.dart';
-import '../data_models/response/verify_reset_code_response.dart';
-
-abstract class AuthRemoteDataSource {
-  Future<Either<ApiException, SignInResponse>> signIn(
-      String email, String password);
-  Future<Either<ApiException, SignUpResponse>> signUp(
-      {required String email,
-      required String password,
-      required String userName,
-      required String firstName,
-      required String lastName,
-      required String phone});
-  Future<Either<ApiException, ForgetPasswordResponse>> forgotPassword(
-      String email);
-  Future<Either<ApiException, ResetPasswordResponse>> resetPassword(
-      String email, String newPassword);
-  Future<Either<ApiException, ChangePasswordResponse>> changePassword(
-      String oldPassword, String newPassword);
-  Future<Either<ApiException, DeleteAccountResponse>> deleteAccount();
-  Future<Either<ApiException, EditProfileResponse>> editProfile(
-      {required Map<String, String> changedFields});
-  Future<Either<ApiException, LogoutResponse>> logout();
-  Future<Either<ApiException, GetLoggedUserDataResponse>> getLoggedUserInfo();
-  Future<Either<ApiException, VerifyResetCodeResponse>> verifyResetCodeResponse(
-      String otp);
-}
+import '../../../../../core/app_data/api/api_client.dart';
+import '../../../../../core/error_handling/exceptions/api_exception.dart';
+import '../../../../../core/logger/app_logger.dart';
+import '../../data_models/response/sign_in_response.dart';
+import '../../data_models/response/sign_up_response.dart';
+import '../../data_models/response/verify_reset_code_response.dart';
+import 'auth_remote_ds_interface.dart';
 
 @Injectable(as: AuthRemoteDataSource)
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -102,8 +78,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final response = await _apiClient.post(
         'auth/forgotPassword',
         data: {'email': email},
+        requiresToken: false,
       );
-      Log.d('auth remote datasource got response / returns \n '
+      Log.d('auth remote datasource got response / returns \n'
           '${Right(ForgetPasswordResponse.fromJson(response))}');
       return Right(ForgetPasswordResponse.fromJson(response));
     } catch (e) {
@@ -121,6 +98,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           'email': email,
           'newPassword': newPassword,
         },
+        requiresToken: false,
       );
       Log.d('auth remote datasource got response / returns \n '
           '${Right(ResetPasswordResponse.fromJson(response))}');
@@ -141,7 +119,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           'newPassword': newPassword,
           'rePassword': newPassword,
         },
-        requiresToken: true,
       );
       Log.d('auth remote datasource got response / returns \n '
           '${Right(ChangePasswordResponse.fromJson(response))}');
@@ -156,7 +133,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final response = await _apiClient.delete(
         'auth/deleteMe',
-        requiresToken: true,
       );
       Log.d('auth remote datasource got response / returns \n '
           '${Right(DeleteAccountResponse.fromJson(response))}');
@@ -173,7 +149,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final response = await _apiClient.put(
         'auth/editProfile',
         data: changedFields,
-        requiresToken: true,
       );
       Log.d('auth remote datasource got response / returns \n '
           '${Right(EditProfileResponse.fromJson(response))}');
@@ -188,7 +163,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final response = await _apiClient.get(
         'auth/logout',
-        requiresToken: true,
       );
       Log.d('auth remote datasource got response / returns \n'
           '${Right(LogoutResponse.fromJson(response))}');
@@ -204,7 +178,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final response = await _apiClient.get(
         'auth/profileData',
-        requiresToken: true,
       );
       Log.d('auth remote datasource got response / returns \n '
           '${Right(GetLoggedUserDataResponse.fromJson(response))}');
@@ -218,9 +191,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<Either<ApiException, VerifyResetCodeResponse>> verifyResetCodeResponse(
       String otp) async {
     try {
-      final response = await _apiClient
-          .post('auth/verifyResetCode', data: {'resetCode': otp});
-      Log.d('auth remote datasource got response / returns \n '
+      final response = await _apiClient.post('auth/verifyResetCode',
+          data: {'resetCode': otp}, requiresToken: false);
+      Log.d('auth remote datasource got response / returns \n'
           '${Right(VerifyResetCodeResponse.fromJson(response))}');
       return Right(VerifyResetCodeResponse.fromJson(response));
     } catch (e) {

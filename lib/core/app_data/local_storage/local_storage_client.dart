@@ -25,7 +25,7 @@ class LocalStorageClient {
     }
   }
 
-  Future<String?> getData(String key) async {
+  String? getData(String key) {
     try {
       Log.d('getting $key');
       return sharedPreferences.getString(
@@ -71,7 +71,7 @@ class LocalStorageClient {
     }
   }
 
-  Future<bool?> getRememberMe() async {
+  bool? getRememberMe() {
     try {
       bool? rememberMe = sharedPreferences.getBool('rememberUser');
       Log.i('got rememberMe with $rememberMe');

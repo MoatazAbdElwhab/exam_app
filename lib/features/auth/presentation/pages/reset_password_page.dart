@@ -44,14 +44,14 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: BlocConsumer<AuthCubit, AuthState>(
             listener: (BuildContext context, AuthState state) {
-              final dialogUtilds = getIt<DialogUtils>();
+              final dialogUtils = getIt<DialogUtils>();
               if (state.errorMessage != null) {
-                dialogUtilds.showSnackBar(
+                dialogUtils.showSnackBar(
                     textColor: Colors.red,
                     message: state.errorMessage!,
                     context: context);
               } else if (state.successMessage != null) {
-                dialogUtilds.showSnackBar(
+                dialogUtils.showSnackBar(
                     textColor: Colors.green,
                     message: state.successMessage!,
                     context: context);
@@ -133,6 +133,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         SizedBox(height: 48.h),
                         customElevatedButton = CustomElevatedButton(
                           title: 'Continue',
+                          shouldUseValidation: true,
                           onTap: () async {
                             if (formKey.currentState!.validate()) {
                               await context.read<AuthCubit>().resetPassword(

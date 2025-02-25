@@ -31,6 +31,7 @@ class _SignupPageState extends State<SignupPage> {
     cubit = context.read<AuthCubit>();
     customElevatedButton = CustomElevatedButton(
       title: 'Signup',
+      shouldUseValidation: true,
       onTap: () async {
         if (formKey.currentState!.validate()) {
           await cubit.signUp();
@@ -82,7 +83,7 @@ class _SignupPageState extends State<SignupPage> {
                     },
                     key: formKey,
                     child: Column(
-                      // spacing: 24.h,
+                      spacing: 24.h,
                       children: [
                         //username
                         CustomTextFormField(
@@ -92,7 +93,6 @@ class _SignupPageState extends State<SignupPage> {
                           validator: Validator.userNameValidation,
                         ),
 
-                        //first name & last name
                         Row(
                           children: [
                             Expanded(

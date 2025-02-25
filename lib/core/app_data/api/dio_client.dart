@@ -4,6 +4,7 @@ import 'package:exam_app/core/logger/app_logger.dart';
 import 'package:exam_app/core/routes/navigator_observer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:injectable/injectable.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../../error_handling/exceptions/api_exception.dart';
 import '../../routes/routes.dart';
 import '../local_storage/local_storage_client.dart';
@@ -14,23 +15,23 @@ class DioApiClient implements ApiClient {
   final Dio _dio;
   final LocalStorageClient localStorage;
   final DioErrorHandler errorHandler;
-  final AppNavigatorObserver _navigatorObserver;
   final GlobalKey<NavigatorState> _appNavigator;
 
-  DioApiClient(this.localStorage, this.errorHandler, this._navigatorObserver,
+  DioApiClient(this.localStorage, this.errorHandler,
       this._appNavigator)
       : _dio = Dio(BaseOptions(
           baseUrl: 'https://exam.elevateegy.com/api/v1/',
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
           responseType: ResponseType.json,
-        ));
+        ))
+          ..interceptors.add(PrettyDioLogger());
 
   @override
   Future<dynamic> get(
     String path, {
     Map<String, dynamic>? queryParameters,
-    bool requiresToken = false,
+    bool requiresToken = true,
   }) async {
     try {
       await checkToken(requiresToken);
@@ -38,11 +39,8 @@ class DioApiClient implements ApiClient {
         path,
         queryParameters: queryParameters,
       );
-      Log.d(response);
-      Log.d(response.data);
       return response.data;
     } on DioException catch (e) {
-      Log.e(e.toString());
       throw errorHandler.handle(e);
     }
   }
@@ -51,7 +49,7 @@ class DioApiClient implements ApiClient {
   Future<dynamic> post(String path,
       {dynamic data,
       Map<String, dynamic>? queryParameters,
-      bool requiresToken = false}) async {
+      bool requiresToken = true}) async {
     try {
       await checkToken(requiresToken);
       final response = await _dio.post(
@@ -59,10 +57,8 @@ class DioApiClient implements ApiClient {
         data: data,
         queryParameters: queryParameters,
       );
-      Log.d(response.data);
       return response.data;
     } on DioException catch (e) {
-      Log.e(e.toString());
       throw errorHandler.handle(e);
     }
   }
@@ -71,7 +67,7 @@ class DioApiClient implements ApiClient {
   Future<dynamic> put(String path,
       {dynamic data,
       Map<String, dynamic>? queryParameters,
-      bool requiresToken = false}) async {
+      bool requiresToken = true}) async {
     try {
       await checkToken(requiresToken);
       final response = await _dio.put(
@@ -79,10 +75,8 @@ class DioApiClient implements ApiClient {
         data: data,
         queryParameters: queryParameters,
       );
-      Log.d(response.data);
       return response.data;
     } on DioException catch (e) {
-      Log.e(e.toString());
       throw errorHandler.handle(e);
     }
   }
@@ -91,7 +85,7 @@ class DioApiClient implements ApiClient {
   Future<dynamic> patch(String path,
       {dynamic data,
       Map<String, dynamic>? queryParameters,
-      bool requiresToken = false}) async {
+      bool requiresToken = true}) async {
     try {
       await checkToken(requiresToken);
       final response = await _dio.patch(
@@ -99,10 +93,8 @@ class DioApiClient implements ApiClient {
         data: data,
         queryParameters: queryParameters,
       );
-      Log.d(response.data);
       return response.data;
     } on DioException catch (e) {
-      Log.e(e.toString());
       throw errorHandler.handle(e);
     }
   }
@@ -110,17 +102,15 @@ class DioApiClient implements ApiClient {
   @override
   Future<dynamic> delete(String path,
       {Map<String, dynamic>? queryParameters,
-      bool requiresToken = false}) async {
+      bool requiresToken = true}) async {
     try {
       await checkToken(requiresToken);
       final response = await _dio.delete(
         path,
         queryParameters: queryParameters,
       );
-      Log.d(response.data);
       return response.data;
     } on DioException catch (e) {
-      Log.e(e.toString());
       throw errorHandler.handle(e);
     }
   }

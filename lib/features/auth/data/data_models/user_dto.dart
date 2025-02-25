@@ -1,4 +1,6 @@
-class UserDto {
+import 'package:equatable/equatable.dart';
+
+class UserDto extends Equatable {
   final String? username;
   final String? firstName;
   final String? lastName;
@@ -11,7 +13,7 @@ class UserDto {
   final String? passwordChangedAt;
   final String? profilePic;
 
-  UserDto(
+  const UserDto(
       {this.username,
       this.firstName,
       this.lastName,
@@ -80,4 +82,19 @@ class UserDto {
       profilePic: profilePic ?? this.profilePic,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        username,
+        firstName,
+        lastName,
+        email,
+        passwordChangedAt,
+        phone,
+        role,
+        isVerified,
+        createdAt,
+        id,
+        profilePic
+      ];
 }

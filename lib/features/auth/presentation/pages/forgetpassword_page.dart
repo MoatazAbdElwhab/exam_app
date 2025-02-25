@@ -108,6 +108,7 @@ class _ForgetpasswordPageState extends State<ForgetpasswordPage> {
                       Gap(48.h),
                       customElevatedButton = CustomElevatedButton(
                         title: 'Continue',
+                        shouldUseValidation: true,
                         onTap: () async {
                           if (formKey.currentState!.validate()) {
                             await cubit.forgotPassword(emailController.text);

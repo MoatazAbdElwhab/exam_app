@@ -7,11 +7,11 @@ import 'package:exam_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:exam_app/features/auth/presentation/pages/forgetpassword_page.dart';
 import 'package:exam_app/features/auth/presentation/pages/pin_code_page.dart';
 import 'package:exam_app/features/auth/presentation/pages/reset_password_page.dart';
-import 'package:exam_app/features/profile/presentation/pages/profile_page.dart';
 import 'package:exam_app/features/profile/presentation/pages/resetpassword_page.dart';
-import 'package:exam_app/features/nav/navbar_page.dart';
+import 'package:exam_app/features/nav/page/navbar_page.dart';
 import 'package:exam_app/features/explore/presentation/pages/explore_page.dart';
 import 'package:exam_app/features/result/presentation/pages/result_page.dart';
+import '../../features/splash/splash.dart';
 
 Route<dynamic>? generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -19,6 +19,11 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         settings: settings,
         builder: (_) => const LoginPage(),
+      );
+    case Routes.splash:
+      return MaterialPageRoute(
+        settings: settings,
+        builder: (_) => const SplashScreen(),
       );
     case Routes.signup:
       return MaterialPageRoute(
@@ -37,14 +42,7 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
       );
     case Routes.resetPassword:
       return MaterialPageRoute(
-        settings: settings,
-        builder: (_) => const ResetPasswordPage(),
-      );
-    case Routes.profile:
-      return MaterialPageRoute(
-        settings: settings,
-        builder: (con) => const ProfilePage(),
-      );
+          settings: settings, builder: (_) => const ResetPasswordPage());
     case Routes.profileResetPassword:
       return MaterialPageRoute(
         settings: settings,

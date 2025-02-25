@@ -22,8 +22,7 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage>
-    with AutomaticKeepAliveClientMixin {
+class _ProfilePageState extends State<ProfilePage> {
   late final AuthCubit authCubit;
   late final TextEditingController _firstNameController;
   late final TextEditingController _lastNameController;
@@ -41,11 +40,12 @@ class _ProfilePageState extends State<ProfilePage>
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _phoneController = TextEditingController();
-    Log.e('ProfilePage initState called');
+    Log.i('initState in profile');
   }
 
   @override
   void dispose() {
+    Log.i('dispose in profile');
     _fullNameController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -56,28 +56,29 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   @override
-  void didChangeDependencies() {
+  Future<void> didChangeDependencies() async {
+    Log.i('didChangeDependencies profile');
     super.didChangeDependencies();
-    // if (!_hasInitiallyLoaded) {
-    authCubit = context.read<AuthCubit>(); // Move this inside the if check
-    // Use addPostFrameCallback instead of microtask for better frame timing
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Log.i(authCubit.state.user != null);
-      if (mounted) {
-        Log.i('profileGetInfo');
-        authCubit.getLoggedUserInfo();
-        //     .then((_) =>
-        // _hasInitiallyLoaded = true
-        // );
-      }
-    });
-    // }
+    authCubit = context.read<AuthCubit>();
+    await authCubit.getLoggedUserInfo().then(
+      (_) {
+        final user = authCubit.state.user;
+        if (user != null) {
+          _fullNameController.text = user.username ?? '';
+          _firstNameController.text = user.firstName ?? '';
+          _lastNameController.text = user.lastName ?? '';
+          _emailController.text = user.email ?? '';
+          _passwordController.text = '*********';
+          _phoneController.text = user.phone ?? '';
+        }
+      },
+    );
+    Log.i('end of didChangeDependencies profile');
   }
 
   @override
   Widget build(BuildContext context) {
-    Log.e('build called in profile');
-    super.build(context);
+    Log.i('build in profile');
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -86,139 +87,130 @@ class _ProfilePageState extends State<ProfilePage>
           canPop: false,
         ),
         //body
-        body: BlocConsumer<AuthCubit, AuthState>(
-          // buildWhen: (previous, current) => _hasInitiallyLoaded,
-          // previous.status != current.status ||
-          // previous.user != current.user ||
-          // current.user != null || current.user != previous.user,
-          // listenWhen: (previous, current) =>
-          // previous.errorMessage != current.errorMessage ||
-          //     current.user != null ||
-          //     previous.successMessage != current.successMessage ||
-          //     previous.status.isLoggedOut != current.status.isLoggedOut,
-          builder: (context, state) {
-            Log.e('bloc builder in profile');
-            // if (state.status.isLoading) {
-            //   return const Center(child: CircularProgressIndicator());
-            // }
-            return SingleChildScrollView(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      ElevatedButton(
-                          onPressed: () async {
-                            // await getIt<LocalStorageClient>().saveRememberMe(false);
-                            // await  context
-                            //      .read<AuthCubit>()
-                            //      .logout();
-                            Navigator.of(context).pushNamed(Routes.result);
-                            // await getIt<AuthCubit>().close();
-                          },
-                          child: Text('data')),
-                      Stack(
-                        alignment: Alignment.bottomRight,
-                        children: [
-                          const CircleAvatar(
-                            radius: 60,
+        body: BlocListener<AuthCubit, AuthState>(
+          child: SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                        onPressed: () async {
+                          // await getIt<LocalStorageClient>().saveRememberMe(false);
+                          // await  context
+                          //      .read<AuthCubit>()
+                          //      .logout();
+                          Navigator.of(context).pushNamed(Routes.result);
+                          // await getIt<AuthCubit>().close();
+                        },
+                        child: Text('data')),
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        const CircleAvatar(
+                          radius: 60,
+                          backgroundColor: ColorManager.white,
+                          child: CircleAvatar(
                             backgroundColor: ColorManager.white,
-                            child: CircleAvatar(
-                              backgroundColor: ColorManager.white,
-                              radius: 60,
-                              backgroundImage: AssetImage(ImageManager.userPng),
+                            radius: 60,
+                            backgroundImage: AssetImage(ImageManager.userPng),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () async {},
+                          child: CircleAvatar(
+                            radius: 15,
+                            backgroundColor:
+                                Theme.of(context).scaffoldBackgroundColor,
+                            child: const Icon(
+                              Icons.camera_alt_rounded,
+                              size: 20,
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () async {},
-                            child: CircleAvatar(
-                              radius: 15,
-                              backgroundColor:
-                                  Theme.of(context).scaffoldBackgroundColor,
-                              child: const Icon(
-                                Icons.camera_alt_rounded,
-                                size: 20,
-                              ),
-                            ),
+                        ),
+                      ],
+                    ),
+
+                    //user name
+                    Gap(24.h),
+                    CustomTextFormField(
+                      label: 'User name',
+                      controller: _fullNameController,
+                    ),
+
+                    Gap(24.h),
+                    //first name & last name
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextFormField(
+                            label: 'First name',
+                            controller: _firstNameController,
                           ),
-                        ],
-                      ),
-
-                      //user name
-                      Gap(24.h),
-                      CustomTextFormField(
-                        label: 'User name',
-                        controller: _fullNameController,
-                      ),
-
-                      Gap(24.h),
-                      //first name & last name
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextFormField(
-                              label: 'First name',
-                              controller: _firstNameController,
-                            ),
+                        ),
+                        SizedBox(width: 16.w),
+                        Expanded(
+                          child: CustomTextFormField(
+                            label: 'Last name',
+                            controller: _lastNameController,
                           ),
-                          SizedBox(width: 16.w),
-                          Expanded(
-                            child: CustomTextFormField(
-                              label: 'Last name',
-                              controller: _lastNameController,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
 
-                      //email
-                      Gap(24.h),
-                      CustomTextFormField(
-                        label: 'E-mail',
-                        controller: _emailController,
-                      ),
+                    //email
+                    Gap(24.h),
+                    CustomTextFormField(
+                      label: 'E-mail',
+                      controller: _emailController,
+                    ),
 
-                      //password
-                      Gap(24.h),
-                      CustomTextFormField(
-                        label: 'Password',
-                        controller: _passwordController,
-                        isPass: true,
-                        suffixIcon: TextButton(
-                            onPressed: () async {
-                              await context.read<AuthCubit>().logout();
-                              // Navigator.pushNamed(
-                              //     context, Routes.changePassword);
-                            },
-                            child: Text(
-                              'change',
-                              style: getRegularStyle(
-                                  color: ColorManager.blue, fontSize: 14.sp),
-                            )),
-                      ),
+                    //password
+                    Gap(24.h),
+                    CustomTextFormField(
+                      label: 'Password',
+                      controller: _passwordController,
+                      isPass: true,
+                      suffixIcon: TextButton(
+                          onPressed: () async {
+                            await context.read<AuthCubit>().logout();
+                            // Navigator.pushNamed(
+                            //     context, Routes.changePassword);
+                          },
+                          child: Text(
+                            'change',
+                            style: getRegularStyle(
+                                color: ColorManager.blue, fontSize: 14.sp),
+                          )),
+                    ),
 
-                      //phone number
-                      Gap(24.h),
-                      CustomTextFormField(
-                        label: 'Phone number',
-                        controller: _phoneController,
-                      ),
+                    //phone number
+                    Gap(24.h),
+                    CustomTextFormField(
+                      label: 'Phone number',
+                      controller: _phoneController,
+                    ),
 
-                      //button update
-                      Gap(48.h),
-                      CustomElevatedButton(
-                        title: 'Update',
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
+                    //button update
+                    Gap(48.h),
+                    CustomElevatedButton(
+                      title: 'Update',
+                      onTap: () {},
+                    ),
+                  ],
                 ),
               ),
-            );
-          },
+            ),
+          ),
+          listenWhen: (prev, cur) =>
+              cur.user != null ||
+              cur.successMessage != null ||
+              cur.errorMessage != null ||
+              cur.status.isLoggedOut ||
+              cur.status.isProfileUpdated,
           listener: (context, state) {
-            Log.e('listener build user != null ${state.user != null}');
-            if (state.user != null) {
+            if (state.user != null && state.status.isProfileUpdated) {
+              Log.i('listener got user != null');
               _fullNameController.text = state.user!.username ?? '';
               _firstNameController.text = state.user!.firstName ?? '';
               _lastNameController.text = state.user!.lastName ?? '';
@@ -247,9 +239,4 @@ class _ProfilePageState extends State<ProfilePage>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
-// @override
-// bool get wantKeepAlive => true;
 }

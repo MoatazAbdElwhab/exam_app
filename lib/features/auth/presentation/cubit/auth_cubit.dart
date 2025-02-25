@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
 import 'package:exam_app/core/logger/app_logger.dart';
+import 'package:exam_app/core/routes/routes.dart';
+import 'package:exam_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/routes/navigator_observer.dart';
 import '../../../../core/utils/validator.dart';
+import '../../../splash/splash.dart';
 import '../../domain/use_cases/change_password_usecase.dart';
 import '../../domain/use_cases/delete_account_usecase.dart';
 import '../../domain/use_cases/edit_profile_usecase.dart';
@@ -21,7 +24,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 @injectable
 class AuthCubit extends Cubit<AuthState> {
   // useCases
-  final phoneC = TextEditingController();
   final SignInUseCase signInUseCase;
   final SignUpUseCase signUpUseCase;
   final ForgotPasswordUseCase forgotPasswordUseCase;
@@ -74,7 +76,7 @@ class AuthCubit extends Cubit<AuthState> {
     final response = await signInUseCase.execute(
         loginEmailController.text.trim(),
         loginPasswordController.text.trim(),
-        state.shouldRememberUser);
+        state.loginRememberMeCheckBoxValue);
     if (response.isLeft) {
       emit(state.copyWith(
           errorMessage: response.left.toString(), status: AuthStatus.failure));
@@ -143,7 +145,6 @@ class AuthCubit extends Cubit<AuthState> {
     if (email == null) {
       Log.e('user email is null');
     }
-    Log.d('message');
     final response = await resetPasswordUseCase.execute(email!, newPassword);
     response.isLeft
         ? emit(state.copyWith(
@@ -193,25 +194,26 @@ class AuthCubit extends Cubit<AuthState> {
             status: AuthStatus.loggedOut,
             user: null,
             successMessage: 'you logged out successfully',
-            shouldRememberUser: false));
+        loginRememberMeCheckBoxValue: false));
   }
 
   Future<void> getLoggedUserInfo() async {
-    emit(state.copyWith(status: AuthStatus.loading));
-    final response = await getLoggedUserInfoUseCase.execute();
-    if (response.isLeft) {
-      emit(state.copyWith(
-          errorMessage: response.left.toString(), status: AuthStatus.failure));
+    if (state.user != null) {
+      return;
     } else {
-      emit(state.copyWith(
-        user: response.right.user,
-        status: AuthStatus.success,
-      ));
+      final response = await getLoggedUserInfoUseCase.execute();
+      if (response.isLeft) {
+        emit(state.copyWith(
+            errorMessage: response.left.toString(),
+            status: AuthStatus.failure));
+      } else {
+        emit(state.copyWith(user: response.right.user));
+      }
     }
   }
 
   Future<void> verifyResetCode(String otp) async {
-    emit(state.copyWith(shouldRememberUser: false, resetPasswordCode: null));
+    emit(state.copyWith(shouldUpdatePassword: true, resetPasswordCode: null));
     emit(state.copyWith(status: AuthStatus.loading));
     final response = await verifyResetCodeUseCase.execute(otp);
     if (response.isLeft) {
@@ -231,7 +233,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   updateRememberMe(bool value) =>
-      emit(state.copyWith(shouldRememberUser: value));
+      emit(state.copyWith(loginRememberMeCheckBoxValue: value));
 
   disposeSignUpControllers() {
     signUpPhoneNumberController.dispose();

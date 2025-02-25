@@ -9,6 +9,7 @@ class Routes {
   static const String navbar = '/navbar';
   static const String explore = '/explore';
   static const String result = '/result';
+  static const String splash = '/splash';
   static const String exams = '/exams';
   static const String startExam = '/startExam';
 }

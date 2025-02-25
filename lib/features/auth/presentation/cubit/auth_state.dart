@@ -8,7 +8,7 @@ class AuthState extends Equatable {
   final String? successMessage;
   final bool? shouldSendOtp;
   final int? resetPasswordCode;
-  final bool shouldRememberUser;
+  final bool loginRememberMeCheckBoxValue;
   final bool? shouldUpdatePassword;
   final String? forgetPasswordEmail;
 
@@ -21,7 +21,7 @@ class AuthState extends Equatable {
       this.successMessage,
       this.forgetPasswordEmail,
       this.shouldUpdatePassword = false,
-      this.shouldRememberUser = false});
+      this.loginRememberMeCheckBoxValue = false});
 
   AuthState copyWith(
       {AuthStatus? status,
@@ -32,7 +32,7 @@ class AuthState extends Equatable {
       int? resetPasswordCode,
       bool? shouldUpdatePassword,
       String? forgetPasswordEmail,
-      bool? shouldRememberUser}) {
+      bool? loginRememberMeCheckBoxValue}) {
     return AuthState(
         status: status ?? this.status,
         user: user ?? this.user,
@@ -42,21 +42,20 @@ class AuthState extends Equatable {
         shouldUpdatePassword: shouldUpdatePassword,
         forgetPasswordEmail: forgetPasswordEmail ?? this.forgetPasswordEmail,
         resetPasswordCode: resetPasswordCode ?? this.resetPasswordCode,
-        shouldRememberUser: shouldRememberUser ?? this.shouldRememberUser);
+        loginRememberMeCheckBoxValue: loginRememberMeCheckBoxValue ?? this.loginRememberMeCheckBoxValue);
   }
 
   @override
   List<Object?> get props => [
         status,
-        shouldRememberUser,
+    loginRememberMeCheckBoxValue,
         user,
         errorMessage,
         shouldSendOtp,
         resetPasswordCode,
         successMessage,
         shouldUpdatePassword,
-        shouldRememberUser,
-        forgetPasswordEmail
+        forgetPasswordEmail,
       ];
 }
 
@@ -67,7 +66,8 @@ enum AuthStatus {
   loginSuccess,
   signUpSuccess,
   failure,
-  loggedOut
+  loggedOut,
+  profileUpdated;
 }
 
 extension AuthStatusExtensions on AuthStatus {
@@ -78,4 +78,5 @@ extension AuthStatusExtensions on AuthStatus {
   bool get isLoginSuccess => this == AuthStatus.loginSuccess;
   bool get isSignUpSuccess => this == AuthStatus.signUpSuccess;
   bool get isLoggedOut => this == AuthStatus.loggedOut;
+  bool get isProfileUpdated => this == AuthStatus.profileUpdated;
 }

@@ -1,18 +1,8 @@
 import 'dart:convert';
+import 'package:exam_app/core/logger/app_logger.dart';
 import 'package:injectable/injectable.dart';
-import '../../../../core/app_data/local_storage/local_storage_client.dart';
-
-abstract class AuthLocalDataSource {
-  Future<void> cacheToken(String token);
-  Future<String?> getCachedToken();
-  Future<void> removeToken();
-  Future<void> cacheUserProfileInfo(Map<String, dynamic> userInfo);
-  Future<void> removeCachedUserProfileInfo();
-  Future<Map<String, dynamic>?> getCachedUserInfo();
-  Future<void> deleteUser();
-  Future<void> cacheRememberMe(bool rememberMe);
-  Future<bool?> getRememberMe();
-}
+import '../../../../../core/app_data/local_storage/local_storage_client.dart';
+import 'auth_local_ds_interface.dart';
 
 @Injectable(as: AuthLocalDataSource)
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
@@ -42,12 +32,15 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
-  Future<Map<String, dynamic>?> getCachedUserInfo() async {
-    final jsonString = await _localStorageClient.getData('userInfo');
+  Map<String, dynamic>? getCachedUserInfo() {
+    final jsonString = _localStorageClient.getData('userInfo');
     if (jsonString != null) {
+      Log.i('got user local info ${json.decode(jsonString)}');
       return json.decode(jsonString);
+    } else {
+      Log.i('failed to get user local info');
+      return null;
     }
-    return null;
   }
 
   @override
@@ -67,7 +60,12 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
-  Future<bool?> getRememberMe() async {
-    return await _localStorageClient.getRememberMe();
+  bool? getRememberMe() {
+    return _localStorageClient.getRememberMe();
+  }
+
+  @override
+  Future<void> deleteRememberMe() async {
+    await _localStorageClient.deleteData('rememberUser');
   }
 }

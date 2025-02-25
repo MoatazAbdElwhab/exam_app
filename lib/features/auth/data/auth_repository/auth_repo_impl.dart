@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:either_dart/either.dart';
+import 'package:exam_app/core/di/injectable.dart';
 import 'package:exam_app/core/error_handling/exceptions/network_exception.dart';
 import 'package:exam_app/features/auth/data/data_models/response/change_password_response.dart';
 import 'package:exam_app/features/auth/data/data_models/response/delete_account_response.dart';
@@ -10,14 +13,17 @@ import 'package:exam_app/features/auth/data/data_models/response/reset_password_
 import 'package:exam_app/features/auth/data/data_models/response/sign_in_response.dart';
 import 'package:exam_app/features/auth/data/data_models/response/sign_up_response.dart';
 import 'package:exam_app/features/auth/data/data_models/response/verify_reset_code_response.dart';
-import 'package:exam_app/features/auth/data/data_sources/auth_local_data_source.dart';
-import 'package:exam_app/features/auth/data/data_sources/auth_remote_data_source.dart';
+import 'package:exam_app/features/auth/data/data_models/user_dto.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/error_handling/exceptions/api_exception.dart';
 import '../../../../core/error_handling/exceptions/local_storage_exception.dart';
 import '../../../../core/logger/app_logger.dart';
 import '../../../../main.dart';
+import '../../../splash/splash.dart';
 import '../../domain/auth_repository/auth_repository.dart';
+import '../data_sources/auth_local_data_source/auth_local_ds_interface.dart';
+import '../data_sources/auth_remote_data_source/auth_remote_ds_interface.dart';
 
 @Injectable(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
@@ -100,31 +106,25 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Exception, GetLoggedUserDataResponse>>
       getLoggedUserInfo() async {
-    Log.i('is user logged in : $isUserLoggedIn');
-    if (!isOnline || isUserLoggedIn) {
-      try {
-        Log.d('getting user info offline');
-        final response = await authLocalDataSource.getCachedUserInfo();
-        final localResponse = GetLoggedUserDataResponse.fromJson(response!);
-        return Right(localResponse);
-      } catch (e) {
-        return Left(LocalStorageException(
-            'Failed to get cached user info: ${e.toString()}'));
-      }
-    } else {
-      try {
-        Log.d('getting user info online');
+    try {
+      final userJson = authLocalDataSource.getCachedUserInfo();
+      final user = UserDto.fromJson(userJson!);
+      return Right(GetLoggedUserDataResponse(user: user));
+    } catch (e) {
+      Log.e('auth repo failed to get user local data ${e.toString()}');
+      if (!isOnline) {
+        return Left(ApiException(
+            message: 'error due to local data fetching,'
+                ' no internet to fetch data online'));
+      } else {
         final apiResponse = await authRemoteDataSource.getLoggedUserInfo();
         if (apiResponse.isRight) {
           await authLocalDataSource
               .cacheUserProfileInfo(apiResponse.right.toJson());
           return Right(apiResponse.right);
         } else {
-          throw Left(apiResponse.left);
+          return Left(apiResponse.left);
         }
-      } catch (e) {
-        return Left(
-            ApiException(message: 'Get user info failed: ${e.toString()}'));
       }
     }
   }
@@ -132,14 +132,17 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Exception, LogoutResponse>> logout() async {
     if (!isOnline) {
-      Log.i('isonline : $isOnline');
+      Log.i('isOnline : $isOnline');
       return Left(NetworkException('No internet connection'));
     }
     try {
       final apiResponse = await authRemoteDataSource.logout();
       if (apiResponse.isRight) {
-        await authLocalDataSource.deleteUser();
-        await authLocalDataSource.removeToken();
+        await ([
+          authLocalDataSource.deleteUser(),
+          authLocalDataSource.removeToken(),
+          authLocalDataSource.deleteRememberMe(),
+        ]).wait;
         return apiResponse;
       } else {
         return Left(apiResponse.left);
@@ -158,7 +161,6 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final response =
           await authRemoteDataSource.resetPassword(email, newPassword);
-
       if (response.isRight && response.right.token != null) {
         await authLocalDataSource.cacheToken(response.right.token!);
         return Right(response.right);
@@ -178,7 +180,6 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(NetworkException('No internet connection'));
     }
     try {
-      print('signIn');
       Log.e('remember me: $shouldRememberUser');
       final apiResponse = await authRemoteDataSource.signIn(email, password);
       if (apiResponse.isRight) {

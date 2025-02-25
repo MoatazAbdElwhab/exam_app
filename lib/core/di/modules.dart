@@ -12,7 +12,9 @@ abstract class GetItRegisterModule {
   /// internet
   @singleton
   InternetConnectionChecker get checker =>
-      InternetConnectionChecker.createInstance();
+      InternetConnectionChecker.createInstance(
+        checkTimeout: const Duration(milliseconds: 3800),
+      );
 
   /// local
   @preResolve

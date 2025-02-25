@@ -13,10 +13,11 @@ class DioErrorHandler {
   final LocalStorageClient _localStorage;
   DioErrorHandler(this._localStorage, this._navigatorKey);
   ApiException handle(DioException error) {
-    Log.e('DioErrorHandler: handling dio error, ${error.response?.data}');
+    Log.e('DioErrorHandler, handling dio error');
 
     if (error.response?.data != null &&
         error.response?.data['message'] != null) {
+      _checkTokenValidity(error.response?.data);
       return ApiException(
         message: error.response?.data['message'],
         statusCode: error.response?.statusCode,
@@ -41,17 +42,12 @@ class DioErrorHandler {
               response: error.response?.data,
             );
           case 401:
-            if (appCurrentRoute != Routes.login &&
-                appCurrentRoute != Routes.signup) {
-              _localStorage.deleteSecuredData('token');
-              _navigatorKey.currentState
-                  ?.pushNamedAndRemoveUntil(Routes.login, (route) => false);
-            }
             return ApiException(
-              message: 'Unauthorized. Please login again.',
+              message: 'Unauthorized. Please try again.',
               statusCode: 401,
               response: error.response?.data,
             );
+
           case 403:
             return ApiException(
               message:
@@ -89,6 +85,23 @@ class DioErrorHandler {
         return ApiException(message: 'Network error occurred');
       default:
         return ApiException(message: 'Something went wrong');
+    }
+  }
+
+  void _checkTokenValidity(data) {
+    if (appCurrentRoute != Routes.login &&
+        appCurrentRoute != Routes.signup &&
+        data['code'] == 401 &&
+        (data['message'].contains('invalid token') ||
+            data['message'].contains('user not found'))) {
+      Log.i('invalid token');
+      _localStorage.deleteSecuredData('token')?.then(
+        (_) {
+          _navigatorKey.currentState
+              ?.pushNamedAndRemoveUntil(Routes.login, (route) => false);
+        },
+      );
+      return;
     }
   }
 }

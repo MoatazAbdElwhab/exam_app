@@ -35,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
     cubit = context.read<AuthCubit>();
     customElevatedButton = CustomElevatedButton(
       title: 'Login',
+      shouldUseValidation: true,
       onTap: () async {
         if (formKey.currentState!.validate()) {
           await cubit.signIn();

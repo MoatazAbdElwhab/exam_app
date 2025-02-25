@@ -9,16 +9,17 @@ class CustomElevatedButton extends StatelessWidget {
   final double? width;
   final VoidCallback onTap;
   final Color? backgroundColor;
+  final bool shouldUseValidation;
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
-  CustomElevatedButton({
-    super.key,
-    required this.title,
-    this.height,
-    this.width,
-    required this.onTap,
-    this.backgroundColor,
-  });
+  CustomElevatedButton(
+      {super.key,
+      required this.title,
+      this.height,
+      this.width,
+      required this.onTap,
+      this.backgroundColor,
+      this.shouldUseValidation = false});
 
   void isFormValid(bool isValid) {
     if (_isValidNotifier.value != isValid) {
@@ -28,29 +29,46 @@ class CustomElevatedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: _isValidNotifier,
-      builder: (_, isValid, child) {
-        return SizedBox(
-          height: height ?? 48.h,
-          width: width ?? double.infinity,
-          child: ElevatedButton(
-            onPressed: onTap,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: backgroundColor != null
-                  ? (isValid ? backgroundColor : Colors.grey)
-                  : (isValid ? ColorManager.blue : Colors.grey),
-            ),
-            child: Text(
-              title,
-              style: getMediumStyle(
-                color: ColorManager.white,
-                fontSize: 16.sp,
+    return shouldUseValidation
+        ? ValueListenableBuilder<bool>(
+            valueListenable: _isValidNotifier,
+            builder: (_, isValid, __) {
+              return SizedBox(
+                height: height ?? 48.h,
+                width: width ?? double.infinity,
+                child: ElevatedButton(
+                  onPressed: onTap,
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: backgroundColor != null
+                          ? (isValid ? backgroundColor : Colors.grey)
+                          : (isValid ? ColorManager.blue : Colors.grey)),
+                  child: Text(
+                    title,
+                    style: getRegularStyle(
+                      color: ColorManager.white,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                ),
+              );
+            },
+          )
+        : SizedBox(
+            height: height ?? 48.h,
+            width: width ?? double.infinity,
+            child: ElevatedButton(
+              onPressed: onTap,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: backgroundColor ?? ColorManager.blue,
+              ),
+              child: Text(
+                title,
+                style: getRegularStyle(
+                  color: ColorManager.white,
+                  fontSize: 16.sp,
+                ),
               ),
             ),
-          ),
-        );
-      },
-    );
+          );
   }
 }
