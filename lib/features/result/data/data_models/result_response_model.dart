@@ -1,6 +1,5 @@
 // features/result/data/data_models/result_response_model.dart
 import 'package:exam_app/features/result/data/data_models/wrong_question_model.dart';
-import 'package:exam_app/features/result/domain/entities/answers.dart';
 import 'package:exam_app/features/result/domain/entities/wrong_question.dart';
 
 import '../../domain/entities/result_response.dart';
@@ -15,18 +14,22 @@ class ResultResponseModel extends ResultResponse {
     super.correctQuestions,
   });
 
-  factory ResultResponseModel.fromJson(Map<String, dynamic> json) =>
-      ResultResponseModel(
-        message: json['message'],
-        correct: json['correct'],
-        wrong: json['wrong'],
-        total: json['total'],
-        wrongQuestions: (json['WrongQuestions'] as List<dynamic>?)
-    ?.map((e) => WrongQuestionModel.fromJson(e as Map<String, dynamic>))
-    .map((e) => e as WrongQuestion)
-    .toList(),
-        correctQuestions: json['correctQuestions'],
-      );
+  factory ResultResponseModel.fromJson(Map<String, dynamic> json) {
+    return ResultResponseModel(
+      message: json['message'],
+      correct: json['correct'],
+      wrong: json['wrong'],
+      total: json['total'],
+      wrongQuestions: (json['WrongQuestions'] as List<dynamic>?)
+          ?.map((e) => WrongQuestionModel.fromJson(e as Map<String, dynamic>))
+          .cast<WrongQuestion>()
+          .toList(),
+      correctQuestions: (json['correctQuestions'] as List<dynamic>?)
+          ?.map((e) => WrongQuestionModel.fromJson(e as Map<String, dynamic>))
+          .cast<WrongQuestion>()
+          .toList(),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         'message': message,
@@ -35,7 +38,7 @@ class ResultResponseModel extends ResultResponse {
         'total': total,
         'WrongQuestions':
             wrongQuestions?.map((e) => (e as WrongQuestionModel).toJson()).toList(),
-        'correctQuestions': correctQuestions,
+        'correctQuestions':
+            correctQuestions?.map((e) => (e as WrongQuestionModel).toJson()).toList(),
       };
 }
-

@@ -1,37 +1,46 @@
 // features/result/data/data_models/wrong_question_model.dart
 
-// features/result/data/models/wrong_question_model.dart
-import 'package:exam_app/features/result/domain/entities/answers.dart';
+import 'package:exam_app/features/result/data/data_models/model.dart';
 
 import '../../domain/entities/wrong_question.dart';
-import 'answers_model.dart';
 
 class WrongQuestionModel extends WrongQuestion {
   WrongQuestionModel({
-    super.qid,
+    super.id,
     super.question,
-    super.inCorrectAnswer,
-    super.correctAnswer,
+    super.type,
     super.answers,
+    super.selectedAnswer,
+    super.correctAnswer,
+    super.subject,
+    super.exam,
+    super.createdAt,
   });
 
   factory WrongQuestionModel.fromJson(Map<String, dynamic> json) =>
       WrongQuestionModel(
-        qid: json['QID'],
-        question: json['Question'],
-        inCorrectAnswer: json['inCorrectAnswer'],
-        correctAnswer: json['correctAnswer'],
-        answers: json['answers'] == null
-            ? null
-            : AnswersModel.fromJson(json['answers'] as Map<String, dynamic>)
-                as Answers?,
+        id: json['_id'],
+        question: json['question'],
+        type: json['type'],
+        answers: (json['answers'] as List<dynamic>?)
+            ?.map((e) => AnswerModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        selectedAnswer: json['selectedAnswer'],
+        correctAnswer: json['correct'],
+        subject: json['subject'] as Map<String, dynamic>?,
+        exam: json['exam'] as Map<String, dynamic>?,
+        createdAt: json['createdAt'],
       );
 
   Map<String, dynamic> toJson() => {
-        'QID': qid,
-        'Question': question,
-        'inCorrectAnswer': inCorrectAnswer,
-        'correctAnswer': correctAnswer,
-        'answers': (answers as AnswersModel?)?.toJson(),
+        '_id': id,
+        'question': question,
+        'type': type,
+        'answers': answers?.map((e) => (e as AnswerModel).toJson()).toList(),
+        'selectedAnswer': selectedAnswer,
+        'correct': correctAnswer,
+        'subject': subject,
+        'exam': exam,
+        'createdAt': createdAt,
       };
 }

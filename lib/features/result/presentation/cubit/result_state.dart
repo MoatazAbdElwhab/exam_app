@@ -1,26 +1,48 @@
-// features/result/presentation/cubit/result_state.dart
+part of 'result_cubit.dart';
 
-import 'package:exam_app/features/result/data/data_models/question_request_model.dart';
-import 'package:exam_app/features/result/domain/entities/question_request.dart';
-import 'package:exam_app/features/result/domain/entities/result_response.dart';
+abstract class ResultState extends Equatable {
+  const ResultState();
 
-abstract class ResultState {}
+  @override
+  List<Object?> get props => [];
+}
 
 class ResultInitial extends ResultState {}
 
 class ResultLoading extends ResultState {}
 
 class QuestionsLoaded extends ResultState {
-  final List<QuestionRequestModel> questions;
-  QuestionsLoaded(this.questions);
+  final List<QuestionModel> questions;
+
+  const QuestionsLoaded(this.questions);
+
+  @override
+  List<Object?> get props => [questions];
 }
 
-class AnswersSubmitted extends ResultState {
-  final ResultResponse response;
-  AnswersSubmitted(this.response);
+class ResultAnswerSubmitted extends ResultState {
+  final CheckAnswerResponseModel response;
+
+  const ResultAnswerSubmitted(this.response);
+
+  @override
+  List<Object?> get props => [response];
+}
+
+class ResultAllAnswersSubmitted extends ResultState {
+  final CheckAnswerResponseModel response;
+
+  const ResultAllAnswersSubmitted(this.response);
+
+  @override
+  List<Object?> get props => [response];
 }
 
 class ResultError extends ResultState {
   final String message;
-  ResultError(this.message);
+
+  const ResultError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

@@ -3,19 +3,21 @@
 import 'package:exam_app/features/result/domain/entities/answer.dart';
 
 class AnswerModel extends Answer {
-  AnswerModel({super.questionId, super.correct});
+  final String? answer;
+  final String? key;
+
+  AnswerModel({
+    this.answer,
+    this.key,
+  });
 
   factory AnswerModel.fromJson(Map<String, dynamic> json) => AnswerModel(
-        questionId: json['questionId'],
-        correct: json['correct'],
+        answer: json['answer'],
+        key: json['key'],
       );
 
   Map<String, dynamic> toJson() => {
-        'questionId': questionId,
-        'correct': correct,
+        'answer': answer,
+        'key': key,
       };
 }
-
-
-
-

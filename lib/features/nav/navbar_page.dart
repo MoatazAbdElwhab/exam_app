@@ -1,3 +1,5 @@
+// features/nav/navbar_page.dart
+import 'package:exam_app/features/result/presentation/pages/results_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -6,7 +8,6 @@ import '../../core/resources/color_manager.dart';
 import '../../core/resources/icon_manager.dart';
 import '../explore/presentation/pages/explore_page.dart';
 import '../profile/presentation/pages/profile_page.dart';
-import '../result/presentation/pages/result_page.dart';
 
 class NavItem extends StatelessWidget {
   final String assetPath;
@@ -58,7 +59,7 @@ class _NavbarPageState extends State<NavbarPage> {
   // Making pages static and const to prevent recreating them
   static const List<Widget> _pages = [
     ExplorePage(),
-    ResultPage(),
+    ResultsPage(),
     ProfilePage(),
   ];
 

@@ -1,18 +1,26 @@
 // features/result/domain/entities/wrong_question.dart
-import 'package:exam_app/features/result/domain/entities/answers.dart';
+import 'package:exam_app/features/result/domain/entities/answer.dart';
 
 class WrongQuestion {
-  final String? qid;
+  final String? id;
   final String? question;
-  final String? inCorrectAnswer;
+  final String? type;
+  final List<Answer>? answers;
+  final String? selectedAnswer;
   final String? correctAnswer;
-  final Answers? answers;
+  final Map<String, dynamic>? subject;
+  final Map<String, dynamic>? exam;
+  final String? createdAt;
 
   WrongQuestion({
-    this.qid,
+    this.id,
     this.question,
-    this.inCorrectAnswer,
-    this.correctAnswer,
+    this.type,
     this.answers,
+    this.selectedAnswer,
+    this.correctAnswer,
+    this.subject,
+    this.exam,
+    this.createdAt,
   });
 }

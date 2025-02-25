@@ -25,20 +25,29 @@ class ResultRemoteDataSourceImpl implements ResultRemoteDataSource {
     try {
       Log.d('Fetching questions from remote data source...');
       final response = await _apiClient.get(
-        'questions/check',
+        'questions',
         requiresToken: true,
       );
 
-      // Ensure the response is a List<dynamic>
-      if (response is! List) {
+      // Ensure the response is a Map<String, dynamic>
+      if (response is! Map<String, dynamic>) {
         throw ApiException(
-          message: 'Invalid response format: Expected a list of questions',
+          message: 'Invalid response format: Expected a JSON object',
           statusCode: 500,
         );
       }
 
-      // Parse the response into a list of QuestionRequestModel
-      final questions = response
+      // Extract questions array from response
+      final questionsData = response['questions'];
+      if (questionsData is! List) {
+        throw ApiException(
+          message: 'Invalid response format: Questions field is not an array',
+          statusCode: 500,
+        );
+      }
+
+      // Parse the questions into QuestionRequestModel objects
+      final questions = questionsData
           .map((e) => QuestionRequestModel.fromJson(e as Map<String, dynamic>))
           .toList();
 
@@ -69,8 +78,20 @@ class ResultRemoteDataSourceImpl implements ResultRemoteDataSource {
         requiresToken: true,
       );
 
+      print(response);
+      print(request.toJson());
+
+      // Ensure the response is a Map<String, dynamic>
+      if (response is! Map<String, dynamic>) {
+        throw ApiException(
+          message: 'Invalid response format: Expected a map',
+          statusCode: 500,
+        );
+      }
+
       // Parse the response into a ResultResponseModel
       final resultResponse = ResultResponseModel.fromJson(response);
+      print(resultResponse);
 
       Log.d('Successfully submitted answers: ${resultResponse.message}');
       return Right(resultResponse);

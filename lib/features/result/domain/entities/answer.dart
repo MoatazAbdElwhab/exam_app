@@ -1,8 +1,10 @@
 // features/result/domain/entities/answer.dart
 class Answer {
-  final String? questionId;
-  final String? correct;
+  final String? answer;
+  final String? key;
 
-  Answer({this.questionId, this.correct});
+  Answer({
+    this.answer,
+    this.key,
+  });
 }
-

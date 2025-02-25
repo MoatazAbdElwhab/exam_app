@@ -9,6 +9,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:dio/dio.dart' as _i361;
 import 'package:exam_app/core/app_data/api/api_client.dart' as _i93;
 import 'package:exam_app/core/app_data/api/dio_client.dart' as _i797;
 import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart'
@@ -49,10 +50,12 @@ import 'package:exam_app/features/auth/presentation/cubit/auth_cubit.dart'
     as _i533;
 import 'package:exam_app/features/result/data/data_sources/result_remote_data_source.dart'
     as _i933;
-import 'package:exam_app/features/result/data/result_repository/result_repo_imp.dart'
-    as _i805;
+import 'package:exam_app/features/result/data/repositories/result_repository_impl.dart'
+    as _i161;
 import 'package:exam_app/features/result/domain/result_repository/result_repository.dart'
     as _i451;
+import 'package:exam_app/features/result/domain/use_cases/check_answers_use_case.dart'
+    as _i696;
 import 'package:exam_app/features/result/domain/use_cases/get_result_usecase.dart'
     as _i101;
 import 'package:exam_app/features/result/domain/use_cases/submit_answers.dart'
@@ -92,6 +95,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => getItRegisterModule.secureStorage);
     gh.singleton<_i69.AppNavigatorObserver>(() => _i69.AppNavigatorObserver());
     gh.singleton<_i985.DialogUtils>(() => _i985.DialogUtils());
+    gh.factory<_i451.ResultRepository>(
+        () => _i161.ResultRepositoryImpl(gh<_i361.Dio>()));
+    gh.factory<_i644.ResultCubit>(
+        () => _i644.ResultCubit(gh<_i451.ResultRepository>()));
     gh.singleton<_i73.LocalStorageClient>(() => _i73.LocalStorageClient(
           gh<_i460.SharedPreferences>(),
           gh<_i558.FlutterSecureStorage>(),
@@ -100,8 +107,14 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i73.LocalStorageClient>(),
           gh<_i719.GlobalKey<_i719.NavigatorState>>(),
         ));
+    gh.singleton<_i101.FetchQuestions>(
+        () => _i101.FetchQuestions(gh<_i451.ResultRepository>()));
+    gh.singleton<_i389.SubmitAnswers>(
+        () => _i389.SubmitAnswers(gh<_i451.ResultRepository>()));
     gh.factory<_i937.AuthLocalDataSource>(
         () => _i937.AuthLocalDataSourceImpl(gh<_i73.LocalStorageClient>()));
+    gh.factory<_i696.CheckAnswersUseCase>(
+        () => _i696.CheckAnswersUseCase(gh<_i451.ResultRepository>()));
     gh.singleton<_i93.ApiClient>(() => _i797.DioApiClient(
           gh<_i73.LocalStorageClient>(),
           gh<_i32.DioErrorHandler>(),
@@ -149,14 +162,6 @@ extension GetItInjectableX on _i174.GetIt {
           verifyResetCodeUseCase: gh<_i923.VerifyResetCodeUseCase>(),
           storageClient: gh<_i73.LocalStorageClient>(),
         ));
-    gh.factory<_i451.ResultRepository>(
-        () => _i805.ResultRepositoryImpl(gh<_i933.ResultRemoteDataSource>()));
-    gh.singleton<_i101.FetchQuestions>(
-        () => _i101.FetchQuestions(gh<_i451.ResultRepository>()));
-    gh.singleton<_i389.SubmitAnswers>(
-        () => _i389.SubmitAnswers(gh<_i451.ResultRepository>()));
-    gh.factory<_i644.ResultCubit>(
-        () => _i644.ResultCubit(gh<_i451.ResultRepository>()));
     return this;
   }
 }
