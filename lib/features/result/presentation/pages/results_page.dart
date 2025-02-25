@@ -1,6 +1,6 @@
-// features/results/presentation/pages/results_page.dart
-import 'package:exam_app/features/results/presentation/cubit/result_cubit.dart';
-import 'package:exam_app/features/results/presentation/widget/result_container.dart';
+// features/result/presentation/pages/results_page.dart
+import 'package:exam_app/features/result/presentation/cubit/result_cubit.dart';
+import 'package:exam_app/features/result/presentation/widget/result_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
@@ -27,20 +27,20 @@ class _ResultsPageState extends State<ResultsPage> {
       backgroundColor: ColorManager.white,
       appBar: const CustomAppBar(
         title: 'Exam Results',
-        canPop: true,
+        canPop: false,
       ),
       body: BlocBuilder<ResultCubit, ResultState>(
         builder: (context, state) {
           if (state is ResultLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          
+
           if (state is ResultError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.error_outline,
                     size: 64,
                     color: ColorManager.error,
@@ -88,6 +88,8 @@ class _ResultsPageState extends State<ResultsPage> {
                 ],
               ),
             );
+         
+         
           }
 
           if (state is QuestionsLoaded && state.questions.isEmpty) {

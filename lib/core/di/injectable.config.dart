@@ -59,8 +59,8 @@ import 'package:exam_app/features/result/domain/use_cases/get_result_usecase.dar
     as _i101;
 import 'package:exam_app/features/result/domain/use_cases/submit_answers.dart'
     as _i389;
-import 'package:exam_app/features/results/presentation/cubit/result_cubit.dart'
-    as _i517;
+import 'package:exam_app/features/result/presentation/cubit/result_cubit.dart'
+    as _i644;
 import 'package:flutter/cupertino.dart' as _i719;
 import 'package:flutter/material.dart' as _i409;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
@@ -92,8 +92,8 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i558.FlutterSecureStorage>(
         () => getItRegisterModule.secureStorage);
-    gh.singleton<_i69.AppNavigatorObserver>(() => _i69.AppNavigatorObserver());
     gh.singleton<_i985.DialogUtils>(() => _i985.DialogUtils());
+    gh.singleton<_i69.AppNavigatorObserver>(() => _i69.AppNavigatorObserver());
     gh.singleton<_i73.LocalStorageClient>(() => _i73.LocalStorageClient(
           gh<_i460.SharedPreferences>(),
           gh<_i558.FlutterSecureStorage>(),
@@ -126,16 +126,14 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i937.AuthLocalDataSource>(),
           gh<_i583.AuthRemoteDataSource>(),
         ));
-    gh.factory<_i517.ResultCubit>(
-        () => _i517.ResultCubit(gh<_i451.ResultRepository>()));
+    gh.factory<_i644.ResultCubit>(
+        () => _i644.ResultCubit(gh<_i451.ResultRepository>()));
     gh.factory<_i890.ChangePasswordUseCase>(
         () => _i890.ChangePasswordUseCase(gh<_i24.AuthRepository>()));
     gh.factory<_i997.DeleteAccountUseCase>(
         () => _i997.DeleteAccountUseCase(gh<_i24.AuthRepository>()));
     gh.factory<_i710.EditProfileUseCase>(
         () => _i710.EditProfileUseCase(gh<_i24.AuthRepository>()));
-    gh.factory<_i879.ForgotPasswordUseCase>(
-        () => _i879.ForgotPasswordUseCase(gh<_i24.AuthRepository>()));
     gh.factory<_i306.GetLoggedUserInfoUseCase>(
         () => _i306.GetLoggedUserInfoUseCase(gh<_i24.AuthRepository>()));
     gh.factory<_i696.LogoutUseCase>(
@@ -148,6 +146,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i756.SignUpUseCase(gh<_i24.AuthRepository>()));
     gh.factory<_i923.VerifyResetCodeUseCase>(
         () => _i923.VerifyResetCodeUseCase(gh<_i24.AuthRepository>()));
+    gh.factory<_i879.ForgotPasswordUseCase>(
+        () => _i879.ForgotPasswordUseCase(gh<_i24.AuthRepository>()));
     gh.factory<_i533.AuthCubit>(() => _i533.AuthCubit(
           signInUseCase: gh<_i937.SignInUseCase>(),
           signUpUseCase: gh<_i756.SignUpUseCase>(),

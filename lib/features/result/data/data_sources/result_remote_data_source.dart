@@ -1,3 +1,4 @@
+// features/result/data/data_sources/result_remote_data_source.dart
 import 'dart:developer' as dev;
 import 'package:either_dart/either.dart';
 import 'package:exam_app/core/app_data/api/api_client.dart';
@@ -13,6 +14,8 @@ class ResultRemoteDataSource {
 
   ResultRemoteDataSource(this._apiClient);
 
+
+//------------------------------------------------------fetchQuestions------------------------------------------------------
   Future<Either<ApiException, List<QuestionRequestModel>>> fetchQuestions() async {
     try {
       final response = await _apiClient.get('/questions', requiresToken: true);
@@ -41,6 +44,8 @@ class ResultRemoteDataSource {
     }
   }
 
+
+//------------------------------------------------------submitAnswers------------------------------------------------------
   Future<Either<ApiException, ResultResponseModel>> submitAnswers(
       QuestionRequestModel request) async {
     try {
@@ -62,6 +67,8 @@ class ResultRemoteDataSource {
     }
   }
 
+
+//------------------------------------------------------fetchHistory------------------------------------------------------
   Future<Either<ApiException, HistoryResponseModel>> fetchHistory() async {
     try {
       final response = await _apiClient.get('/questions/history', requiresToken: true);

@@ -79,17 +79,18 @@ class ResultCubit extends Cubit<ResultState> {
 
   Future<void> submitAllAnswers() async {
     if (_questions.isEmpty) {
-      emit(ResultError('No questions to submit'));
+      emit(const ResultError('No questions to submit'));
       return;
     }
 
     emit(ResultLoading());
     try {
       // Get all questions with answers
-      final answeredQuestions = _questions.where((q) => q.selectedAnswer != null).toList();
-      
+      final answeredQuestions =
+          _questions.where((q) => q.selectedAnswer != null).toList();
+
       if (answeredQuestions.isEmpty) {
-        emit(ResultError('No answers to submit'));
+        emit(const ResultError('No answers to submit'));
         return;
       }
 

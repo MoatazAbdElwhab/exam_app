@@ -3,8 +3,10 @@
 import 'package:exam_app/features/result/domain/entities/answer.dart';
 
 class AnswerModel extends Answer {
+  @override
   final String? answer;
   final String? key;
+
 
   AnswerModel({
     this.answer,

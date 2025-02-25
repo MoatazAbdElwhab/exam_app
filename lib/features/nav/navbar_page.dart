@@ -1,5 +1,5 @@
 // features/nav/navbar_page.dart
-import 'package:exam_app/features/results/presentation/pages/results_page.dart';
+import 'package:exam_app/features/result/presentation/pages/results_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 

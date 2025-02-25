@@ -1,6 +1,6 @@
 // core/routes/app_router.dart
 import 'package:exam_app/core/routes/routes.dart';
-import 'package:exam_app/features/results/presentation/pages/results_page.dart';
+import 'package:exam_app/features/result/presentation/pages/results_page.dart';
 import 'package:flutter/material.dart';
 import 'package:exam_app/features/auth/presentation/pages/login_page.dart';
 import 'package:exam_app/features/auth/presentation/pages/signup_page.dart';

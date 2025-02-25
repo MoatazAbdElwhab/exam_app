@@ -1,6 +1,6 @@
-// features/results/presentation/widget/result_container.dart
-import 'package:exam_app/features/results/presentation/cubit/result_cubit.dart';
-import 'package:exam_app/features/results/presentation/pages/result_details.dart';
+// features/result/presentation/widget/result_container.dart
+import 'package:exam_app/features/result/presentation/cubit/result_cubit.dart';
+import 'package:exam_app/features/result/presentation/pages/result_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:exam_app/core/resources/color_manager.dart';

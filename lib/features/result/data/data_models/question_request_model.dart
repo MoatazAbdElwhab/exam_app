@@ -1,7 +1,6 @@
 // features/result/data/data_models/question_request_model.dart
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-
 part 'question_request_model.freezed.dart';
 part 'question_request_model.g.dart';
 

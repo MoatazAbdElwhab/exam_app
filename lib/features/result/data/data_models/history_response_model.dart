@@ -1,19 +1,27 @@
+// features/result/data/data_models/history_response_model.dart
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 
-class HistoryResponseModel {
+class HistoryResponseModel extends Equatable {
   final String? message;
   final HistoryData? history;
 
-  HistoryResponseModel({
+  const HistoryResponseModel({
     this.message,
     this.history,
   });
 
-  factory HistoryResponseModel.fromJson(Map<String, dynamic> json) => HistoryResponseModel(
-    message: json['message'],
-    history: json['history'] != null ? HistoryData.fromJson(json['history']) : null,
-  );
+  factory HistoryResponseModel.fromJson(Map<String, dynamic> json) =>
+      HistoryResponseModel(
+        message: json['message'],
+        history: json['history'] != null
+            ? HistoryData.fromJson(json['history'])
+            : null,
+      );
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [message, history];
 }
 
 class HistoryData {
@@ -36,14 +44,14 @@ class HistoryData {
   });
 
   factory HistoryData.fromJson(Map<String, dynamic> json) => HistoryData(
-    id: json['_id'],
-    checkAnswer: json['checkAnswer'],
-    qid: json['QID'] != null ? QuestionData.fromJson(json['QID']) : null,
-    user: json['user'],
-    chosenAnswer: json['chosenAnswer'],
-    avgAnswerTime: json['avgAnswerTime'],
-    createdAt: json['createdAt'],
-  );
+        id: json['_id'],
+        checkAnswer: json['checkAnswer'],
+        qid: json['QID'] != null ? QuestionData.fromJson(json['QID']) : null,
+        user: json['user'],
+        chosenAnswer: json['chosenAnswer'],
+        avgAnswerTime: json['avgAnswerTime'],
+        createdAt: json['createdAt'],
+      );
 }
 
 class QuestionData {
@@ -68,15 +76,17 @@ class QuestionData {
   });
 
   factory QuestionData.fromJson(Map<String, dynamic> json) => QuestionData(
-    answers: (json['answers'] as List<dynamic>?)?.map((e) => AnswerData.fromJson(e)).toList(),
-    type: json['type'],
-    id: json['_id'],
-    question: json['question'],
-    correct: json['correct'],
-    subject: json['subject'],
-    exam: json['exam'],
-    createdAt: json['createdAt'],
-  );
+        answers: (json['answers'] as List<dynamic>?)
+            ?.map((e) => AnswerData.fromJson(e))
+            .toList(),
+        type: json['type'],
+        id: json['_id'],
+        question: json['question'],
+        correct: json['correct'],
+        subject: json['subject'],
+        exam: json['exam'],
+        createdAt: json['createdAt'],
+      );
 }
 
 class AnswerData {
@@ -86,7 +96,7 @@ class AnswerData {
   AnswerData({this.answer, this.key});
 
   factory AnswerData.fromJson(Map<String, dynamic> json) => AnswerData(
-    answer: json['answer'],
-    key: json['key'],
-  );
+        answer: json['answer'],
+        key: json['key'],
+      );
 }
