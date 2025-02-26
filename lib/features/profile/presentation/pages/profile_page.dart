@@ -2,9 +2,11 @@ import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/image_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:exam_app/core/routes/routes.dart';
+import 'package:exam_app/core/utils/validator.dart';
 import 'package:exam_app/core/widgets/custom_app_bar.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
 import 'package:exam_app/core/widgets/custom_text_form_field.dart';
+import 'package:exam_app/features/auth/data/data_models/user_dto.dart';
 import 'package:exam_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:exam_app/features/auth/presentation/cubit/auth_state.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +32,9 @@ class _ProfilePageState extends State<ProfilePage> {
   late final TextEditingController _passwordController;
   late final TextEditingController _fullNameController;
   late final TextEditingController _phoneController;
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  late CustomElevatedButton customElevatedButton;
   @override
   void initState() {
     super.initState();
@@ -60,6 +64,20 @@ class _ProfilePageState extends State<ProfilePage> {
     Log.i('didChangeDependencies profile');
     super.didChangeDependencies();
     authCubit = context.read<AuthCubit>();
+    customElevatedButton = CustomElevatedButton(
+      title: 'Update',
+      shouldUseValidation: true,
+      onTap: () {
+        authCubit.editProfile(
+            changedFields: UserDto(
+          username: _fullNameController.text.trim(),
+          firstName: _firstNameController.text.trim(),
+          lastName: _lastNameController.text.trim(),
+          email: _emailController.text.trim(),
+          phone: _phoneController.text.trim(),
+        ).toEditProfileMap());
+      },
+    );
     await authCubit.getLoggedUserInfo().then(
       (_) {
         final user = authCubit.state.user;
@@ -86,130 +104,121 @@ class _ProfilePageState extends State<ProfilePage> {
           title: 'Profile',
           canPop: false,
         ),
-        //body
         body: BlocListener<AuthCubit, AuthState>(
           child: SingleChildScrollView(
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                        onPressed: () async {
-                          // await getIt<LocalStorageClient>().saveRememberMe(false);
-                          // await  context
-                          //      .read<AuthCubit>()
-                          //      .logout();
-                          Navigator.of(context).pushNamed(Routes.result);
-                          // await getIt<AuthCubit>().close();
-                        },
-                        child: Text('data')),
-                    Stack(
-                      alignment: Alignment.bottomRight,
-                      children: [
-                        const CircleAvatar(
-                          radius: 60,
-                          backgroundColor: ColorManager.white,
-                          child: CircleAvatar(
-                            backgroundColor: ColorManager.white,
+                child: Form(
+                  key: formKey,
+                  onChanged: () {
+                    customElevatedButton.isFormValid(_checkValidation());
+                  },
+                  child: Column(
+                    children: [
+                      Stack(
+                        alignment: Alignment.bottomRight,
+                        children: [
+                          const CircleAvatar(
                             radius: 60,
-                            backgroundImage: AssetImage(ImageManager.userPng),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () async {},
-                          child: CircleAvatar(
-                            radius: 15,
-                            backgroundColor:
-                                Theme.of(context).scaffoldBackgroundColor,
-                            child: const Icon(
-                              Icons.camera_alt_rounded,
-                              size: 20,
+                            backgroundColor: ColorManager.white,
+                            child: CircleAvatar(
+                              backgroundColor: ColorManager.white,
+                              radius: 60,
+                              backgroundImage: AssetImage(ImageManager.userPng),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-
-                    //user name
-                    Gap(24.h),
-                    CustomTextFormField(
-                      label: 'User name',
-                      controller: _fullNameController,
-                    ),
-
-                    Gap(24.h),
-                    //first name & last name
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CustomTextFormField(
-                            label: 'First name',
-                            controller: _firstNameController,
+                          GestureDetector(
+                            onTap: () async {},
+                            child: CircleAvatar(
+                              radius: 15,
+                              backgroundColor:
+                                  Theme.of(context).scaffoldBackgroundColor,
+                              child: const Icon(
+                                Icons.camera_alt_rounded,
+                                size: 20,
+                              ),
+                            ),
                           ),
+                        ],
+                      ),
+
+                      //user name
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 12.h,
                         ),
-                        SizedBox(width: 16.w),
-                        Expanded(
-                          child: CustomTextFormField(
-                            label: 'Last name',
-                            controller: _lastNameController,
+                        child: ElevatedButton(
+                            onPressed: context.read<AuthCubit>().logout,
+                            child: const Text('logout')),
+                      ),
+                      CustomTextFormField(
+                        label: 'User name',
+                        controller: _fullNameController,
+                      ),
+
+                      Gap(24.h),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomTextFormField(
+                              label: 'First name',
+                              controller: _firstNameController,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                          SizedBox(width: 16.w),
+                          Expanded(
+                            child: CustomTextFormField(
+                              label: 'Last name',
+                              controller: _lastNameController,
+                            ),
+                          ),
+                        ],
+                      ),
 
-                    //email
-                    Gap(24.h),
-                    CustomTextFormField(
-                      label: 'E-mail',
-                      controller: _emailController,
-                    ),
+                      Gap(24.h),
+                      CustomTextFormField(
+                        label: 'E-mail',
+                        controller: _emailController,
+                      ),
 
-                    //password
-                    Gap(24.h),
-                    CustomTextFormField(
-                      label: 'Password',
-                      controller: _passwordController,
-                      isPass: true,
-                      suffixIcon: TextButton(
-                          onPressed: () async {
-                            await context.read<AuthCubit>().logout();
-                            // Navigator.pushNamed(
-                            //     context, Routes.changePassword);
-                          },
-                          child: Text(
-                            'change',
-                            style: getRegularStyle(
-                                color: ColorManager.blue, fontSize: 14.sp),
-                          )),
-                    ),
+                      //password
+                      Gap(24.h),
+                      CustomTextFormField(
+                        label: 'Password',
+                        readOnly: true,
+                        controller: _passwordController,
+                        isPass: true,
+                        suffixIcon: TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(Routes.profileResetPassword);
+                            },
+                            child: Text(
+                              'change',
+                              style: getRegularStyle(
+                                  color: ColorManager.blue, fontSize: 14.sp),
+                            )),
+                      ),
 
-                    //phone number
-                    Gap(24.h),
-                    CustomTextFormField(
-                      label: 'Phone number',
-                      controller: _phoneController,
-                    ),
+                      //phone number
+                      Gap(24.h),
+                      CustomTextFormField(
+                        label: 'Phone number',
+                        controller: _phoneController,
+                      ),
 
-                    //button update
-                    Gap(48.h),
-                    CustomElevatedButton(
-                      title: 'Update',
-                      onTap: () {},
-                    ),
-                  ],
+                      //button update
+                      Gap(48.h),
+                      customElevatedButton,
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-          listenWhen: (prev, cur) =>
-              cur.user != null ||
-              cur.successMessage != null ||
-              cur.errorMessage != null ||
-              cur.status.isLoggedOut ||
-              cur.status.isProfileUpdated,
           listener: (context, state) {
-            if (state.user != null && state.status.isProfileUpdated) {
+            if (state.user != null || state.status.isProfileUpdated) {
               Log.i('listener got user != null');
               _fullNameController.text = state.user!.username ?? '';
               _firstNameController.text = state.user!.firstName ?? '';
@@ -238,5 +247,15 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     );
+  }
+
+  bool _checkValidation() {
+    final user = authCubit.state.user;
+    if (user == null) return false;
+    return _fullNameController.text.trim() != user.username ||
+        _firstNameController.text.trim() != user.firstName ||
+        _lastNameController.text.trim() != user.lastName ||
+        _emailController.text.trim() != user.email ||
+        _phoneController.text.trim() != user.phone;
   }
 }

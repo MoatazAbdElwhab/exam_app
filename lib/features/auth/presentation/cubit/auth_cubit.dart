@@ -151,17 +151,21 @@ class AuthCubit extends Cubit<AuthState> {
             errorMessage: response.left.toString(), status: AuthStatus.failure))
         : emit(state.copyWith(
             status: AuthStatus.success,
+            successMessage: 'successfully reset password',
           ));
   }
 
-  Future<void> changePassword(String oldPassword, String newPassword) async {
+  Future<void> changePassword(
+      {required String oldPassword, required String newPassword}) async {
     emit(state.copyWith(status: AuthStatus.loading));
     final response =
         await changePasswordUseCase.execute(oldPassword, newPassword);
     response.isLeft
         ? emit(state.copyWith(
             errorMessage: response.left.toString(), status: AuthStatus.failure))
-        : emit(state.copyWith(status: AuthStatus.success));
+        : emit(state.copyWith(
+            status: AuthStatus.success,
+            successMessage: 'Password Updated Successfully'));
   }
 
   Future<void> deleteAccount() async {
@@ -174,6 +178,24 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> editProfile({required Map<String, String> changedFields}) async {
+    if (state.user == null) return;
+    if (state.user!.email == changedFields['email']) {
+      changedFields.remove('email');
+    }
+    if (state.user!.phone == changedFields['phone']) {
+      changedFields.remove('phone');
+    }
+    if (state.user!.username == changedFields['username']) {
+      changedFields.remove('username');
+    }
+    if (state.user!.firstName == changedFields['firstName']) {
+      changedFields.remove('firstName');
+    }
+    if (state.user!.lastName == changedFields['lastName']) {
+      changedFields.remove('lastName');
+    }
+    if (changedFields.isEmpty) return;
+
     emit(state.copyWith(status: AuthStatus.loading));
     final response =
         await editProfileUseCase.execute(changedFields: changedFields);
@@ -181,7 +203,9 @@ class AuthCubit extends Cubit<AuthState> {
         ? emit(state.copyWith(
             errorMessage: response.left.toString(), status: AuthStatus.failure))
         : emit(state.copyWith(
-            status: AuthStatus.success, user: response.right.user));
+            status: AuthStatus.profileUpdated,
+            user: response.right.user,
+            successMessage: 'profile updated successfully'));
   }
 
   Future<void> logout() async {
@@ -194,7 +218,7 @@ class AuthCubit extends Cubit<AuthState> {
             status: AuthStatus.loggedOut,
             user: null,
             successMessage: 'you logged out successfully',
-        loginRememberMeCheckBoxValue: false));
+            loginRememberMeCheckBoxValue: false));
   }
 
   Future<void> getLoggedUserInfo() async {
@@ -202,18 +226,16 @@ class AuthCubit extends Cubit<AuthState> {
       return;
     } else {
       final response = await getLoggedUserInfoUseCase.execute();
-      if (response.isLeft) {
-        emit(state.copyWith(
-            errorMessage: response.left.toString(),
-            status: AuthStatus.failure));
-      } else {
-        emit(state.copyWith(user: response.right.user));
-      }
+      response.isLeft
+          ? emit(state.copyWith(
+              errorMessage: response.left.toString(),
+              status: AuthStatus.failure))
+          : emit(state.copyWith(user: response.right.user));
     }
   }
 
   Future<void> verifyResetCode(String otp) async {
-    emit(state.copyWith(shouldUpdatePassword: true, resetPasswordCode: null));
+    emit(state.copyWith(shouldUpdatePassword: false, resetPasswordCode: null));
     emit(state.copyWith(status: AuthStatus.loading));
     final response = await verifyResetCodeUseCase.execute(otp);
     if (response.isLeft) {

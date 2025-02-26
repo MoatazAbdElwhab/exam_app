@@ -47,7 +47,7 @@ class AuthRepositoryImpl implements AuthRepository {
         return Left(apiResponse.left);
       }
     } catch (e) {
-      rethrow;
+      return Left(ApiException(message: e.toString()));
     }
   }
 
@@ -108,8 +108,10 @@ class AuthRepositoryImpl implements AuthRepository {
       getLoggedUserInfo() async {
     try {
       final userJson = authLocalDataSource.getCachedUserInfo();
-      final user = UserDto.fromJson(userJson!);
-      return Right(GetLoggedUserDataResponse(user: user));
+      Log.i(userJson);
+      final user = GetLoggedUserDataResponse.fromJson(userJson!);
+      Log.i('user: $user');
+      return Right(user);
     } catch (e) {
       Log.e('auth repo failed to get user local data ${e.toString()}');
       if (!isOnline) {

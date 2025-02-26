@@ -30,7 +30,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void didChangeDependencies() {
-    formKey = GlobalKey<FormState>();
 
     cubit = context.read<AuthCubit>();
     customElevatedButton = CustomElevatedButton(

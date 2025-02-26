@@ -37,7 +37,7 @@ class CustomElevatedButton extends StatelessWidget {
                 height: height ?? 48.h,
                 width: width ?? double.infinity,
                 child: ElevatedButton(
-                  onPressed: onTap,
+                  onPressed: isValid ? onTap : null,
                   style: ElevatedButton.styleFrom(
                       backgroundColor: backgroundColor != null
                           ? (isValid ? backgroundColor : Colors.grey)

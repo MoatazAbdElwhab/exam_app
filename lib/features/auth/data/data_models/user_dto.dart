@@ -56,6 +56,16 @@ class UserDto extends Equatable {
     };
   }
 
+  Map<String, String> toEditProfileMap() {
+    return {
+      'username': username??'',
+      'firstName': firstName??'',
+      'lastName': lastName??'',
+      'email': email??'',
+      'phone': phone??'',
+    };
+  }
+
   UserDto copyWith(
       {String? username,
       String? firstName,

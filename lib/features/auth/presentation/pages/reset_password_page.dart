@@ -56,94 +56,97 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     message: state.successMessage!,
                     context: context);
               } else if (state.status.isSuccess && context.mounted) {
-                Navigator.pushNamed(context, Routes.profile);
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  Routes.navbar,
+                      (r) => false,
+                );
               }
             },
             builder: (context, state) => state.status.isLoading
                 ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
+              child: CircularProgressIndicator(),
+            )
                 : Form(
-                    key: formKey,
-                    onChanged: () {
-                      if (customElevatedButton != null) {
-                        customElevatedButton!.isFormValid(Validator
-                                    .passwordValidation(
-                                        passwordController.text.trim()) ==
-                                null &&
-                            Validator.passwordValidation(
-                                    confirmPasswordController.text.trim()) ==
-                                null &&
-                            passwordController.text.trim() ==
-                                confirmPasswordController.text.trim());
+              key: formKey,
+              onChanged: () {
+                if (customElevatedButton != null) {
+                  customElevatedButton!.isFormValid(Validator
+                      .passwordValidation(
+                      passwordController.text.trim()) ==
+                      null &&
+                      Validator.passwordValidation(
+                          confirmPasswordController.text.trim()) ==
+                          null &&
+                      passwordController.text.trim() ==
+                          confirmPasswordController.text.trim());
+                }
+              },
+              child: Column(
+                children: [
+                  SizedBox(height: 40.h),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Reset password',
+                        style: getMediumStyle(
+                          color: ColorManager.black,
+                          fontSize: 18.sp,
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      Text(
+                        'Password must not be empty and must contain',
+                        style: getRegularStyle(
+                          color: ColorManager.grey,
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                      Text(
+                        '6 characters with upper case letter and one',
+                        style: getRegularStyle(
+                          color: ColorManager.grey,
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                      Text(
+                        'number at least',
+                        style: getRegularStyle(
+                          color: ColorManager.grey,
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 32.h),
+                  CustomTextFormField(
+                    label: 'New Password',
+                    hint: 'Enter you password',
+                    controller: passwordController,
+                    validator: Validator.passwordValidation,
+                  ),
+                  SizedBox(height: 24.h),
+                  CustomTextFormField(
+                    label: 'Confirm password',
+                    hint: 'Confirm password',
+                    controller: confirmPasswordController,
+                    validator: Validator.passwordValidation,
+                  ),
+                  SizedBox(height: 48.h),
+                  customElevatedButton = CustomElevatedButton(
+                    title: 'Continue',
+                    shouldUseValidation: true,
+                    onTap: () async {
+                      if (formKey.currentState!.validate()) {
+                        await context.read<AuthCubit>().resetPassword(
+                            passwordController.text.trim());
                       }
                     },
-                    child: Column(
-                      children: [
-                        SizedBox(height: 40.h),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Reset password',
-                              style: getMediumStyle(
-                                color: ColorManager.black,
-                                fontSize: 18.sp,
-                              ),
-                            ),
-                            SizedBox(height: 16.h),
-                            Text(
-                              'Password must not be empty and must contain',
-                              style: getRegularStyle(
-                                color: ColorManager.grey,
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                            Text(
-                              '6 characters with upper case letter and one',
-                              style: getRegularStyle(
-                                color: ColorManager.grey,
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                            Text(
-                              'number at least',
-                              style: getRegularStyle(
-                                color: ColorManager.grey,
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 32.h),
-                        CustomTextFormField(
-                          label: 'New Password',
-                          hint: 'Enter you password',
-                          controller: passwordController,
-                          validator: Validator.passwordValidation,
-                        ),
-                        SizedBox(height: 24.h),
-                        CustomTextFormField(
-                          label: 'Confirm password',
-                          hint: 'Confirm password',
-                          controller: confirmPasswordController,
-                          validator: Validator.passwordValidation,
-                        ),
-                        SizedBox(height: 48.h),
-                        customElevatedButton = CustomElevatedButton(
-                          title: 'Continue',
-                          shouldUseValidation: true,
-                          onTap: () async {
-                            if (formKey.currentState!.validate()) {
-                              await context.read<AuthCubit>().resetPassword(
-                                  passwordController.text.trim());
-                            }
-                          },
-                        )
-                      ],
-                    ),
-                  ),
+                  )
+                ],
+              ),
+            ),
           ),
         ),
       ),

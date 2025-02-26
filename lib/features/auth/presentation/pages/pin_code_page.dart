@@ -130,15 +130,15 @@ class _PinCodePageState extends State<PinCodePage> {
                           showDialog(
                             context: context,
                             builder: (context) {
-                              return const Dialog(
+                              return Dialog(
                                 insetPadding: EdgeInsets.zero,
                                 backgroundColor:
-                                    // Colors.purple.withValues(alpha: 0.03),
-                                    Colors.purple,
+                                    Colors.purple.withValues(alpha: 0.03),
+                                    // Colors.purple,
                                 child: Center(
                                     child: CircularProgressIndicator(
-                                  // color: Colors.purple.withValues(alpha: 0.6),
-                                  color: Colors.purple,
+                                  color: Colors.purple.withValues(alpha: 0.6),
+                                  // color: Colors.purple,
                                 )),
                               );
                             },

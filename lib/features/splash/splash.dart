@@ -1,4 +1,5 @@
 import 'package:exam_app/core/di/injectable.dart';
+import 'package:exam_app/features/explore/presentation/cubit/explore_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import '../../core/app_data/local_storage/local_storage_client.dart';
@@ -111,7 +112,6 @@ class _SplashScreenState extends State<SplashScreen>
                           ],
                           isRepeatingAnimation: false,
                           onTap: () {
-                            // Add haptic feedback for a richer experience
                             HapticFeedback.mediumImpact();
                           },
                         ),
@@ -151,12 +151,12 @@ Future<void> _initializeApp() async {
         (_) => isUserLoggedInAutomatically =
             getIt<LocalStorageClient>().getRememberMe() ?? false,
       ),
-      _initializeConnection(),
+      _initializeConnection().then((_) => getIt<ExploreCubit>().getSubjects()),
     ]).then((_) {
       runApp(const MyApp());
     });
   } catch (e) {
-    Log.e('Error in splash screen futures: $e');
+    Log.e('Error in splash screen futures: ${e.toString()}');
   }
 }
 

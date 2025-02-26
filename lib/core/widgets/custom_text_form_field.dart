@@ -12,6 +12,7 @@ class CustomTextFormField extends StatelessWidget {
   final String? Function(String?)? validator;
   final double? suffixIconHeight;
   final Widget? suffixIcon;
+  final bool? readOnly;
   final ValueChanged<String>? onChanged;
 
   const CustomTextFormField({
@@ -21,6 +22,7 @@ class CustomTextFormField extends StatelessWidget {
     this.isPass = false,
     this.controller,
     this.validator,
+    this.readOnly = false,
     this.suffixIcon,
     this.onChanged,
     this.suffixIconHeight,
@@ -33,6 +35,7 @@ class CustomTextFormField extends StatelessWidget {
       validator: validator,
       style: getRegularStyle(color: ColorManager.black, fontSize: 16.sp),
       obscureText: isPass,
+      readOnly: readOnly ?? false,
       onChanged: onChanged,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
@@ -41,6 +44,7 @@ class CustomTextFormField extends StatelessWidget {
             BoxConstraints(maxHeight: suffixIconHeight ?? 40.h),
         contentPadding: EdgeInsets.only(left: 16.w, top: 18.h, bottom: 18.h),
         hintText: hint,
+        fillColor: readOnly == true ? ColorManager.grey : null,
         hintStyle: getRegularStyle(
           color: ColorManager.placeholder,
           fontSize: 14.sp,

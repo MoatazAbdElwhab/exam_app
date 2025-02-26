@@ -7,7 +7,7 @@ import 'package:exam_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:exam_app/features/auth/presentation/pages/forgetpassword_page.dart';
 import 'package:exam_app/features/auth/presentation/pages/pin_code_page.dart';
 import 'package:exam_app/features/auth/presentation/pages/reset_password_page.dart';
-import 'package:exam_app/features/profile/presentation/pages/resetpassword_page.dart';
+import 'package:exam_app/features/profile/presentation/pages/profile_change_password_page.dart';
 import 'package:exam_app/features/nav/page/navbar_page.dart';
 import 'package:exam_app/features/explore/presentation/pages/explore_page.dart';
 import 'package:exam_app/features/result/presentation/pages/result_page.dart';
@@ -46,7 +46,7 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
     case Routes.profileResetPassword:
       return MaterialPageRoute(
         settings: settings,
-        builder: (_) => const ResetpasswordPage(),
+        builder: (_) => const ProfileChangePasswordPage(),
       );
     case Routes.navbar:
       return MaterialPageRoute(

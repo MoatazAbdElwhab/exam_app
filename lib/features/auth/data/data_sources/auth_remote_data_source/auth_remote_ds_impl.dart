@@ -112,11 +112,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<Either<ApiException, ChangePasswordResponse>> changePassword(
       String oldPassword, String newPassword) async {
     try {
-      final response = await _apiClient.post(
+      final response = await _apiClient.patch(
         'auth/changePassword',
         data: {
           'oldPassword': oldPassword,
-          'newPassword': newPassword,
+          'password': newPassword,
           'rePassword': newPassword,
         },
       );
