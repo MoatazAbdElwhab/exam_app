@@ -5,7 +5,7 @@ import 'package:exam_app/features/explore/data/data_source/remote/explore_remote
 import 'package:exam_app/features/explore/data/models/exam_response/exam_model.dart';
 import 'package:exam_app/features/explore/data/models/questions_response/question_model.dart';
 import 'package:exam_app/features/explore/data/models/subjects_response/subject_model.dart';
-import 'package:exam_app/main.dart';
+import 'package:exam_app/features/splash/splash.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable

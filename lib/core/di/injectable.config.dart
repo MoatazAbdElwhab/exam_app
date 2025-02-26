@@ -18,10 +18,14 @@ import 'package:exam_app/core/routes/navigator_observer.dart' as _i69;
 import 'package:exam_app/core/widgets/dialog_utils.dart' as _i985;
 import 'package:exam_app/features/auth/data/auth_repository/auth_repo_impl.dart'
     as _i122;
-import 'package:exam_app/features/auth/data/data_sources/auth_local_data_source.dart'
-    as _i937;
-import 'package:exam_app/features/auth/data/data_sources/auth_remote_data_source.dart'
-    as _i583;
+import 'package:exam_app/features/auth/data/data_sources/auth_local_data_source/auth_local_ds_impl.dart'
+    as _i873;
+import 'package:exam_app/features/auth/data/data_sources/auth_local_data_source/auth_local_ds_interface.dart'
+    as _i310;
+import 'package:exam_app/features/auth/data/data_sources/auth_remote_data_source/auth_remote_ds_impl.dart'
+    as _i791;
+import 'package:exam_app/features/auth/data/data_sources/auth_remote_data_source/auth_remote_ds_interface.dart'
+    as _i1021;
 import 'package:exam_app/features/auth/domain/auth_repository/auth_repository.dart'
     as _i24;
 import 'package:exam_app/features/auth/domain/use_cases/change_password_usecase.dart'
@@ -95,26 +99,23 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i73.LocalStorageClient>(),
           gh<_i719.GlobalKey<_i719.NavigatorState>>(),
         ));
-    gh.factory<_i937.AuthLocalDataSource>(
-        () => _i937.AuthLocalDataSourceImpl(gh<_i73.LocalStorageClient>()));
+    gh.factory<_i310.AuthLocalDataSource>(
+        () => _i873.AuthLocalDataSourceImpl(gh<_i73.LocalStorageClient>()));
     gh.singleton<_i93.ApiClient>(() => _i797.DioApiClient(
           gh<_i73.LocalStorageClient>(),
           gh<_i32.DioErrorHandler>(),
-          gh<_i69.AppNavigatorObserver>(),
           gh<_i719.GlobalKey<_i719.NavigatorState>>(),
         ));
     gh.factory<_i891.ExploreRemoteDataSource>(
         () => _i779.ExploreApiRemoteDataSource(gh<_i93.ApiClient>()));
-    gh.factory<_i583.AuthRemoteDataSource>(
-        () => _i583.AuthRemoteDataSourceImpl(gh<_i93.ApiClient>()));
+    gh.factory<_i1021.AuthRemoteDataSource>(
+        () => _i791.AuthRemoteDataSourceImpl(gh<_i93.ApiClient>()));
+    gh.factory<_i24.AuthRepository>(() => _i122.AuthRepositoryImpl(
+          gh<_i310.AuthLocalDataSource>(),
+          gh<_i1021.AuthRemoteDataSource>(),
+        ));
     gh.factory<_i258.ExploreRepoImpl>(
         () => _i258.ExploreRepoImpl(gh<_i891.ExploreRemoteDataSource>()));
-    gh.factory<_i24.AuthRepository>(() => _i122.AuthRepositoryImpl(
-          gh<_i937.AuthLocalDataSource>(),
-          gh<_i583.AuthRemoteDataSource>(),
-        ));
-    gh.factory<_i68.ExploreCubit>(
-        () => _i68.ExploreCubit(gh<_i258.ExploreRepoImpl>()));
     gh.factory<_i879.ForgotPasswordUseCase>(
         () => _i879.ForgotPasswordUseCase(gh<_i24.AuthRepository>()));
     gh.factory<_i306.GetLoggedUserInfoUseCase>(
@@ -148,6 +149,8 @@ extension GetItInjectableX on _i174.GetIt {
           verifyResetCodeUseCase: gh<_i923.VerifyResetCodeUseCase>(),
           storageClient: gh<_i73.LocalStorageClient>(),
         ));
+    gh.factory<_i68.ExploreCubit>(
+        () => _i68.ExploreCubit(gh<_i258.ExploreRepoImpl>()));
     return this;
   }
 }
