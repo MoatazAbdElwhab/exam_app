@@ -37,7 +37,17 @@ class ResultCubit extends Cubit<ResultState> {
       // Update the question in our local state
       final questionIndex = _questions.indexWhere((q) => q.id == request.id);
       if (questionIndex != -1) {
-        _questions[questionIndex] = request;
+        _questions[questionIndex] = QuestionRequestModel(
+          id: request.id,
+          question: request.question,
+          answers: request.answers,
+          type: request.type,
+          correct: request.correct,
+          subject: request.subject,
+          exam: request.exam,
+          createdAt: request.createdAt,
+          selectedAnswer: request.selectedAnswer,
+        );
         emit(QuestionsLoaded(_questions));
       }
 
@@ -47,21 +57,30 @@ class ResultCubit extends Cubit<ResultState> {
         (error) {
           // If error, revert the question state
           if (questionIndex != -1) {
-            _questions[questionIndex] = _questions[questionIndex].copyWith(
+            _questions[questionIndex] = QuestionRequestModel(
+              id: _questions[questionIndex].id,
+              question: _questions[questionIndex].question,
+              answers: _questions[questionIndex].answers,
+              type: _questions[questionIndex].type,
+              correct: _questions[questionIndex].correct,
+              subject: _questions[questionIndex].subject,
+              exam: _questions[questionIndex].exam,
+              createdAt: _questions[questionIndex].createdAt,
               selectedAnswer: null,
             );
             emit(QuestionsLoaded(_questions));
           }
           emit(ResultError(error.message));
         },
-        (response) {
-          emit(ResultAnswerSubmitted(response));
-          emit(QuestionsLoaded(_questions));
-        },
+        (response) => emit(ResultAnswerSubmitted(response)),
       );
     } catch (e) {
       emit(ResultError(e.toString()));
     }
+  }
+
+  Future<void> submitAllAnswers() async {
+    emit(ResultAllAnswersSubmitted(_questions));
   }
 
   Future<void> fetchHistory() async {
@@ -74,51 +93,6 @@ class ResultCubit extends Cubit<ResultState> {
       );
     } catch (e) {
       emit(ResultError(e.toString()));
-    }
-  }
-
-  Future<void> submitAllAnswers() async {
-    if (_questions.isEmpty) {
-      emit(const ResultError('No questions to submit'));
-      return;
-    }
-
-    emit(ResultLoading());
-    try {
-      // Get all questions with answers
-      final answeredQuestions =
-          _questions.where((q) => q.selectedAnswer != null).toList();
-
-      if (answeredQuestions.isEmpty) {
-        emit(const ResultError('No answers to submit'));
-        return;
-      }
-
-      // Submit each answer
-      for (final question in answeredQuestions) {
-        final result = await _resultRepository.submitAnswers(question);
-        final success = await result.fold(
-          (error) async {
-            emit(ResultError(error.message));
-            return false;
-          },
-          (response) async {
-            emit(ResultAnswerSubmitted(response));
-            return true;
-          },
-        );
-
-        if (!success) {
-          emit(QuestionsLoaded(_questions));
-          return;
-        }
-      }
-
-      // If all submissions successful, emit final state
-      emit(ResultAllAnswersSubmitted(_questions));
-    } catch (e) {
-      emit(ResultError(e.toString()));
-      emit(QuestionsLoaded(_questions));
     }
   }
 }

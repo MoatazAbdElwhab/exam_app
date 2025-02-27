@@ -49,175 +49,105 @@ class ResultDetails extends StatelessWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context); // Go back to exams list
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorManager.blue,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 16,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: Text(
-                      'Go Back',
-                      style: getSemiBoldStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             )
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ListView.builder(
-                itemCount: questions.length,
-                itemBuilder: (context, index) {
-                  final question = questions[index];
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: ColorManager.black.withOpacity(0.1),
-                          blurRadius: 4,
-                          spreadRadius: 0,
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Question ${index + 1}',
-                          style: getBoldStyle(
-                            color: ColorManager.blue,
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          question.question ?? 'No question text',
-                          style: getMediumStyle(
-                            color: ColorManager.black,
-                            fontSize: 14,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        if (question.answers != null) ...[
-                          ...question.answers!.map((answer) {
-                            final isCorrect = answer.key == question.correct;
-                            final isUserChoice = answer.key == question.selectedAnswer;
-                            
-                            return Container(
-                              margin: const EdgeInsets.only(bottom: 8),
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: isCorrect
-                                    ? Colors.green.withOpacity(0.1)
-                                    : isUserChoice
-                                        ? Colors.red.withOpacity(0.1)
-                                        : ColorManager.grey,
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: isCorrect
-                                      ? Colors.green
-                                      : isUserChoice
-                                          ? Colors.red
-                                          : ColorManager.grey,
-                                ),
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: questions.length,
+              itemBuilder: (context, index) {
+                final question = questions[index];
+                final isCorrect = question.selectedAnswer == question.correct;
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: ColorManager.black.withOpacity(0.1),
+                        blurRadius: 4,
+                        spreadRadius: 0,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              question.question ?? '',
+                              style: getBoldStyle(
+                                color: ColorManager.black,
+                                fontSize: 16,
                               ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 24,
-                                    height: 24,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: isCorrect
-                                          ? Colors.green
-                                          : isUserChoice
-                                              ? Colors.red
-                                              : Colors.transparent,
-                                      border: Border.all(
-                                        color: isCorrect
-                                            ? Colors.green
-                                            : isUserChoice
-                                                ? Colors.red
-                                                : ColorManager.grey,
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: isCorrect
-                                          ? const Icon(
-                                              Icons.check,
-                                              size: 16,
-                                              color: Colors.white,
-                                            )
-                                          : isUserChoice
-                                              ? const Icon(
-                                                  Icons.close,
-                                                  size: 16,
-                                                  color: Colors.white,
-                                                )
-                                              : null,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Text(
-                                      answer.answer ?? 'No answer text',
-                                      style: getMediumStyle(
-                                        color: ColorManager.black,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }).toList(),
+                            ),
+                          ),
                         ],
-                        const SizedBox(height: 16),
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: ColorManager.grey.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.info_outline,
-                                color: ColorManager.blue,
-                                size: 20,
+                      ),
+                      const SizedBox(height: 16),
+                      if (question.answers != null)
+                        ...question.answers!.map((answer) {
+                          final isSelected = answer.key == question.selectedAnswer;
+                          final isCorrectAnswer = answer.answer == question.correct;
+
+                          Color getAnswerColor() {
+                            if (isCorrectAnswer) {
+                              return ColorManager.success;
+                            } else if (isSelected) {
+                              return ColorManager.error;
+                            }
+                            return ColorManager.grey;
+                          }
+
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: (isSelected || isCorrectAnswer) ? getAnswerColor().withOpacity(0.15) : Colors.transparent,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: getAnswerColor(),
+                                width: (isSelected || isCorrectAnswer) ? 2 : 1,
                               ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'Your Answer: ${question.selectedAnswer ?? 'Not answered'}',
-                                style: getMediumStyle(
-                                  color: ColorManager.black,
-                                  fontSize: 14,
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  isCorrectAnswer
+                                      ? Icons.check_circle
+                                      : isSelected
+                                          ? Icons.cancel
+                                          : Icons.radio_button_unchecked,
+                                  color: getAnswerColor(),
+                                  size: 24,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    answer.answer ?? '',
+                                    style: getMediumStyle(
+                                      color: (isSelected || isCorrectAnswer) ? getAnswerColor() : ColorManager.black,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                    ],
+                  ),
+                );
+              },
             ),
     );
   }

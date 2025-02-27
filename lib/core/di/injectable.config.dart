@@ -47,8 +47,8 @@ import 'package:exam_app/features/auth/domain/use_cases/verify_reset_code_usecas
     as _i923;
 import 'package:exam_app/features/auth/presentation/cubit/auth_cubit.dart'
     as _i533;
-import 'package:exam_app/features/result/data/data_sources/result_remote_data_source.dart'
-    as _i933;
+import 'package:exam_app/features/result/data/data_sources/result_local_data_source.dart'
+    as _i53;
 import 'package:exam_app/features/result/data/repositories/result_repository_impl.dart'
     as _i161;
 import 'package:exam_app/features/result/domain/result_repository/result_repository.dart'
@@ -94,6 +94,14 @@ extension GetItInjectableX on _i174.GetIt {
         () => getItRegisterModule.secureStorage);
     gh.singleton<_i985.DialogUtils>(() => _i985.DialogUtils());
     gh.singleton<_i69.AppNavigatorObserver>(() => _i69.AppNavigatorObserver());
+    gh.lazySingleton<_i53.ResultLocalDataSource>(
+        () => _i53.ResultLocalDataSourceImpl());
+    gh.lazySingleton<_i451.ResultRepository>(
+        () => _i161.ResultRepositoryImpl(gh<_i53.ResultLocalDataSource>()));
+    gh.factory<_i696.CheckAnswersUseCase>(
+        () => _i696.CheckAnswersUseCase(gh<_i451.ResultRepository>()));
+    gh.factory<_i644.ResultCubit>(
+        () => _i644.ResultCubit(gh<_i451.ResultRepository>()));
     gh.singleton<_i73.LocalStorageClient>(() => _i73.LocalStorageClient(
           gh<_i460.SharedPreferences>(),
           gh<_i558.FlutterSecureStorage>(),
@@ -102,6 +110,10 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i73.LocalStorageClient>(),
           gh<_i719.GlobalKey<_i719.NavigatorState>>(),
         ));
+    gh.singleton<_i101.GetResultUseCase>(
+        () => _i101.GetResultUseCase(gh<_i451.ResultRepository>()));
+    gh.singleton<_i389.SubmitAnswers>(
+        () => _i389.SubmitAnswers(gh<_i451.ResultRepository>()));
     gh.factory<_i937.AuthLocalDataSource>(
         () => _i937.AuthLocalDataSourceImpl(gh<_i73.LocalStorageClient>()));
     gh.singleton<_i93.ApiClient>(() => _i797.DioApiClient(
@@ -110,24 +122,12 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i69.AppNavigatorObserver>(),
           gh<_i719.GlobalKey<_i719.NavigatorState>>(),
         ));
-    gh.factory<_i933.ResultRemoteDataSource>(
-        () => _i933.ResultRemoteDataSource(gh<_i93.ApiClient>()));
-    gh.factory<_i451.ResultRepository>(
-        () => _i161.ResultRepositoryImpl(gh<_i933.ResultRemoteDataSource>()));
     gh.factory<_i583.AuthRemoteDataSource>(
         () => _i583.AuthRemoteDataSourceImpl(gh<_i93.ApiClient>()));
-    gh.singleton<_i101.GetResultUseCase>(
-        () => _i101.GetResultUseCase(gh<_i451.ResultRepository>()));
-    gh.singleton<_i389.SubmitAnswers>(
-        () => _i389.SubmitAnswers(gh<_i451.ResultRepository>()));
-    gh.factory<_i696.CheckAnswersUseCase>(
-        () => _i696.CheckAnswersUseCase(gh<_i451.ResultRepository>()));
     gh.factory<_i24.AuthRepository>(() => _i122.AuthRepositoryImpl(
           gh<_i937.AuthLocalDataSource>(),
           gh<_i583.AuthRemoteDataSource>(),
         ));
-    gh.factory<_i644.ResultCubit>(
-        () => _i644.ResultCubit(gh<_i451.ResultRepository>()));
     gh.factory<_i890.ChangePasswordUseCase>(
         () => _i890.ChangePasswordUseCase(gh<_i24.AuthRepository>()));
     gh.factory<_i997.DeleteAccountUseCase>(

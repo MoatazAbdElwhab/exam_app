@@ -7,7 +7,6 @@ import 'package:exam_app/features/result/data/data_models/result_response_model.
 
 abstract class ResultRepository {
   Future<Either<ApiException, List<QuestionRequestModel>>> fetchQuestions();
-  Future<Either<ApiException, ResultResponseModel>> submitAnswers(
-      QuestionRequestModel request);
+  Future<Either<ApiException, ResultResponseModel>> submitAnswers(QuestionRequestModel request);
   Future<Either<ApiException, HistoryResponseModel>> fetchHistory();
 }
