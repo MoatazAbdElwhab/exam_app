@@ -52,4 +52,7 @@ class ApiConstants {
   static const String correctKey = 'correct';
   static const String questionsKey = 'questions';
   static const String examKey = 'exam';
+
+  static const String questionIdKey = 'questionId';
+  static const String timeKey = 'time';
 }

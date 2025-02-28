@@ -194,7 +194,7 @@ class AuthCubit extends Cubit<AuthState> {
             status: AuthStatus.loggedOut,
             user: null,
             successMessage: 'you logged out successfully',
-        loginRememberMeCheckBoxValue: false));
+            loginRememberMeCheckBoxValue: false));
   }
 
   Future<void> getLoggedUserInfo() async {

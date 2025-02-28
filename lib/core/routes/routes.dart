@@ -12,4 +12,5 @@ class Routes {
   static const String splash = '/splash';
   static const String exams = '/exams';
   static const String startExam = '/startExam';
+  static const String questions = '/questions';
 }

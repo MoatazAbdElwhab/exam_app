@@ -11,4 +11,5 @@ class IconManager {
   static const String artPng = 'assets/icons/art.png';
   static const String sciencePng = 'assets/icons/science.png';
   static const String examPng = 'assets/icons/exam.png';
+  static const String timerPng = 'assets/icons/timer.png';
 }

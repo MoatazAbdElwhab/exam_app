@@ -42,13 +42,14 @@ class AuthState extends Equatable {
         shouldUpdatePassword: shouldUpdatePassword,
         forgetPasswordEmail: forgetPasswordEmail ?? this.forgetPasswordEmail,
         resetPasswordCode: resetPasswordCode ?? this.resetPasswordCode,
-        loginRememberMeCheckBoxValue: loginRememberMeCheckBoxValue ?? this.loginRememberMeCheckBoxValue);
+        loginRememberMeCheckBoxValue:
+            loginRememberMeCheckBoxValue ?? this.loginRememberMeCheckBoxValue);
   }
 
   @override
   List<Object?> get props => [
         status,
-    loginRememberMeCheckBoxValue,
+        loginRememberMeCheckBoxValue,
         user,
         errorMessage,
         shouldSendOtp,

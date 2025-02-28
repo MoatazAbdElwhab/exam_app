@@ -45,3 +45,5 @@ final class GetQuestionsSuccess extends ExploreState {
 
   GetQuestionsSuccess(this.questions);
 }
+
+final class ChangeAnswer extends ExploreState {}

@@ -1,5 +1,6 @@
 import 'package:exam_app/core/routes/routes.dart';
 import 'package:exam_app/features/explore/presentation/pages/exams_page.dart';
+import 'package:exam_app/features/explore/presentation/pages/questions_page.dart';
 import 'package:exam_app/features/explore/presentation/pages/start_exam_page.dart';
 import 'package:flutter/material.dart';
 import 'package:exam_app/features/auth/presentation/pages/login_page.dart';
@@ -72,6 +73,11 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         settings: settings,
         builder: (_) => const StartExamPage(),
+      );
+    case Routes.questions:
+      return MaterialPageRoute(
+        settings: settings,
+        builder: (_) => const QuestionsPage(),
       );
     default:
       return MaterialPageRoute(

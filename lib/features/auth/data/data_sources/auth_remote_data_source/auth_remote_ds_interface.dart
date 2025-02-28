@@ -16,15 +16,15 @@ abstract class AuthRemoteDataSource {
       String email, String password);
   Future<Either<ApiException, SignUpResponse>> signUp(
       {required String email,
-        required String password,
-        required String userName,
-        required String firstName,
-        required String lastName,
-        required String phone});
+      required String password,
+      required String userName,
+      required String firstName,
+      required String lastName,
+      required String phone});
   Future<Either<ApiException, ForgetPasswordResponse>> forgotPassword(
       String email);
   Future<Either<ApiException, ResetPasswordResponse>> resetPassword(
-      String email,String newPassword);
+      String email, String newPassword);
   Future<Either<ApiException, ChangePasswordResponse>> changePassword(
       String oldPassword, String newPassword);
   Future<Either<ApiException, DeleteAccountResponse>> deleteAccount();

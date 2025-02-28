@@ -11,15 +11,20 @@ class CustomElevatedButton extends StatelessWidget {
   final Color? backgroundColor;
   final bool shouldUseValidation;
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
+  final TextStyle? style;
+  final OutlinedBorder? shape;
 
-  CustomElevatedButton(
-      {super.key,
-      required this.title,
-      this.height,
-      this.width,
-      required this.onTap,
-      this.backgroundColor,
-      this.shouldUseValidation = false});
+  CustomElevatedButton({
+    super.key,
+    required this.title,
+    this.height,
+    this.width,
+    required this.onTap,
+    this.backgroundColor,
+    this.shouldUseValidation = false,
+    this.style,
+    this.shape,
+  });
 
   void isFormValid(bool isValid) {
     if (_isValidNotifier.value != isValid) {
@@ -60,13 +65,15 @@ class CustomElevatedButton extends StatelessWidget {
               onPressed: onTap,
               style: ElevatedButton.styleFrom(
                 backgroundColor: backgroundColor ?? ColorManager.blue,
+                shape: shape,
               ),
               child: Text(
                 title,
-                style: getRegularStyle(
-                  color: ColorManager.white,
-                  fontSize: 16.sp,
-                ),
+                style: style ??
+                    getRegularStyle(
+                      color: ColorManager.white,
+                      fontSize: 16.sp,
+                    ),
               ),
             ),
           );

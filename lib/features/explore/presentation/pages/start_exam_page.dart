@@ -1,10 +1,11 @@
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/icon_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
+import 'package:exam_app/core/routes/routes.dart';
 import 'package:exam_app/core/widgets/custom_app_bar.dart';
 import 'package:exam_app/core/widgets/custom_elevated_button.dart';
+import 'package:exam_app/features/explore/data/models/exam_response/exam_model.dart';
 import 'package:exam_app/features/explore/presentation/cubit/explore_cubit.dart';
-import 'package:exam_app/features/explore/presentation/pages/exams_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,14 +14,20 @@ class StartExamPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)?.settings.arguments as ArgsObj;
+    final args = ModalRoute.of(context)?.settings.arguments as ({
+      String subjectName,
+      ExamModel examModel,
+      ExploreCubit exploreCubit,
+    });
     return Scaffold(
       appBar: const CustomAppBar(
         title: '',
         canPop: true,
       ),
       body: BlocBuilder<ExploreCubit, ExploreState>(
-        bloc: args.exploreCubit..getAllQuestionsOnExam(args.examModel.id),
+        bloc: args.exploreCubit
+          ..initExam()
+          ..getAllQuestionsOnExam(args.examModel.id),
         buildWhen: (previous, current) {
           if (current is GetQuestionsFail ||
               current is GetQuestionsLoading ||
@@ -47,7 +54,10 @@ class StartExamPage extends StatelessWidget {
                 return Center(
                   child: Text(
                     'There are no questions available',
-                    style: getSemiBoldStyle(color: ColorManager.black),
+                    style: getSemiBoldStyle(
+                      color: ColorManager.black,
+                      fontSize: 18,
+                    ),
                   ),
                 );
               }
@@ -121,7 +131,10 @@ class StartExamPage extends StatelessWidget {
                         horizontal: 16.0, vertical: 24),
                     child: CustomElevatedButton(
                       title: 'Start',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(Routes.questions, arguments: args);
+                      },
                       backgroundColor: ColorManager.blue,
                     ),
                   )

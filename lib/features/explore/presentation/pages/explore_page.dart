@@ -115,16 +115,17 @@ class _ExplorePageState extends State<ExplorePage> {
                         // clipBehavior: Clip.none,
                         itemBuilder: (context, index) {
                           final subject = state.subjects[index];
+                          var args = (
+                            subjectName: subject.name,
+                            subjectID: subject.id,
+                            exploreCubit: exploreCubit,
+                          );
                           return GestureDetector(
                             onTap: () {
                               exploreCubit.getAllExamOnSubject(subject.id);
                               Navigator.of(context).pushNamed(
                                 Routes.exams,
-                                arguments: ExamData(
-                                  subjectID: subject.id,
-                                  subjectName: subject.name,
-                                  exploreCubit: exploreCubit,
-                                ),
+                                arguments: args,
                               );
                             },
                             child: SubjectCard(
@@ -147,14 +148,15 @@ class _ExplorePageState extends State<ExplorePage> {
   }
 }
 
-class ExamData {
-  final String subjectID;
-  final String subjectName;
-  final ExploreCubit exploreCubit;
+// class ExamData {
+//   final String subjectID;
+//   final String subjectName;
+//   final ExploreCubit exploreCubit;
+//   final t = Tuple<String, int>('a', 10);
 
-  ExamData({
-    required this.subjectID,
-    required this.subjectName,
-    required this.exploreCubit,
-  });
-}
+//   ExamData({
+//     required this.subjectID,
+//     required this.subjectName,
+//     required this.exploreCubit,
+//   });
+// }

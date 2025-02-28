@@ -17,8 +17,7 @@ class DioApiClient implements ApiClient {
   final DioErrorHandler errorHandler;
   final GlobalKey<NavigatorState> _appNavigator;
 
-  DioApiClient(this.localStorage, this.errorHandler,
-      this._appNavigator)
+  DioApiClient(this.localStorage, this.errorHandler, this._appNavigator)
       : _dio = Dio(BaseOptions(
           baseUrl: 'https://exam.elevateegy.com/api/v1/',
           connectTimeout: const Duration(seconds: 10),

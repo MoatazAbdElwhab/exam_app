@@ -3,9 +3,7 @@ import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:exam_app/core/routes/routes.dart';
 import 'package:exam_app/core/widgets/custom_app_bar.dart';
 import 'package:exam_app/core/widgets/exam_item.dart';
-import 'package:exam_app/features/explore/data/models/exam_response/exam_model.dart';
 import 'package:exam_app/features/explore/presentation/cubit/explore_cubit.dart';
-import 'package:exam_app/features/explore/presentation/pages/explore_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,7 +12,12 @@ class ExamsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)?.settings.arguments as ExamData;
+    final args = ModalRoute.of(context)?.settings.arguments as ({
+      String subjectName,
+      String subjectID,
+      ExploreCubit exploreCubit
+    });
+
     return Scaffold(
       appBar: CustomAppBar(
         title: args.subjectName,
@@ -59,14 +62,17 @@ class ExamsPage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 12),
                       itemBuilder: (context, index) => InkWell(
-                        onTap: () => Navigator.of(context).pushNamed(
-                          Routes.startExam,
-                          arguments: ArgsObj(
+                        onTap: () {
+                          var examsArgs = (
                             subjectName: args.subjectName,
                             examModel: state.exams[index],
                             exploreCubit: args.exploreCubit,
-                          ),
-                        ),
+                          );
+                          Navigator.of(context).pushNamed(
+                            Routes.startExam,
+                            arguments: examsArgs,
+                          );
+                        },
                         child: ExamItem(
                           examModel: state.exams[index],
                           isResult: false,
@@ -86,16 +92,4 @@ class ExamsPage extends StatelessWidget {
       ),
     );
   }
-}
-
-class ArgsObj {
-  final String subjectName;
-  final ExamModel examModel;
-  final ExploreCubit exploreCubit;
-
-  ArgsObj({
-    required this.subjectName,
-    required this.examModel,
-    required this.exploreCubit,
-  });
 }
