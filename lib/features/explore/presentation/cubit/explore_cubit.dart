@@ -21,6 +21,7 @@ class ExploreCubit extends Cubit<ExploreState> {
   ExploreCubit(this._exploreRepoImpl) : super(ExploreInitial()) {
     getSubjects();
   }
+
   final ExploreRepoImpl _exploreRepoImpl;
   List<QuestionModel> questionList = [];
   Map<int, SelectAnswerModel> selectAnswersMap = {};
@@ -81,16 +82,16 @@ class ExploreCubit extends Cubit<ExploreState> {
         message: 'complete exam',
         context: context,
       );
-       for (var i = 0; i < selectAnswersMap.length; i++) {
-         final queID = selectAnswersMap[i]!.questionId;
-         final chosenQus = selectAnswersMap[i]!.correct;
+      // for (var i = 0; i < selectAnswersMap.length; i++) {
+      //   final queID = selectAnswersMap[i]!.questionId;
+      //   final chosenQus = selectAnswersMap[i]!.correct;
 
-         getIt.get<LocalStorageClient>().saveData('QuestionID$i', queID);
-         getIt.get<LocalStorageClient>().saveData('Chosen$i', chosenQus);
-
+      //   getIt.get<LocalStorageClient>().saveData('QuestionID$i', queID);
+      //   getIt.get<LocalStorageClient>().saveData('Chosen$i', chosenQus);
       //   print('save success $i');
       // }
       await checkQuestions(context);
+
       return;
     }
 
@@ -123,7 +124,6 @@ class ExploreCubit extends Cubit<ExploreState> {
         answers.add(value);
       },
     );
-    print(answers);
     final result = await _exploreRepoImpl.checkQuestions(
       SelectAnswersModel(answers: answers, time: 20),
     );
