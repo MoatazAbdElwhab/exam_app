@@ -1,93 +1,133 @@
 // features/result/presentation/pages/result_details.dart
 import 'package:exam_app/core/resources/color_manager.dart';
+import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:exam_app/core/widgets/custom_app_bar.dart';
-import 'package:exam_app/features/result/data/model/question_model.dart';
+import 'package:exam_app/features/result/data/data_models/question_request_model.dart';
+import 'package:exam_app/features/result/presentation/cubit/result_cubit.dart';
 import 'package:flutter/material.dart';
 
-class ResultDetails extends StatefulWidget {
-  ResultDetails({super.key});
+class ResultDetails extends StatelessWidget {
+  final QuestionRequestModel question;
+  final UserQuestionData? userAnswer;
+  final List<QuestionRequestModel> examQuestions;
+  final Map<String, UserQuestionData> userAnswers;
 
-  @override
-  State<ResultDetails> createState() => _ResultDetailsState();
-}
-
-class _ResultDetailsState extends State<ResultDetails> {
-  Map<int, int?> selectedAnswers = {};
-
-  void onSelect(int questionIndex, int answerIndex) {
-    setState(() {
-      selectedAnswers[questionIndex] = answerIndex;
-    });
-  }
+  const ResultDetails({
+    super.key,
+    required this.question,
+    required this.userAnswer,
+    required this.examQuestions,
+    required this.userAnswers,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorManager.white,
-      appBar: const CustomAppBar(title: 'Result Details', canPop: true),
+      appBar: CustomAppBar(
+        title: question.exam?.title ?? 'Exam Results',
+        canPop: true,
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView.builder(
-          itemCount: questionList.length,
-          itemBuilder: (context, questionIndex) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  questionList[questionIndex].question,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                ...List.generate(questionList[questionIndex].options.length,
-                    (optionIndex) {
-                  bool isCorrect =
-                      optionIndex == questionList[questionIndex].correctIndex;
-                  bool isSelected =
-                      selectedAnswers[questionIndex] == optionIndex;
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Exam Results',
+              style: getBoldStyle(
+                color: ColorManager.black,
+                fontSize: 24,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView.builder(
+                itemCount: examQuestions.length,
+                itemBuilder: (context, index) {
+                  final q = examQuestions[index];
+                  final userAns = userAnswers[q.id];
 
-                  return GestureDetector(
-                    onTap: () => onSelect(questionIndex, optionIndex),
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? (isCorrect ? Colors.green[200] : Colors.red[200])
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isSelected
-                              ? (isCorrect ? Colors.green : Colors.red)
-                              : Colors.grey,
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
                         ),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            isSelected
-                                ? (isCorrect
-                                    ? Icons.check_circle
-                                    : Icons.cancel)
-                                : Icons.check_box_outline_blank,
-                            color: isSelected
-                                ? (isCorrect ? Colors.green : Colors.red)
-                                : Colors.blue,
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          q.question ?? '',
+                          style: getBoldStyle(
+                            color: ColorManager.black,
+                            fontSize: 16,
                           ),
-                          const SizedBox(width: 10),
-                          Text(
-                            questionList[questionIndex].options[optionIndex],
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 16),
+                        ...q.answers.map((answer) {
+                          final isCorrect = answer.key == q.correct;
+                          final isUserAnswer = userAns?.userAnswer == answer.key;
+
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 8),
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: isCorrect
+                                  ? Colors.green.withOpacity(0.1)
+                                  : isUserAnswer && !isCorrect
+                                      ? Colors.red.withOpacity(0.1)
+                                      : Colors.grey.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  isCorrect
+                                      ? Icons.check_circle
+                                      : isUserAnswer && !isCorrect
+                                          ? Icons.cancel
+                                          : Icons.radio_button_unchecked,
+                                  color: isCorrect
+                                      ? Colors.green
+                                      : isUserAnswer && !isCorrect
+                                          ? Colors.red
+                                          : Colors.grey,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    answer.answer ?? '',
+                                    style: getMediumStyle(
+                                      color: isCorrect
+                                          ? Colors.green
+                                          : isUserAnswer && !isCorrect
+                                              ? Colors.red
+                                              : ColorManager.black,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ],
                     ),
                   );
-                }),
-                const SizedBox(height: 20),
-              ],
-            );
-          },
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

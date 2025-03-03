@@ -1,3 +1,4 @@
+// features/explore/presentation/cubit/explore_cubit.dart
 import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
 import 'package:exam_app/core/di/injectable.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
@@ -81,15 +82,15 @@ class ExploreCubit extends Cubit<ExploreState> {
         message: 'complete exam',
         context: context,
       );
-      // for (var i = 0; i < selectAnswersMap.length; i++) {
-      //   final queID = selectAnswersMap[i]!.questionId;
-      //   final chosenQus = selectAnswersMap[i]!.correct;
+       for (var i = 0; i < selectAnswersMap.length; i++) {
+         final queID = selectAnswersMap[i]!.questionId;
+         final chosenQus = selectAnswersMap[i]!.correct;
 
-      //   getIt.get<LocalStorageClient>().saveData('QuestionID$i', queID);
-      //   getIt.get<LocalStorageClient>().saveData('Chosen$i', chosenQus);
+         getIt.get<LocalStorageClient>().saveData('QuestionID$i', queID);
+         getIt.get<LocalStorageClient>().saveData('Chosen$i', chosenQus);
 
-      //   print('save success $i');
-      // }
+         print('save success $i');
+     }
       return;
     }
 

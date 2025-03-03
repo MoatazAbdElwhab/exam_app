@@ -1,113 +1,130 @@
 // features/result/presentation/widget/result_container.dart
 import 'package:exam_app/core/resources/color_manager.dart';
-import 'package:exam_app/core/resources/icon_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
+import 'package:exam_app/features/result/data/data_models/question_request_model.dart';
+import 'package:exam_app/features/result/presentation/cubit/result_cubit.dart';
 import 'package:exam_app/features/result/presentation/pages/result_details.dart';
 import 'package:flutter/material.dart';
 
 class ResultContainer extends StatelessWidget {
+  final BuildContext context;
+  final QuestionRequestModel question;
+  final UserQuestionData? userAnswer;
+  final int index;
+  final int totalQuestions;
+  final int correctAnswers;
+  final int timeSpent;
+  final List<QuestionRequestModel> examQuestions;
+  final Map<String, UserQuestionData> userAnswers;
+
   const ResultContainer({
     super.key,
     required this.context,
+    required this.question,
+    required this.userAnswer,
     required this.index,
+    required this.totalQuestions,
+    required this.correctAnswers,
+    required this.timeSpent,
+    required this.examQuestions,
+    required this.userAnswers,
   });
-
-  final BuildContext context;
-  final int index;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Language",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultDetails(
+              question: question,
+              userAnswer: userAnswer,
+              examQuestions: examQuestions,
+              userAnswers: userAnswers,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-        const SizedBox(height: 10),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: 3,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ResultDetails(),
-                  ),
-                );
-              },
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: ColorManager.black.withOpacity(0.2),
-                      blurRadius: 4,
-                      spreadRadius: 2,
-                      offset: const Offset(0, 0),
-                    )
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
+          children: [
+            // Left side - Icon
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Image.network(
+                question.subject?.icon ?? '',
+               
+              ),
+            ),
+            const SizedBox(width: 16),
+            // Right side - Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title and Time
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Image.asset(
-                        IconManager.artPng,
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "High level",
-                              style:
-                                  getSemiBoldStyle(color: ColorManager.black),
-                            ),
-                            Text(
-                              "20 Questions",
-                              style: getMediumStyle(color: ColorManager.grey),
-                            ),
-                            const SizedBox(height: 6),
-                            RichText(
-                              text: TextSpan(
-                                text: "18 corrected answers in ",
-                                style: getMediumStyle(color: ColorManager.blue),
-                                children: [
-                                  TextSpan(
-                                    text: "25 min.",
-                                    style: getSemiBoldStyle(
-                                        color: ColorManager.blue),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                      Text(
+                        question.exam?.title ?? 'Exam Results',
+                        style: getBoldStyle(
+                          color: ColorManager.black,
+                          fontSize: 16,
                         ),
                       ),
                       Text(
-                        "30 Minutes",
-                        style: getMediumStyle(color: ColorManager.grey),
+                        '$timeSpent min',
+                        style: getMediumStyle(
+                          color: ColorManager.grey,
+                          fontSize: 14,
+                        ),
                       ),
                     ],
                   ),
-                ),
+                  const SizedBox(height: 4),
+                  // Questions count
+                  Text(
+                    '$totalQuestions Questions',
+                    style: getRegularStyle(
+                      color: ColorManager.grey,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  // Corrected answers
+                  Text(
+                    '$correctAnswers corrected answers in $timeSpent min.',
+                    style: getMediumStyle(
+                      color: ColorManager.grey,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
               ),
-            );
-          },
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

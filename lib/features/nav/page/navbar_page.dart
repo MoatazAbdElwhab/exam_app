@@ -1,10 +1,11 @@
+// features/nav/page/navbar_page.dart
 import 'package:exam_app/features/nav/widgets/bottom_nav_bar.dart';
+import 'package:exam_app/features/result/presentation/pages/results_page.dart';
 import 'package:flutter/material.dart';
 import '../../../core/logger/app_logger.dart';
 import '../../../core/resources/color_manager.dart';
 import '../../explore/presentation/pages/explore_page.dart';
 import '../../profile/presentation/pages/profile_page.dart';
-import '../../result/presentation/pages/result_page.dart';
 
 class NavbarPage extends StatefulWidget {
   const NavbarPage({super.key});
