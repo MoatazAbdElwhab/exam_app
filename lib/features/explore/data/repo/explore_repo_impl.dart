@@ -2,6 +2,8 @@ import 'package:either_dart/either.dart';
 import 'package:exam_app/core/error_handling/exceptions/api_exception.dart';
 import 'package:exam_app/core/error_handling/exceptions/network_exception.dart';
 import 'package:exam_app/features/explore/data/data_source/remote/explore_remote_data_source.dart';
+import 'package:exam_app/features/explore/data/models/answers_model/select_answers_model.dart';
+import 'package:exam_app/features/explore/data/models/check_result/check_result.dart';
 import 'package:exam_app/features/explore/data/models/exam_response/exam_model.dart';
 import 'package:exam_app/features/explore/data/models/questions_response/question_model.dart';
 import 'package:exam_app/features/explore/data/models/subjects_response/subject_model.dart';
@@ -46,6 +48,19 @@ class ExploreRepoImpl {
     }
     try {
       final response = await _dataSource.getAllQuestionsOnExam(examID);
+      return Right(response);
+    } catch (e) {
+      return Left(ApiException(message: e.toString()));
+    }
+  }
+
+  Future<Either<Exception, CheckResult>> checkQuestions(
+      SelectAnswersModel answers) async {
+    if (!isOnline) {
+      return Left(NetworkException('No internet connection'));
+    }
+    try {
+      final response = await _dataSource.checkQuestions(answers);
       return Right(response);
     } catch (e) {
       return Left(ApiException(message: e.toString()));

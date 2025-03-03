@@ -13,4 +13,5 @@ class Routes {
   static const String exams = '/exams';
   static const String startExam = '/startExam';
   static const String questions = '/questions';
+  static const String examScore = '/examScore';
 }

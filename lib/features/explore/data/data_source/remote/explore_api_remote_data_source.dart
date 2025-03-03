@@ -1,6 +1,8 @@
 import 'package:exam_app/core/app_data/api/api_client.dart';
 import 'package:exam_app/core/app_data/api/api_constants.dart';
 import 'package:exam_app/features/explore/data/data_source/remote/explore_remote_data_source.dart';
+import 'package:exam_app/features/explore/data/models/answers_model/select_answers_model.dart';
+import 'package:exam_app/features/explore/data/models/check_result/check_result.dart';
 import 'package:exam_app/features/explore/data/models/exam_response/exam_model.dart';
 import 'package:exam_app/features/explore/data/models/exam_response/exam_response.dart';
 import 'package:exam_app/features/explore/data/models/questions_response/question_model.dart';
@@ -46,5 +48,14 @@ class ExploreApiRemoteDataSource implements ExploreRemoteDataSource {
       requiresToken: true,
     );
     return QuestionsResponse.fromJson(response).questions;
+  }
+
+  @override
+  Future<CheckResult> checkQuestions(SelectAnswersModel answers) async {
+    final response = await _apiClient.post(
+      ApiConstants.checkQuestionsEndpoint,
+      data: answers.toJson(),
+    );
+    return CheckResult.fromJson(response);
   }
 }

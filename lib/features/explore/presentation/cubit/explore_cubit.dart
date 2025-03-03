@@ -1,8 +1,10 @@
 import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
 import 'package:exam_app/core/di/injectable.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
+import 'package:exam_app/core/routes/routes.dart';
 import 'package:exam_app/core/widgets/dialog_utils.dart';
 import 'package:exam_app/features/explore/data/models/answers_model/select_answer_model.dart';
+import 'package:exam_app/features/explore/data/models/answers_model/select_answers_model.dart';
 import 'package:exam_app/features/explore/data/models/exam_response/exam_model.dart';
 import 'package:exam_app/features/explore/data/models/questions_response/question_model.dart';
 import 'package:exam_app/features/explore/data/models/subjects_response/subject_model.dart';
@@ -10,7 +12,6 @@ import 'package:exam_app/features/explore/data/repo/explore_repo_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'explore_state.dart';
 
@@ -21,9 +22,7 @@ class ExploreCubit extends Cubit<ExploreState> {
   }
   final ExploreRepoImpl _exploreRepoImpl;
   List<QuestionModel> questionList = [];
-  Map<int, SelectAnswerModel> selectAnswersMap = {
-    1: SelectAnswerModel(questionId: 'questionId', correct: 'correct'),
-  };
+  Map<int, SelectAnswerModel> selectAnswersMap = {};
   int activeQuestion = 0;
   String? selectedAnswer;
 
@@ -62,7 +61,7 @@ class ExploreCubit extends Cubit<ExploreState> {
     emit(ChangeAnswer());
   }
 
-  void nextQuestion(BuildContext context) {
+  Future<void> nextQuestion(BuildContext context) async {
     if (selectedAnswer == null) {
       getIt<DialogUtils>().showSnackBar(
         textColor: ColorManager.error,
@@ -90,6 +89,7 @@ class ExploreCubit extends Cubit<ExploreState> {
 
       //   print('save success $i');
       // }
+      await checkQuestions(context);
       return;
     }
 
@@ -102,17 +102,43 @@ class ExploreCubit extends Cubit<ExploreState> {
   }
 
   void backQuestion() {
-    for (var i = 0; i < 11; i++) {
-      final queID = getIt.get<LocalStorageClient>().getData('QuestionID$i');
-      final chosenQus = getIt.get<LocalStorageClient>().getData('Chosen$i');
+    // for (var i = 0; i < 11; i++) {
+    //   final queID = getIt.get<LocalStorageClient>().getData('QuestionID$i');
+    //   final chosenQus = getIt.get<LocalStorageClient>().getData('Chosen$i');
 
-      print('queID success $queID');
-      print('chosenQus success $chosenQus');
-    }
+    //   print('queID success $queID');
+    //   print('chosenQus success $chosenQus');
+    // }
     activeQuestion--;
     selectedAnswer = selectAnswersMap[activeQuestion]!.correct;
 
     emit(ChangeAnswer());
+  }
+
+  Future<void> checkQuestions(BuildContext context) async {
+    List<SelectAnswerModel> answers = [];
+    selectAnswersMap.forEach(
+      (key, value) {
+        answers.add(value);
+      },
+    );
+    print(answers);
+    final result = await _exploreRepoImpl.checkQuestions(
+      SelectAnswersModel(answers: answers, time: 20),
+    );
+    result.fold(
+      (fail) {
+        getIt<DialogUtils>().showSnackBar(
+          textColor: ColorManager.error,
+          message: fail.toString(),
+          context: context,
+        );
+      },
+      (right) => Navigator.of(context).pushNamed(
+        Routes.examScore,
+        arguments: right,
+      ),
+    );
   }
 
   void initExam() {

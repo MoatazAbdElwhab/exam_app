@@ -1,4 +1,5 @@
 import 'package:exam_app/core/routes/routes.dart';
+import 'package:exam_app/features/explore/presentation/pages/exam_score_page.dart';
 import 'package:exam_app/features/explore/presentation/pages/exams_page.dart';
 import 'package:exam_app/features/explore/presentation/pages/questions_page.dart';
 import 'package:exam_app/features/explore/presentation/pages/start_exam_page.dart';
@@ -78,6 +79,11 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         settings: settings,
         builder: (_) => const QuestionsPage(),
+      );
+    case Routes.examScore:
+      return MaterialPageRoute(
+        settings: settings,
+        builder: (_) => const ExamScorePage(),
       );
     default:
       return MaterialPageRoute(

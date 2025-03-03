@@ -5,6 +5,7 @@ class ApiConstants {
   static const String getAllSubjectsEndpoint = 'subjects';
   static const String getAllExamsOnSubjectEndpoint = 'exams';
   static const String getAllQuestionsOnExamEndpoint = 'questions';
+  static const String checkQuestionsEndpoint = 'questions/check';
 
   // ============= Api Keys =============
   static const String messageKey = 'message';
