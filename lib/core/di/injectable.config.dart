@@ -60,6 +60,8 @@ import 'package:exam_app/features/explore/presentation/cubit/explore_cubit.dart'
     as _i68;
 import 'package:exam_app/features/result/data/data_sources/result_local_data_source.dart'
     as _i53;
+import 'package:exam_app/features/result/data/data_sources/result_remote_data_source.dart'
+    as _i933;
 import 'package:exam_app/features/result/data/repositories/result_repository_impl.dart'
     as _i161;
 import 'package:exam_app/features/result/domain/result_repository/result_repository.dart'
@@ -122,6 +124,8 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.lazySingleton<_i53.ResultLocalDataSource>(
         () => _i53.ResultLocalDataSourceImpl(gh<_i93.ApiClient>()));
+    gh.factory<_i933.ResultRemoteDataSource>(
+        () => _i933.ResultRemoteDataSource(gh<_i93.ApiClient>()));
     gh.factory<_i891.ExploreRemoteDataSource>(
         () => _i779.ExploreApiRemoteDataSource(gh<_i93.ApiClient>()));
     gh.factory<_i1021.AuthRemoteDataSource>(
@@ -152,8 +156,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i756.SignUpUseCase(gh<_i24.AuthRepository>()));
     gh.factory<_i923.VerifyResetCodeUseCase>(
         () => _i923.VerifyResetCodeUseCase(gh<_i24.AuthRepository>()));
-    gh.lazySingleton<_i451.ResultRepository>(
-        () => _i161.ResultRepositoryImpl(gh<_i53.ResultLocalDataSource>()));
+    gh.lazySingleton<_i451.ResultRepository>(() => _i161.ResultRepositoryImpl(
+          gh<_i53.ResultLocalDataSource>(),
+          gh<_i933.ResultRemoteDataSource>(),
+        ));
     gh.factory<_i533.AuthCubit>(() => _i533.AuthCubit(
           signInUseCase: gh<_i937.SignInUseCase>(),
           signUpUseCase: gh<_i756.SignUpUseCase>(),

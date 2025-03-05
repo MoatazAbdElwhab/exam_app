@@ -1,5 +1,4 @@
 // features/result/data/data_sources/result_remote_data_source.dart
-/* // features/result/data/data_sources/result_remote_data_source.dart
 import 'dart:developer' as dev;
 import 'package:either_dart/either.dart';
 import 'package:exam_app/core/app_data/api/api_client.dart';
@@ -15,24 +14,25 @@ class ResultRemoteDataSource {
 
   ResultRemoteDataSource(this._apiClient);
 
-
-//------------------------------------------------------fetchQuestions------------------------------------------------------
-  Future<Either<ApiException, List<QuestionRequestModel>>> fetchQuestions() async {
+  Future<Either<ApiException, List<QuestionRequestModel>>>
+      fetchQuestions() async {
     try {
       final response = await _apiClient.get('/questions', requiresToken: true);
       dev.log('Questions Response: $response');
-      
+
       if (response != null) {
         if (response['questions'] != null && response['questions'] is List) {
           final List<dynamic> data = response['questions'] as List<dynamic>;
           final questions = data
-              .map((json) => QuestionRequestModel.fromJson(json as Map<String, dynamic>))
+              .map((json) =>
+                  QuestionRequestModel.fromJson(json as Map<String, dynamic>))
               .toList();
           return Right(questions);
         } else if (response['data'] != null && response['data'] is List) {
           final List<dynamic> data = response['data'] as List<dynamic>;
           final questions = data
-              .map((json) => QuestionRequestModel.fromJson(json as Map<String, dynamic>))
+              .map((json) =>
+                  QuestionRequestModel.fromJson(json as Map<String, dynamic>))
               .toList();
           return Right(questions);
         }
@@ -45,8 +45,6 @@ class ResultRemoteDataSource {
     }
   }
 
-
-//------------------------------------------------------submitAnswers------------------------------------------------------
   Future<Either<ApiException, ResultResponseModel>> submitAnswers(
       QuestionRequestModel request) async {
     try {
@@ -56,7 +54,7 @@ class ResultRemoteDataSource {
         requiresToken: true,
       );
       dev.log('Submit Answer Response: $response');
-      
+
       if (response != null && response is Map<String, dynamic>) {
         return Right(ResultResponseModel.fromJson(response));
       }
@@ -68,13 +66,12 @@ class ResultRemoteDataSource {
     }
   }
 
-
-//------------------------------------------------------fetchHistory------------------------------------------------------
   Future<Either<ApiException, HistoryResponseModel>> fetchHistory() async {
     try {
-      final response = await _apiClient.get('/questions/history', requiresToken: true);
+      final response =
+          await _apiClient.get('/questions/history', requiresToken: true);
       dev.log('History Response: $response');
-      
+
       if (response != null && response is Map<String, dynamic>) {
         return Right(HistoryResponseModel.fromJson(response));
       }
@@ -86,4 +83,3 @@ class ResultRemoteDataSource {
     }
   }
 }
- */

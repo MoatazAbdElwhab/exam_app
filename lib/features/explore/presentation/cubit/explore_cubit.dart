@@ -82,14 +82,14 @@ class ExploreCubit extends Cubit<ExploreState> {
         message: 'complete exam',
         context: context,
       );
-      // for (var i = 0; i < selectAnswersMap.length; i++) {
-      //   final queID = selectAnswersMap[i]!.questionId;
-      //   final chosenQus = selectAnswersMap[i]!.correct;
+       for (var i = 0; i < selectAnswersMap.length; i++) {
+         final queID = selectAnswersMap[i]!.questionId;
+         final chosenQus = selectAnswersMap[i]!.correct;
 
-      //   getIt.get<LocalStorageClient>().saveData('QuestionID$i', queID);
-      //   getIt.get<LocalStorageClient>().saveData('Chosen$i', chosenQus);
-      //   print('save success $i');
-      // }
+         getIt.get<LocalStorageClient>().saveData('QuestionID$i', queID);
+         getIt.get<LocalStorageClient>().saveData('Chosen$i', chosenQus);
+         print('save success $i');
+       }
       await checkQuestions(context);
 
       return;

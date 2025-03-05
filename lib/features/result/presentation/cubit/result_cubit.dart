@@ -51,6 +51,7 @@ class ResultCubit extends Cubit<ResultState> {
           // question's correct answer
           for (var q in questions) {
             final userAnswer = _userAnswers[q.id];
+            
             debugPrint('Question ${q.id}:');
             debugPrint('- Correct Answer: ${q.correct}');
             debugPrint('- User Answer: ${userAnswer?.userAnswer}');
