@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 
 abstract class ResultLocalDataSource {
   Future<List<QuestionRequestModel>> fetchQuestions();
-  Map<int, UserQuestionData> getUserAnswers();
+  Map<String, UserQuestionData> getUserAnswers();
 }
 
 @LazySingleton(as: ResultLocalDataSource)
@@ -20,69 +20,77 @@ class ResultLocalDataSourceImpl implements ResultLocalDataSource {
 
   @override
   Future<List<QuestionRequestModel>> fetchQuestions() async {
-    final questions = <QuestionRequestModel>[];
     final localStorage = getIt<LocalStorageClient>();
+    final questionIds = <String>[];
 
-    // Get all question IDs from local storage
+    // Collect all question IDs first
     for (var i = 0; i < 11; i++) {
       final questionId = localStorage.getData('QuestionID$i');
-     // final userAnswer = localStorage.getData('Answer$i');
-      
       if (questionId != null) {
-        // Fetch question details from API
-        final response = await _apiClient.get(
-          '/questions/$questionId',
-          requiresToken: true,
-        );
-
-        final questionData = response['question'] as Map<String, dynamic>;
-        final answers = (questionData['answers'] as List)
-            .map((answer) => AnswerModel(
-                  key: answer['key'],
-                  answer: answer['answer'],
-                ))
-            .toList();
-
-        // Convert response to QuestionRequestModel
-        questions.add(QuestionRequestModel(
-          id: questionData['_id'],
-          question: questionData['question'],
-          correct: questionData['correct'],
-          answers: answers,
-          type: questionData['type'],
-          subject: questionData['subject'] != null 
-              ? SubjectModel(
-                  id: questionData['subject']['_id'],
-                  name: questionData['subject']['name'],
-                  icon: questionData['subject']['icon'],
-                )
-              : null,
-          exam: questionData['exam'] != null
-              ? ExamModel(
-                  id: questionData['exam']['_id'],
-                  title: questionData['exam']['title'],
-                  duration: questionData['exam']['duration'],
-                )
-              : null,
-        ));
+        questionIds.add(questionId);
       }
     }
 
-    return questions;
+    if (questionIds.isEmpty) return [];
+
+    try {
+      final questions = <QuestionRequestModel>[];
+      for (final id in questionIds) {
+        final response = await _apiClient.get(
+          '/questions/$id',
+          requiresToken: true,
+        );
+
+        if (response != null && response['question'] != null) {
+          final questionData = response['question'] as Map<String, dynamic>;
+          final answers = (questionData['answers'] as List)
+              .map((answer) => AnswerModel(
+                    key: answer['key'],
+                    answer: answer['answer'],
+                  ))
+              .toList();
+
+          questions.add(QuestionRequestModel(
+            id: questionData['_id'],
+            question: questionData['question'],
+            correct: questionData['correct'],
+            answers: answers,
+            type: questionData['type'],
+            subject: questionData['subject'] != null
+                ? SubjectModel(
+                    id: questionData['subject']['_id'],
+                    name: questionData['subject']['name'],
+                    icon: questionData['subject']['icon'],
+                  )
+                : null,
+            exam: questionData['exam'] != null
+                ? ExamModel(
+                    id: questionData['exam']['_id'],
+                    title: questionData['exam']['title'],
+                    duration: questionData['exam']['duration'],
+                  )
+                : null,
+          ));
+        }
+      }
+      return questions;
+    } catch (e) {
+      return [];
+    }
   }
 
   @override
-  Map<int, UserQuestionData> getUserAnswers() {
+  Map<String, UserQuestionData> getUserAnswers() {
     final localStorage = getIt<LocalStorageClient>();
-    final userAnswers = <int, UserQuestionData>{};
+    final userAnswers = <String, UserQuestionData>{};
 
-    // Get all user answers from local storage
+    // Get all user answers
     for (var i = 0; i < 11; i++) {
       final questionId = localStorage.getData('QuestionID$i');
-      final userAnswer = localStorage.getData('Answer$i');
-      
+      final userAnswer = localStorage.getData('Chosen$i');
+
       if (questionId != null && userAnswer != null) {
-        userAnswers[int.parse(questionId)] = UserQuestionData(
+        userAnswers[questionId] = UserQuestionData(
           questionId: questionId,
           userAnswer: userAnswer,
         );

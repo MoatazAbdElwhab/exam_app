@@ -1,62 +1,85 @@
 // features/result/presentation/cubit/result_state.dart
 part of 'result_cubit.dart';
 
-abstract class ResultState extends Equatable {
-  const ResultState();
-
-  @override
-  List<Object?> get props => [];
+enum ResultStatus {
+  initial,
+  loading,
+  questionsLoaded,
+  error,
+  answerSubmitted,
+  allAnswersSubmitted,
+  historyLoaded
 }
 
-class ResultInitial extends ResultState {}
+class ResultState extends Equatable {
+  final ResultStatus status;
+  final List<QuestionRequestModel>? questions;
+  final Map<String, UserQuestionData>? userAnswers;
+  final ResultResponseModel? response;
+  final HistoryResponseModel? history;
+  final String? errorMessage;
 
-class ResultLoading extends ResultState {}
-
-class QuestionsLoaded extends ResultState {
-  final List<QuestionRequestModel> questions;
-  final Map<String, UserQuestionData> userAnswers;
-
-  const QuestionsLoaded({
-    required this.questions,
-    required this.userAnswers,
+  const ResultState({
+    this.status = ResultStatus.initial,
+    this.questions,
+    this.userAnswers,
+    this.response,
+    this.history,
+    this.errorMessage,
   });
 
   @override
-  List<Object?> get props => [questions, userAnswers];
-}
+  List<Object?> get props => [status, questions, userAnswers, response, history, errorMessage];
 
-class ResultError extends ResultState {
-  final String message;
+  ResultState copyWith({
+    ResultStatus? status,
+    List<QuestionRequestModel>? questions,
+    Map<String, UserQuestionData>? userAnswers,
+    ResultResponseModel? response,
+    HistoryResponseModel? history,
+    String? errorMessage,
+  }) {
+    return ResultState(
+      status: status ?? this.status,
+      questions: questions ?? this.questions,
+      userAnswers: userAnswers ?? this.userAnswers,
+      response: response ?? this.response,
+      history: history ?? this.history,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
 
-  const ResultError(this.message);
+  // Factory constructors for different states
+  factory ResultState.initial() => const ResultState();
 
-  @override
-  List<Object?> get props => [message];
-}
+  factory ResultState.loading() => const ResultState(status: ResultStatus.loading);
 
-class ResultAnswerSubmitted extends ResultState {
-  final ResultResponseModel response;
+  factory ResultState.questionsLoaded({
+    required List<QuestionRequestModel> questions,
+    required Map<String, UserQuestionData> userAnswers,
+  }) => ResultState(
+    status: ResultStatus.questionsLoaded,
+    questions: questions,
+    userAnswers: userAnswers,
+  );
 
-  const ResultAnswerSubmitted(this.response);
+  factory ResultState.error(String message) => ResultState(
+    status: ResultStatus.error,
+    errorMessage: message,
+  );
 
-  @override
-  List<Object?> get props => [response];
-}
+  factory ResultState.answerSubmitted(ResultResponseModel response) => ResultState(
+    status: ResultStatus.answerSubmitted,
+    response: response,
+  );
 
-class ResultAllAnswersSubmitted extends ResultState {
-  final List<QuestionRequestModel> questions;
+  factory ResultState.allAnswersSubmitted(List<QuestionRequestModel> questions) => ResultState(
+    status: ResultStatus.allAnswersSubmitted,
+    questions: questions,
+  );
 
-  const ResultAllAnswersSubmitted(this.questions);
-
-  @override
-  List<Object?> get props => [questions];
-}
-
-class HistoryLoaded extends ResultState {
-  final HistoryResponseModel history;
-
-  const HistoryLoaded(this.history);
-
-  @override
-  List<Object?> get props => [history];
+  factory ResultState.historyLoaded(HistoryResponseModel history) => ResultState(
+    status: ResultStatus.historyLoaded,
+    history: history,
+  );
 }

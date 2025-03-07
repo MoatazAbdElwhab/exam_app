@@ -11,14 +11,31 @@ class ResultStateHandler extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return switch (state) {
-      ResultLoading() => const Center(child: CircularProgressIndicator()),
-      ResultError(message: var message) => ResultErrorView(message: message),
-      QuestionsLoaded(questions: final questions, userAnswers: final userAnswers) => ExamResultsList(
-        questions: questions,
-        userAnswers: userAnswers,
+    return switch (state.status) {
+      ResultStatus.initial => const SizedBox.shrink(),
+      ResultStatus.loading => const Center(child: CircularProgressIndicator()),
+      ResultStatus.error when state.errorMessage != null => 
+        ResultErrorView(message: state.errorMessage!),
+      ResultStatus.questionsLoaded when state.questions != null && state.userAnswers != null => 
+        ExamResultsList(
+          questions: state.questions!,
+          userAnswers: state.userAnswers!,
+        ),
+      ResultStatus.answerSubmitted when state.response != null =>
+        Center(child: Text('Answer submitted successfully: ${state.response!.message ?? ''}')),
+      ResultStatus.allAnswersSubmitted when state.questions != null =>
+        ExamResultsList(
+          questions: state.questions!,
+          userAnswers: state.userAnswers ?? {},
+        ),
+      ResultStatus.historyLoaded when state.history != null =>
+        Center(child: Text('History loaded: ${state.history!.toString()}')),
+      _ => const Center(
+        child: Text(
+          'Unexpected state',
+          style: TextStyle(color: Colors.red),
+        ),
       ),
-      _ => const SizedBox.shrink(),
     };
   }
 }

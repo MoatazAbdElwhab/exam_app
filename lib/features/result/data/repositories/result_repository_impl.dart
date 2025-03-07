@@ -27,7 +27,7 @@ class ResultRepositoryImpl implements ResultRepository {
     }
   }
 
-  Map<int, UserQuestionData> getUserAnswers() {
+  Map<String, UserQuestionData> getUserAnswers() {
     try {
       return _localDataSource.getUserAnswers();
     } catch (e) {

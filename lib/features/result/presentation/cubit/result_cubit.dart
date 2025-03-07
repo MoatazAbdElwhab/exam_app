@@ -18,10 +18,10 @@ class ResultCubit extends Cubit<ResultState> {
   List<QuestionRequestModel> _questions = [];
   final Map<String, UserQuestionData> _userAnswers = {};
 
-  ResultCubit(this._resultRepository) : super(ResultInitial());
+  ResultCubit(this._resultRepository) : super(ResultState.initial());
 
   void fetchQuestions() async {
-    emit(ResultLoading());
+    emit(ResultState.loading());
     try {
       // Get stored question IDs and answers
       _userAnswers.clear();
@@ -45,7 +45,7 @@ class ResultCubit extends Cubit<ResultState> {
 
       final result = await _resultRepository.fetchQuestions();
       result.fold(
-        (failure) => emit(ResultError(failure.message)),
+        (failure) => emit(ResultState.error(failure.message)),
         (questions) {
           _questions = questions;
           // question's correct answer
@@ -57,20 +57,19 @@ class ResultCubit extends Cubit<ResultState> {
             debugPrint('- User Answer: ${userAnswer?.userAnswer}');
             debugPrint('- Match: ${userAnswer?.userAnswer == q.correct}');
           }
-          emit(QuestionsLoaded(
+          emit(ResultState.questionsLoaded(
             questions: questions,
             userAnswers: _userAnswers,
           ));
         },
       );
     } catch (e) {
-      emit(ResultError(e.toString()));
+      emit(ResultState.error(e.toString()));
     }
   }
 
   Future<void> submitAnswer(QuestionRequestModel request) async {
     try {
-      
       final questionIndex = _questions.indexWhere((q) => q.id == request.id);
       if (questionIndex != -1) {
         _questions[questionIndex] = QuestionRequestModel(
@@ -84,13 +83,12 @@ class ResultCubit extends Cubit<ResultState> {
           createdAt: request.createdAt,
           selectedAnswer: request.selectedAnswer,
         );
-        emit(QuestionsLoaded(
+        emit(ResultState.questionsLoaded(
           questions: _questions,
           userAnswers: _userAnswers,
         ));
       }
 
-      
       final result = await _resultRepository.submitAnswers(request);
       result.fold(
         (error) {
@@ -107,34 +105,34 @@ class ResultCubit extends Cubit<ResultState> {
               createdAt: _questions[questionIndex].createdAt,
               selectedAnswer: null,
             );
-            emit(QuestionsLoaded(
+            emit(ResultState.questionsLoaded(
               questions: _questions,
               userAnswers: _userAnswers,
             ));
           }
-          emit(ResultError(error.message));
+          emit(ResultState.error(error.message));
         },
-        (response) => emit(ResultAnswerSubmitted(response)),
+        (response) => emit(ResultState.answerSubmitted(response)),
       );
     } catch (e) {
-      emit(ResultError(e.toString()));
+      emit(ResultState.error(e.toString()));
     }
   }
 
   Future<void> submitAllAnswers() async {
-    emit(ResultAllAnswersSubmitted(_questions));
+    emit(ResultState.allAnswersSubmitted(_questions));
   }
 
   Future<void> fetchHistory() async {
-    emit(ResultLoading());
+    emit(ResultState.loading());
     try {
       final result = await _resultRepository.fetchHistory();
       result.fold(
-        (error) => emit(ResultError(error.message)),
-        (history) => emit(HistoryLoaded(history)),
+        (error) => emit(ResultState.error(error.message)),
+        (history) => emit(ResultState.historyLoaded(history)),
       );
     } catch (e) {
-      emit(ResultError(e.toString()));
+      emit(ResultState.error(e.toString()));
     }
   }
 }
