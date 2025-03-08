@@ -1,7 +1,16 @@
+// main.dart
 import 'package:exam_app/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'core/database/application_storage.dart';
 
-void main() {
+
+Future <void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await Hive.openBox('user');
+  await Hive.openBox('question');
+  await ApplicationStorage.init();
   runApp(const MyApp());
 }
 
