@@ -16,8 +16,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
   }
 
   @override
@@ -39,13 +39,17 @@ class _LoginPageState extends State<LoginPage> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    dynamic uID =
-                        ApplicationStorage.getData(ApplicationStorage.userID)??"";
+                    final String userId =
+                        ApplicationStorage.getData(ApplicationStorage.userID) ??
+                            "";
+                    final String examId = "exam_2";
+                    final String questionKey = "${userId}_${examId}_q1";
+
                     ApplicationStorage.cachedQuestion(
-                      uID,
+                      questionKey,
                       QuestionModel(
-                        id: uID,
-                        examID: "1",
+                        id: questionKey,
+                        examID: examId,
                         questionID: "1",
                         question: "What is the capital of Nigeria?",
                         answes: ["Lagos", "Abuja", "Kano", "Ibadan"],
@@ -56,10 +60,12 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     );
 
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return const Result();
-                    }));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Result(userId: userId),
+                      ),
+                    );
                   },
                   child: const Text("Finish Exam"),
                 ),
