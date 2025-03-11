@@ -10,6 +10,7 @@ import 'package:exam_app/features/explore/data/models/exam_response/exam_model.d
 import 'package:exam_app/features/explore/data/models/questions_response/question_model.dart';
 import 'package:exam_app/features/explore/data/models/subjects_response/subject_model.dart';
 import 'package:exam_app/features/explore/data/repo/explore_repo_impl.dart';
+import 'package:exam_app/features/result/data/data_models/hive_model/question_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -48,6 +49,9 @@ class ExploreCubit extends Cubit<ExploreState> {
 
   Future<void> getAllQuestionsOnExam(String examID) async {
     emit(GetQuestionsLoading());
+    // Cache exam ID in both Hive and static variable
+    getIt<LocalStorageClient>().cacheUserData('examID', examID);
+
     final result = await _exploreRepoImpl.getAllQuestionsOnExam(examID);
     result.fold(
       (fail) => emit(GetQuestionsFail(fail.toString())),
@@ -72,34 +76,62 @@ class ExploreCubit extends Cubit<ExploreState> {
       );
       return;
     }
+
     selectAnswersMap[activeQuestion] = SelectAnswerModel(
       questionId: questionList[activeQuestion].id,
       correct: selectedAnswer!,
     );
+
     if (activeQuestion + 1 == questionList.length) {
+      // First cache answers through LocalStorageClient
+      try {
+        final userId = getIt<LocalStorageClient>().getUserData('userID');
+        final examId = getIt<LocalStorageClient>().getUserData('examID');
+
+        if (userId != null && examId != null) {
+          for (var i = 0; i < selectAnswersMap.length; i++) {
+            final question = questionList[i];
+            final userAnswer = selectAnswersMap[i]!.correct;
+            final questionKey = '${userId}_${examId}_${question.id}';
+            
+            getIt<LocalStorageClient>().cacheQuestion(
+              questionKey,
+              QuestionModelHive(
+                id: question.id,
+                examID: examId,
+                questionID: question.id,
+                question: question.question,
+                answes: question.answers,
+                correctAnswer: question.correct,
+                userAnswer: userAnswer,
+                duration: question.createdAt,
+                isCompleted: true,
+              ),
+            );
+            debugPrint('Successfully cached question $i');
+          }
+        } else {
+          debugPrint('Cannot cache answers: userID or examID not found');
+        }
+      } catch (e) {
+        debugPrint('Failed to cache answers: $e');
+      }
+
+      // Then show completion message
       getIt<DialogUtils>().showSnackBar(
         textColor: ColorManager.success,
-        message: 'complete exam',
+        message: 'Complete exam',
         context: context,
       );
-       for (var i = 0; i < selectAnswersMap.length; i++) {
-         final queID = selectAnswersMap[i]!.questionId;
-         final chosenQus = selectAnswersMap[i]!.correct;
 
-         getIt.get<LocalStorageClient>().saveData('QuestionID$i', queID);
-         getIt.get<LocalStorageClient>().saveData('Chosen$i', chosenQus);
-         print('save success $i');
-       }
+      // Finally check answers and navigate
       await checkQuestions(context);
-
       return;
     }
 
     activeQuestion++;
     bool lateAnswer = selectAnswersMap.containsKey(activeQuestion);
-    selectedAnswer =
-        lateAnswer ? selectAnswersMap[activeQuestion]!.correct : null;
-
+    selectedAnswer = lateAnswer ? selectAnswersMap[activeQuestion]!.correct : null;
     emit(ChangeAnswer());
   }
 
@@ -119,14 +151,12 @@ class ExploreCubit extends Cubit<ExploreState> {
 
   Future<void> checkQuestions(BuildContext context) async {
     List<SelectAnswerModel> answers = [];
-    selectAnswersMap.forEach(
-      (key, value) {
-        answers.add(value);
-      },
-    );
+    selectAnswersMap.forEach((key, value) => answers.add(value));
+    
     final result = await _exploreRepoImpl.checkQuestions(
       SelectAnswersModel(answers: answers, time: 20),
     );
+    
     result.fold(
       (fail) {
         getIt<DialogUtils>().showSnackBar(
@@ -135,10 +165,14 @@ class ExploreCubit extends Cubit<ExploreState> {
           context: context,
         );
       },
-      (right) => Navigator.of(context).pushNamed(
-        Routes.examScore,
-        arguments: right,
-      ),
+      (right) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          Routes.examScore,
+          (route) => false,
+          arguments: right,
+        );
+      },
     );
   }
 

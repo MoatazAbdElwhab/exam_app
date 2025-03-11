@@ -10,6 +10,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:exam_app/core/app_data/api/api_client.dart' as _i93;
 import 'package:exam_app/core/app_data/api/dio_client.dart' as _i797;
+import 'package:exam_app/core/app_data/local_storage/hive_application_storage.dart'
+    as _i396;
 import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart'
     as _i73;
 import 'package:exam_app/core/di/modules.dart' as _i81;
@@ -107,16 +109,19 @@ extension GetItInjectableX on _i174.GetIt {
         () => getItRegisterModule.secureStorage);
     gh.singleton<_i69.AppNavigatorObserver>(() => _i69.AppNavigatorObserver());
     gh.singleton<_i985.DialogUtils>(() => _i985.DialogUtils());
+    gh.lazySingleton<_i396.HiveApplicationStorage>(
+        () => _i396.HiveApplicationStorage());
     gh.singleton<_i73.LocalStorageClient>(() => _i73.LocalStorageClient(
           gh<_i460.SharedPreferences>(),
           gh<_i558.FlutterSecureStorage>(),
+          gh<_i396.HiveApplicationStorage>(),
         ));
+    gh.factory<_i310.AuthLocalDataSource>(
+        () => _i873.AuthLocalDataSourceImpl(gh<_i73.LocalStorageClient>()));
     gh.singleton<_i32.DioErrorHandler>(() => _i32.DioErrorHandler(
           gh<_i73.LocalStorageClient>(),
           gh<_i719.GlobalKey<_i719.NavigatorState>>(),
         ));
-    gh.factory<_i310.AuthLocalDataSource>(
-        () => _i873.AuthLocalDataSourceImpl(gh<_i73.LocalStorageClient>()));
     gh.singleton<_i93.ApiClient>(() => _i797.DioApiClient(
           gh<_i73.LocalStorageClient>(),
           gh<_i32.DioErrorHandler>(),

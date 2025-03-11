@@ -1,6 +1,10 @@
+// features/auth/data/auth_repository/auth_repo_impl.dart
+
 import 'dart:convert';
 
 import 'package:either_dart/either.dart';
+import 'package:exam_app/core/app_data/local_storage/hive_application_storage.dart';
+import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
 import 'package:exam_app/core/di/injectable.dart';
 import 'package:exam_app/core/error_handling/exceptions/network_exception.dart';
 import 'package:exam_app/features/auth/data/data_models/response/change_password_response.dart';
@@ -29,7 +33,11 @@ import '../data_sources/auth_remote_data_source/auth_remote_ds_interface.dart';
 class AuthRepositoryImpl implements AuthRepository {
   AuthRemoteDataSource authRemoteDataSource;
   AuthLocalDataSource authLocalDataSource;
-  AuthRepositoryImpl(this.authLocalDataSource, this.authRemoteDataSource);
+  //HiveApplicationStorage hiveApplicationStorage;
+  AuthRepositoryImpl(
+    this.authLocalDataSource,
+    this.authRemoteDataSource,
+  );
 
   @override
   Future<Either<Exception, ChangePasswordResponse>> changePassword(
@@ -121,6 +129,7 @@ class AuthRepositoryImpl implements AuthRepository {
         if (apiResponse.isRight) {
           await authLocalDataSource
               .cacheUserProfileInfo(apiResponse.right.toJson());
+
           return Right(apiResponse.right);
         } else {
           return Left(apiResponse.left);
@@ -254,6 +263,14 @@ class AuthRepositoryImpl implements AuthRepository {
         Log.i('cachingUserProfileInfo');
         await authLocalDataSource.cacheUserProfileInfo(response.user!.toJson());
         Log.i('cached user data successfully');
+
+        // Cache userID in Hive through LocalStorageClient
+        if (response.user!.id != null) {
+          Log.i('UserID: ${response.user!.id}');
+          getIt<LocalStorageClient>()
+              .cacheUserData('userID', response.user!.id);
+          Log.i('Cached userID in Hive successfully');
+        }
       }
     } catch (e) {
       Log.e('Failed to cache user data: ${e.toString()}');

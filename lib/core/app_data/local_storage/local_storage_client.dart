@@ -1,5 +1,9 @@
+// core/app_data/local_storage/local_storage_client.dart
 import 'dart:ffi';
 
+import 'package:exam_app/core/app_data/local_storage/hive_application_storage.dart';
+import 'package:exam_app/features/explore/data/models/questions_response/question_model.dart';
+import 'package:exam_app/features/result/data/data_models/hive_model/question_model.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,10 +15,12 @@ import '../../logger/app_logger.dart';
 class LocalStorageClient {
   SharedPreferences sharedPreferences;
   FlutterSecureStorage secureStorage;
+  HiveApplicationStorage hiveApplicationStorage;
 
   LocalStorageClient(
     this.sharedPreferences,
     this.secureStorage,
+    this.hiveApplicationStorage,
   );
 
   Future<bool>? saveData(String key, String value) async {
@@ -88,6 +94,44 @@ class LocalStorageClient {
       await sharedPreferences.setBool('rememberUser', rememberMe);
     } catch (e) {
       throw LocalStorageException('Failed to save data: ${e.toString()}');
+    }
+  }
+
+  // User data methods using Hive
+  Future<void> cacheUserData(String key, dynamic value) async {
+    try {
+      Log.d('Caching user data for key: $key');
+      HiveApplicationStorage.cachedData(key, value);
+    } catch (e) {
+      throw LocalStorageException('Failed to cache user data: ${e.toString()}');
+    }
+  }
+
+  dynamic getUserData(String key) {
+    try {
+      Log.d('Getting user data for key: $key');
+      return HiveApplicationStorage.getData(key);
+    } catch (e) {
+      throw LocalStorageException('Failed to get user data: ${e.toString()}');
+    }
+  }
+
+  // Question data methods using Hive
+  Future<void> cacheQuestion(String key, QuestionModelHive value) async {
+    try {
+      Log.d('Caching question for key: $key');
+      HiveApplicationStorage.cachedQuestion(key, value);
+    } catch (e) {
+      throw LocalStorageException('Failed to cache question: ${e.toString()}');
+    }
+  }
+
+  QuestionModelHive? getQuestion(String key) {
+    try {
+      Log.d('Getting question for key: $key');
+      return HiveApplicationStorage.getQuestion(key);
+    } catch (e) {
+      throw LocalStorageException('Failed to get question: ${e.toString()}');
     }
   }
 }

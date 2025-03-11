@@ -1,3 +1,4 @@
+// features/auth/data/data_sources/auth_remote_data_source/auth_remote_ds_interface.dart
 import 'package:either_dart/either.dart';
 import '../../../../../core/error_handling/exceptions/api_exception.dart';
 import '../../data_models/response/forget_password_response.dart';
@@ -34,4 +35,6 @@ abstract class AuthRemoteDataSource {
   Future<Either<ApiException, GetLoggedUserDataResponse>> getLoggedUserInfo();
   Future<Either<ApiException, VerifyResetCodeResponse>> verifyResetCodeResponse(
       String otp);
+
+  
 }

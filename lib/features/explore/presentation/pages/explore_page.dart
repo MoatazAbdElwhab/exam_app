@@ -51,7 +51,7 @@ class _ExplorePageState extends State<ExplorePage> {
                 );
               case GetSubjetcsFail():
                 return Center(
-                  child: Text(state.errorMsg),
+                  child: Text(state.error),
                 );
               case GetSubjetcsSuccess():
                 return Column(

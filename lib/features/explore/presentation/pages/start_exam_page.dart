@@ -1,3 +1,4 @@
+// features/explore/presentation/pages/start_exam_page.dart
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/icon_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
@@ -45,7 +46,7 @@ class StartExamPage extends StatelessWidget {
             case GetQuestionsFail():
               return Center(
                 child: Text(
-                  state.errorMsg,
+                  state.error,
                   style: getSemiBoldStyle(color: ColorManager.black),
                 ),
               );

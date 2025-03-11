@@ -1,49 +1,58 @@
+// features/explore/presentation/cubit/explore_state.dart
 part of 'explore_cubit.dart';
 
-sealed class ExploreState {}
+@immutable
+abstract class ExploreState {}
 
-final class ExploreInitial extends ExploreState {}
+class ExploreInitial extends ExploreState {}
 
-final class GetSubjetcsLoading extends ExploreState {}
+class GetSubjetcsLoading extends ExploreState {}
 
-final class GetSubjetcsFail extends ExploreState {
-  final String errorMsg;
-
-  GetSubjetcsFail(this.errorMsg);
-}
-
-final class GetSubjetcsSuccess extends ExploreState {
+class GetSubjetcsSuccess extends ExploreState {
   final List<SubjectModel> subjects;
 
   GetSubjetcsSuccess(this.subjects);
 }
 
-final class GetExamsLoading extends ExploreState {}
+class GetSubjetcsFail extends ExploreState {
+  final String error;
 
-final class GetExamsFail extends ExploreState {
-  final String errorMsg;
-
-  GetExamsFail(this.errorMsg);
+  GetSubjetcsFail(this.error);
 }
 
-final class GetExamsSuccess extends ExploreState {
+class GetExamsLoading extends ExploreState {}
+
+class GetExamsSuccess extends ExploreState {
   final List<ExamModel> exams;
 
   GetExamsSuccess(this.exams);
 }
 
-final class GetQuestionsLoading extends ExploreState {}
+class GetExamsFail extends ExploreState {
+  final String error;
 
-final class GetQuestionsFail extends ExploreState {
-  final String errorMsg;
-
-  GetQuestionsFail(this.errorMsg);
+  GetExamsFail(this.error);
 }
 
-final class GetQuestionsSuccess extends ExploreState {
+class GetQuestionsLoading extends ExploreState {}
+
+class GetQuestionsSuccess extends ExploreState {
   final List<QuestionModel> questions;
 
   GetQuestionsSuccess(this.questions);
 }
 
-final class ChangeAnswer extends ExploreState {}
+class GetQuestionsFail extends ExploreState {
+  final String error;
+
+  GetQuestionsFail(this.error);
+}
+
+class ChangeAnswer extends ExploreState {}
+
+class ExamCompleted extends ExploreState {
+  final dynamic result;
+  ExamCompleted(this.result);
+}
+
+

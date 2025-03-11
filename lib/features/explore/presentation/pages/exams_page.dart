@@ -1,3 +1,4 @@
+// features/explore/presentation/pages/exams_page.dart
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:exam_app/core/routes/routes.dart';
@@ -41,7 +42,7 @@ class ExamsPage extends StatelessWidget {
               );
             case GetExamsFail():
               return Center(
-                child: Text(state.errorMsg),
+                child: Text(state.error),
               );
             case GetExamsSuccess():
               if (state.exams.isEmpty) {
