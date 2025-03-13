@@ -4,7 +4,6 @@ import 'package:exam_app/features/result/data/data_models/hive_model/question_mo
 import 'package:exam_app/features/result/domain/entities/exam_score.dart';
 
 enum ResultStatus { 
-  initial, 
   loading, 
   loaded, 
   error 
@@ -16,42 +15,30 @@ class ResultState extends Equatable {
   final ExamScore? examScore;
   final String? errorMessage;
 
-  const ResultState._({
-    required this.status,
+  const ResultState({
+    this.status = ResultStatus.loading,
     this.questions,
     this.examScore,
     this.errorMessage,
   });
 
-  // Factory constructors for clean state transitions
-  factory ResultState.initial() => const ResultState._(status: ResultStatus.initial);
-
-  factory ResultState.loading() => const ResultState._(status: ResultStatus.loading);
-
-  factory ResultState.loaded({
-    required List<QuestionModelHive> questions,
-    required ExamScore examScore,
-  }) =>
-      ResultState._(
-        status: ResultStatus.loaded,
-        questions: questions,
-        examScore: examScore,
-      );
-
-  factory ResultState.error(String message) => ResultState._(
-        status: ResultStatus.error,
-        errorMessage: message,
-      );
-
-  // Helper getters for state checks
-  bool get isInitial => status == ResultStatus.initial;
   bool get isLoading => status == ResultStatus.loading;
   bool get isLoaded => status == ResultStatus.loaded;
   bool get isError => status == ResultStatus.error;
 
-  // For checking if questions are available and have answers
-  bool get hasQuestions => questions != null && questions!.isNotEmpty;
-  bool get hasAnswers => hasQuestions && questions!.any((q) => q.answes != null);
+  ResultState copyWith({
+    ResultStatus? status,
+    List<QuestionModelHive>? questions,
+    ExamScore? examScore,
+    String? errorMessage,
+  }) {
+    return ResultState(
+      status: status ?? this.status,
+      questions: questions ?? this.questions,
+      examScore: examScore ?? this.examScore,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
 
   @override
   List<Object?> get props => [status, questions, examScore, errorMessage];
@@ -59,8 +46,6 @@ class ResultState extends Equatable {
   @override
   String toString() {
     switch (status) {
-      case ResultStatus.initial:
-        return 'ResultState.initial';
       case ResultStatus.loading:
         return 'ResultState.loading';
       case ResultStatus.loaded:

@@ -1,5 +1,5 @@
-import 'package:exam_app/core/resources/color_manager.dart';
-import 'package:exam_app/core/resources/styles_manager.dart';
+// core/widgets/section_exam.dart
+
 import 'package:exam_app/core/widgets/exam_item.dart';
 import 'package:exam_app/features/explore/data/models/exam_response/exam_model.dart';
 import 'package:flutter/material.dart';

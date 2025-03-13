@@ -4,6 +4,7 @@ import 'package:exam_app/features/explore/presentation/pages/exam_score_page.dar
 import 'package:exam_app/features/explore/presentation/pages/exams_page.dart';
 import 'package:exam_app/features/explore/presentation/pages/questions_page.dart';
 import 'package:exam_app/features/explore/presentation/pages/start_exam_page.dart';
+import 'package:exam_app/features/result/presentation/pages/result_details.dart';
 import 'package:exam_app/features/result/presentation/pages/results_page.dart';
 import 'package:flutter/material.dart';
 import 'package:exam_app/features/auth/presentation/pages/login_page.dart';
@@ -65,6 +66,15 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         settings: settings,
         builder: (_) => const ResultPage(),
+      );
+    case Routes.resultDetails:
+      final args = settings.arguments as Map<String, dynamic>;
+      return MaterialPageRoute(
+        settings: settings,
+        builder: (_) => ResultDetails(
+          questions: args['questions'],
+          examScore: args['examScore'],
+        ),
       );
     case Routes.exams:
       return MaterialPageRoute(

@@ -14,35 +14,47 @@ class ResultCubit extends Cubit<ResultState> {
   ResultCubit(
     this._getCachedExamQuestionsUseCase,
     this._calculateCachedExamScoreUseCase,
-  ) : super(ResultState.initial()) {
+  ) : super(const ResultState()) {
     loadExamResults();
   }
 
   Future<void> loadExamResults() async {
     try {
-      emit(ResultState.loading());
-
       final questionsResult = await _getCachedExamQuestionsUseCase();
       
       await questionsResult.fold(
         (error) async {
-          emit(ResultState.error(error.message));
+          emit(state.copyWith(
+            status: ResultStatus.error,
+            errorMessage: error.message,
+          ));
         },
         (questions) async {
           final scoreResult = await _calculateCachedExamScoreUseCase(questions);
           
           scoreResult.fold(
             (error) {
-              emit(ResultState.error(error.message));
+              emit(state.copyWith(
+                status: ResultStatus.error,
+                errorMessage: error.message,
+              ));
             },
             (score) {
-              emit(ResultState.loaded(questions: questions, examScore: score));
+              emit(state.copyWith(
+                status: ResultStatus.loaded,
+                questions: questions,
+                examScore: score,
+                errorMessage: null,
+              ));
             },
           );
         },
       );
     } catch (e) {
-      emit(ResultState.error('Failed to load exam results: ${e.toString()}'));
+      emit(state.copyWith(
+        status: ResultStatus.error,
+        errorMessage: 'Failed to load exam results: ${e.toString()}',
+      ));
     }
   }
 

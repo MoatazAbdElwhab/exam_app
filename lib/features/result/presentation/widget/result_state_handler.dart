@@ -19,13 +19,6 @@ class ResultStateHandler extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (state.status) {
-      case ResultStatus.initial:
-        return const Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(ColorManager.blue),
-          ),
-        );
-
       case ResultStatus.loading:
         return const Center(
           child: CircularProgressIndicator(

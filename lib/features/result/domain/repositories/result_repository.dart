@@ -5,9 +5,6 @@ import 'package:exam_app/features/result/data/data_models/hive_model/question_mo
 import 'package:exam_app/features/result/domain/entities/exam_score.dart';
 
 abstract class ResultRepository {
-  /// Get cached questions directly using QuestionModelHive
   Future<Either<LocalStorageException, List<QuestionModelHive>>> getCachedQuestions();
-
-  /// Calculate score using QuestionModelHive list
   Future<Either<LocalStorageException, ExamScore>> calculateScore(List<QuestionModelHive> questions);
 }

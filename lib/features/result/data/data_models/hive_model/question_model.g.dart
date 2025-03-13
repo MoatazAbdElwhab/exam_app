@@ -25,6 +25,9 @@ class QuestionModelHiveAdapter extends TypeAdapter<QuestionModelHive> {
       correctAnswer: fields[5] as String,
       duration: fields[7] as int,
       isCompleted: fields[8] as bool,
+      examName: fields[9] as String?,
+      iconUrl: fields[10] as String?,
+      examTitle: fields[11] as String?,
       userAnswer: fields[6] as String?,
     );
   }
@@ -32,7 +35,7 @@ class QuestionModelHiveAdapter extends TypeAdapter<QuestionModelHive> {
   @override
   void write(BinaryWriter writer, QuestionModelHive obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,7 +53,13 @@ class QuestionModelHiveAdapter extends TypeAdapter<QuestionModelHive> {
       ..writeByte(7)
       ..write(obj.duration)
       ..writeByte(8)
-      ..write(obj.isCompleted);
+      ..write(obj.isCompleted)
+      ..writeByte(9)
+      ..write(obj.examName)
+      ..writeByte(10)
+      ..write(obj.iconUrl)
+      ..writeByte(11)
+      ..write(obj.examTitle);
   }
 
   @override

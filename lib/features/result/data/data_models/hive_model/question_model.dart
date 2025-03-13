@@ -19,7 +19,7 @@ class QuestionModelHive extends HiveObject {
   final String question;
 
   @HiveField(4)
-  final List<String> answes; 
+  final List<String> answes;  
 
   @HiveField(5)
   final String correctAnswer;
@@ -33,17 +33,27 @@ class QuestionModelHive extends HiveObject {
   @HiveField(8)
   final bool isCompleted;
 
+  @HiveField(9)
+  final String? examName;  
 
+  @HiveField(10)
+  final String? iconUrl; 
+
+  @HiveField(11)
+  final String? examTitle;
 
   QuestionModelHive({
     required this.id,
     required this.examID,
     required this.questionID,
     required this.question,
-    required this.answes,
+    required this.answes,  
     required this.correctAnswer,
     required this.duration,
     required this.isCompleted,
+    this.examName,  
+    this.iconUrl,  
+    this.examTitle,  
     this.userAnswer,
   });
 }

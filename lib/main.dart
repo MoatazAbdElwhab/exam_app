@@ -21,11 +21,7 @@ Future<void> main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     
-    // Initialize Hive first - this must happen before any other storage operations
     await HiveApplicationStorage.init();
-    
-    // Configure dependencies after Hive is ready
-    //await configureDependencies();
     
     Bloc.observer = AppBlocObserver();
     runApp(const SplashScreen());

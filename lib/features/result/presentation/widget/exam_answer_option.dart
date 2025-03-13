@@ -3,6 +3,12 @@ import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
 import 'package:flutter/material.dart';
 
+enum AnswerStatus {
+  correct,
+  incorrect,
+  unselected
+}
+
 class ExamAnswerOption extends StatelessWidget {
   final String answer;
   final bool isCorrect;
@@ -14,6 +20,12 @@ class ExamAnswerOption extends StatelessWidget {
     required this.isCorrect,
     required this.isUserAnswer,
   });
+
+  AnswerStatus get _status {
+    if (isCorrect) return AnswerStatus.correct;
+    if (isUserAnswer) return AnswerStatus.incorrect;
+    return AnswerStatus.unselected;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,38 +55,58 @@ class ExamAnswerOption extends StatelessWidget {
   }
 
   Color _getBackgroundColor() {
-    if (isCorrect) {
-      return ColorManager.success.withOpacity(0.1);
+    switch (_status) {
+      case AnswerStatus.correct:
+        return ColorManager.success.withOpacity(0.1);
+      case AnswerStatus.incorrect:
+        return ColorManager.error.withOpacity(0.1);
+      case AnswerStatus.unselected:
+        return ColorManager.white;
     }
-    return ColorManager.white;
   }
 
   Widget _buildAnswerIcon() {
-    if (isCorrect) {
-      return Container(
-        padding: const EdgeInsets.all(2),
-        decoration:const BoxDecoration(
-          color: ColorManager.success,
-          shape: BoxShape.circle,
-        ),
-        child:const Icon(
-          Icons.check,
-          color: ColorManager.white,
-          size: 16,
-        ),
-      );
+    switch (_status) {
+      case AnswerStatus.correct:
+        return Container(
+          padding: const EdgeInsets.all(2),
+          decoration: const BoxDecoration(
+            color: ColorManager.success,
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.check,
+            color: ColorManager.white,
+            size: 16,
+          ),
+        );
+      
+      case AnswerStatus.incorrect:
+        return Container(
+          padding: const EdgeInsets.all(2),
+          decoration: const BoxDecoration(
+            color: ColorManager.error,
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.close,
+            color: ColorManager.white,
+            size: 16,
+          ),
+        );
+      
+      case AnswerStatus.unselected:
+        return Container(
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: ColorManager.grey,
+              width: 2,
+            ),
+          ),
+        );
     }
-
-    return Container(
-      width: 20,
-      height: 20,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: isUserAnswer ? ColorManager.error : ColorManager.grey,
-          width: 2,
-        ),
-      ),
-    );
   }
 }

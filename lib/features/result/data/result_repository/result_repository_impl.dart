@@ -16,21 +16,15 @@ class ResultRepositoryImpl implements ResultRepository {
   @override
   Future<Either<LocalStorageException, List<QuestionModelHive>>> getCachedQuestions() async {
     try {
-     // debugPrint('Fetching QuestionModelHive instances from storage');
       final questions = await _storageClient.getAllCachedQuestions();
       
       if (questions.isEmpty) {
-      //  debugPrint('No cached questions found - new user case');
         return Left(CacheNotFoundException(message: _getWelcomeMessage()));
       }
-      
-      //debugPrint('Retrieved ${questions.length} QuestionModelHive instances with answes property');
-      return Right(questions);
+            return Right(questions);
     } on LocalStorageException catch (e) {
-     // debugPrint('Storage exception while getting QuestionModelHive: ${e.message}');
       return Left(e);
     } catch (e) {
-     // debugPrint('Unexpected error while getting QuestionModelHive: $e');
       return Left(CacheReadException());
     }
   }
@@ -39,19 +33,13 @@ class ResultRepositoryImpl implements ResultRepository {
   Future<Either<LocalStorageException, ExamScore>> calculateScore(List<QuestionModelHive> questions) async {
     try {
       if (_isQuestionsEmpty(questions)) {
-       // debugPrint('No QuestionModelHive instances available for scoring');
         return Left(CacheNotFoundException());
       }
-
-     // debugPrint('Calculating score using QuestionModelHive.answes property');
       final score = _calculateExamScoreFromHiveModel(questions);
-     // debugPrint('Score calculation complete: ${score.correctAnswers}/${score.totalQuestions}');
       return Right(score);
     } on LocalStorageException catch (e) {
-     // debugPrint('Storage exception in score calculation: ${e.message}');
       return Left(e);
     } catch (e) {
-      //debugPrint('Error calculating score from QuestionModelHive: $e');
       return Left(CacheReadException());
     }
   }
@@ -67,11 +55,6 @@ class ResultRepositoryImpl implements ResultRepository {
     final totalQuestions = questions.length;
     final scorePercentage = _calculateScorePercentage(correctAnswers, totalQuestions);
 
-    //debugPrint('Score calculation details:');
-    //debugPrint('- Total QuestionModelHive instances: $totalQuestions');
-    //debugPrint('- Correct answers using answes property: $correctAnswers');
-    //debugPrint('- Score percentage: ${scorePercentage.toStringAsFixed(1)}%');
-
     return ExamScore(
       correctAnswers: correctAnswers,
       totalQuestions: totalQuestions,
@@ -85,24 +68,16 @@ class ResultRepositoryImpl implements ResultRepository {
     for (final question in questions) {
       final String? userAnswer = question.userAnswer;
       final String correctAnswer = question.correctAnswer;
-
-    //  debugPrint('Checking question: ${question.question}');
-     // debugPrint('User answer key: $userAnswer');
-     // debugPrint('Correct answer key: $correctAnswer');
-     // debugPrint('Available answers: ${question.answes.join(", ")}');
       
       if (userAnswer != null && userAnswer == correctAnswer) {
-    //    debugPrint('Found correct answer! Key: $userAnswer');
         correctCount++;
       }
     }
-   // debugPrint('Total correct answers: $correctCount');
     return correctCount;
   }
 
   double _calculateScorePercentage(int correctAnswers, int totalQuestions) {
     final percentage = (correctAnswers / totalQuestions) * 100;
-   // debugPrint('Calculated percentage from QuestionModelHive answers: ${percentage.toStringAsFixed(1)}%');
     return percentage;
   }
 }

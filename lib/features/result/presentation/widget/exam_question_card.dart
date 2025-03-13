@@ -7,10 +7,12 @@ import 'package:exam_app/features/result/presentation/widget/exam_answer_option.
 
 class ExamQuestionCard extends StatelessWidget {
   final QuestionModelHive question;
+  final int questionNumber;
 
   const ExamQuestionCard({
     super.key,
     required this.question,
+    required this.questionNumber,
   });
 
   @override
@@ -37,7 +39,7 @@ class ExamQuestionCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Q${question.questionID}. ${question.question}',
+            'Q$questionNumber. ${question.question}',
             style: getBoldStyle(
               color: ColorManager.black,
               fontSize: 16,
