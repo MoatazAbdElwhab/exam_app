@@ -1,5 +1,7 @@
+// main.dart
 import 'package:exam_app/core/app_bloc_observer.dart';
 import 'package:exam_app/core/app_data/local_storage/local_storage_client.dart';
+import 'package:exam_app/core/app_data/local_storage/hive_application_storage.dart';
 import 'package:exam_app/core/routes/navigator_observer.dart';
 import 'package:exam_app/core/widgets/dialog_utils.dart';
 import 'package:exam_app/features/splash/splash.dart';
@@ -14,10 +16,23 @@ import 'core/routes/routes.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 
 int? buildOutBuild;
+
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  Bloc.observer = AppBlocObserver();
-  runApp(const SplashScreen());
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    
+    // Initialize Hive first - this must happen before any other storage operations
+    await HiveApplicationStorage.init();
+    
+    // Configure dependencies after Hive is ready
+    //await configureDependencies();
+    
+    Bloc.observer = AppBlocObserver();
+    runApp(const SplashScreen());
+  } catch (e) {
+    debugPrint('Failed to initialize app: $e');
+    rethrow;
+  }
 }
 
 class MyApp extends StatelessWidget {

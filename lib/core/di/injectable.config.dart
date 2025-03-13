@@ -60,20 +60,14 @@ import 'package:exam_app/features/explore/data/repo/explore_repo_impl.dart'
     as _i258;
 import 'package:exam_app/features/explore/presentation/cubit/explore_cubit.dart'
     as _i68;
-import 'package:exam_app/features/result/data/data_sources/result_local_data_source.dart'
-    as _i53;
-import 'package:exam_app/features/result/data/data_sources/result_remote_data_source.dart'
-    as _i933;
-import 'package:exam_app/features/result/data/repositories/result_repository_impl.dart'
-    as _i161;
-import 'package:exam_app/features/result/domain/result_repository/result_repository.dart'
-    as _i451;
-import 'package:exam_app/features/result/domain/use_cases/check_answers_use_case.dart'
-    as _i696;
-import 'package:exam_app/features/result/domain/use_cases/get_result_usecase.dart'
-    as _i101;
-import 'package:exam_app/features/result/domain/use_cases/submit_answers.dart'
-    as _i389;
+import 'package:exam_app/features/result/data/result_repository/result_repository_impl.dart'
+    as _i277;
+import 'package:exam_app/features/result/domain/repositories/result_repository.dart'
+    as _i92;
+import 'package:exam_app/features/result/domain/usecases/calculate_cached_exam_score_usecase.dart'
+    as _i599;
+import 'package:exam_app/features/result/domain/usecases/get_cached_exam_questions_usecase.dart'
+    as _i191;
 import 'package:exam_app/features/result/presentation/cubit/result_cubit.dart'
     as _i644;
 import 'package:flutter/cupertino.dart' as _i719;
@@ -118,19 +112,25 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i310.AuthLocalDataSource>(
         () => _i873.AuthLocalDataSourceImpl(gh<_i73.LocalStorageClient>()));
+    gh.factory<_i92.ResultRepository>(
+        () => _i277.ResultRepositoryImpl(gh<_i73.LocalStorageClient>()));
+    gh.factory<_i599.CalculateCachedExamScoreUseCase>(() =>
+        _i599.CalculateCachedExamScoreUseCase(gh<_i92.ResultRepository>()));
+    gh.factory<_i191.GetCachedExamQuestionsUseCase>(
+        () => _i191.GetCachedExamQuestionsUseCase(gh<_i92.ResultRepository>()));
     gh.singleton<_i32.DioErrorHandler>(() => _i32.DioErrorHandler(
           gh<_i73.LocalStorageClient>(),
           gh<_i719.GlobalKey<_i719.NavigatorState>>(),
+        ));
+    gh.factory<_i644.ResultCubit>(() => _i644.ResultCubit(
+          gh<_i191.GetCachedExamQuestionsUseCase>(),
+          gh<_i599.CalculateCachedExamScoreUseCase>(),
         ));
     gh.singleton<_i93.ApiClient>(() => _i797.DioApiClient(
           gh<_i73.LocalStorageClient>(),
           gh<_i32.DioErrorHandler>(),
           gh<_i719.GlobalKey<_i719.NavigatorState>>(),
         ));
-    gh.lazySingleton<_i53.ResultLocalDataSource>(
-        () => _i53.ResultLocalDataSourceImpl(gh<_i93.ApiClient>()));
-    gh.factory<_i933.ResultRemoteDataSource>(
-        () => _i933.ResultRemoteDataSource(gh<_i93.ApiClient>()));
     gh.factory<_i891.ExploreRemoteDataSource>(
         () => _i779.ExploreApiRemoteDataSource(gh<_i93.ApiClient>()));
     gh.factory<_i1021.AuthRemoteDataSource>(
@@ -161,10 +161,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i756.SignUpUseCase(gh<_i24.AuthRepository>()));
     gh.factory<_i923.VerifyResetCodeUseCase>(
         () => _i923.VerifyResetCodeUseCase(gh<_i24.AuthRepository>()));
-    gh.lazySingleton<_i451.ResultRepository>(() => _i161.ResultRepositoryImpl(
-          gh<_i53.ResultLocalDataSource>(),
-          gh<_i933.ResultRemoteDataSource>(),
-        ));
     gh.factory<_i533.AuthCubit>(() => _i533.AuthCubit(
           signInUseCase: gh<_i937.SignInUseCase>(),
           signUpUseCase: gh<_i756.SignUpUseCase>(),
@@ -178,16 +174,8 @@ extension GetItInjectableX on _i174.GetIt {
           verifyResetCodeUseCase: gh<_i923.VerifyResetCodeUseCase>(),
           storageClient: gh<_i73.LocalStorageClient>(),
         ));
-    gh.factory<_i696.CheckAnswersUseCase>(
-        () => _i696.CheckAnswersUseCase(gh<_i451.ResultRepository>()));
     gh.factory<_i68.ExploreCubit>(
         () => _i68.ExploreCubit(gh<_i258.ExploreRepoImpl>()));
-    gh.factory<_i644.ResultCubit>(
-        () => _i644.ResultCubit(gh<_i451.ResultRepository>()));
-    gh.singleton<_i101.GetResultUseCase>(
-        () => _i101.GetResultUseCase(gh<_i451.ResultRepository>()));
-    gh.singleton<_i389.SubmitAnswers>(
-        () => _i389.SubmitAnswers(gh<_i451.ResultRepository>()));
     return this;
   }
 }

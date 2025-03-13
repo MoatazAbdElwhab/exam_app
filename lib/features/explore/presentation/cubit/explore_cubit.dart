@@ -49,8 +49,10 @@ class ExploreCubit extends Cubit<ExploreState> {
 
   Future<void> getAllQuestionsOnExam(String examID) async {
     emit(GetQuestionsLoading());
-    // Cache exam ID in both Hive and static variable
-    getIt<LocalStorageClient>().cacheUserData('examID', examID);
+    
+    // Cache exam ID for this session
+    final storageClient = getIt<LocalStorageClient>();
+    await storageClient.cacheUserData('examID', examID);
 
     final result = await _exploreRepoImpl.getAllQuestionsOnExam(examID);
     result.fold(
@@ -85,8 +87,9 @@ class ExploreCubit extends Cubit<ExploreState> {
     if (activeQuestion + 1 == questionList.length) {
       // First cache answers through LocalStorageClient
       try {
-        final userId = getIt<LocalStorageClient>().getUserData('userID');
-        final examId = getIt<LocalStorageClient>().getUserData('examID');
+        final storageClient = getIt<LocalStorageClient>();
+        final userId = storageClient.getUserData('userID');
+        final examId = storageClient.getUserData('examID');
 
         if (userId != null && examId != null) {
           for (var i = 0; i < selectAnswersMap.length; i++) {
@@ -94,17 +97,18 @@ class ExploreCubit extends Cubit<ExploreState> {
             final userAnswer = selectAnswersMap[i]!.correct;
             final questionKey = '${userId}_${examId}_${question.id}';
             
-            getIt<LocalStorageClient>().cacheQuestion(
+            debugPrint('Caching question with key: $questionKey');
+            await storageClient.cacheQuestion(
               questionKey,
               QuestionModelHive(
-                id: question.id,
+                id: questionKey, // Use the full key as the ID for proper filtering
                 examID: examId,
                 questionID: question.id,
                 question: question.question,
-                answes: question.answers,
+                answes: question.answers.map((answer) => answer.answer).toList(),
                 correctAnswer: question.correct,
                 userAnswer: userAnswer,
-                duration: question.createdAt,
+                duration: DateTime.now().difference(question.createdAt).inSeconds,
                 isCompleted: true,
               ),
             );
@@ -112,9 +116,21 @@ class ExploreCubit extends Cubit<ExploreState> {
           }
         } else {
           debugPrint('Cannot cache answers: userID or examID not found');
+          getIt<DialogUtils>().showSnackBar(
+            textColor: ColorManager.error,
+            message: 'Please login to save your exam results',
+            context: context,
+          );
+          return;
         }
       } catch (e) {
         debugPrint('Failed to cache answers: $e');
+        getIt<DialogUtils>().showSnackBar(
+          textColor: ColorManager.error,
+          message: 'Failed to save exam results. Please try again.',
+          context: context,
+        );
+        return;
       }
 
       // Then show completion message
@@ -136,16 +152,8 @@ class ExploreCubit extends Cubit<ExploreState> {
   }
 
   void backQuestion() {
-    // for (var i = 0; i < 11; i++) {
-    //   final queID = getIt.get<LocalStorageClient>().getData('QuestionID$i');
-    //   final chosenQus = getIt.get<LocalStorageClient>().getData('Chosen$i');
-
-    //   print('queID success $queID');
-    //   print('chosenQus success $chosenQus');
-    // }
     activeQuestion--;
     selectedAnswer = selectAnswersMap[activeQuestion]!.correct;
-
     emit(ChangeAnswer());
   }
 

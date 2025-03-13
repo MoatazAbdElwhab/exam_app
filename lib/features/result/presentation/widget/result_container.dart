@@ -1,128 +1,152 @@
 // features/result/presentation/widget/result_container.dart
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
-import 'package:exam_app/features/result/data/data_models/question_request_model.dart';
-import 'package:exam_app/features/result/presentation/cubit/result_cubit.dart';
+import 'package:exam_app/features/result/data/data_models/hive_model/question_model.dart';
+import 'package:exam_app/features/result/domain/entities/exam_score.dart';
 import 'package:exam_app/features/result/presentation/pages/result_details.dart';
 import 'package:flutter/material.dart';
 
 class ResultContainer extends StatelessWidget {
-  final BuildContext context;
-  final QuestionRequestModel question;
-  final UserQuestionData? userAnswer;
-  final int index;
-  final int totalQuestions;
-  final int correctAnswers;
-  final int timeSpent;
-  final List<QuestionRequestModel> examQuestions;
-  final Map<String, UserQuestionData> userAnswers;
+  final List<QuestionModelHive> questions;
+  final ExamScore examScore;
 
   const ResultContainer({
     super.key,
-    required this.context,
-    required this.question,
-    required this.userAnswer,
-    required this.index,
-    required this.totalQuestions,
-    required this.correctAnswers,
-    required this.timeSpent,
-    required this.examQuestions,
-    required this.userAnswers,
+    required this.questions,
+    required this.examScore,
   });
+
+  String _formatDuration(int minutes, {bool short = false}) {
+    if (short) {
+      return '$minutes min';
+    }
+    return '$minutes ${minutes == 1 ? 'Minute' : 'Minutes'}';
+  }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResultDetails(
-              question: question,
-              userAnswer: userAnswer,
-              examQuestions: examQuestions,
-              userAnswers: userAnswers,
-            ),
-          ),
-        );
-      },
+    // Per Memory a74ae1d4, use QuestionModelHive directly
+    final duration = questions.first.duration;
+    
+    return GestureDetector(
+      onTap: () => _navigateToDetails(context),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ColorManager.white,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
+              color: ColorManager.grey.withOpacity(0.1),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
           ],
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Left side - Icon
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Image.network(
-                question.subject?.icon ?? '',
-               
+            Text(
+              'HTML',
+              style: getMediumStyle(
+                color: ColorManager.grey,
+                fontSize: 14,
               ),
             ),
-            const SizedBox(width: 16),
-            // Right side - Content
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: ColorManager.lightBlue,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
                 children: [
-                  // Title and Time
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        question.exam?.title ?? 'Exam Results',
-                        style: getBoldStyle(
-                          color: ColorManager.black,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
-                        '$timeSpent min',
-                        style: getMediumStyle(
-                          color: ColorManager.grey,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
+                  const Icon(
+                    Icons.school_outlined,
+                    color: ColorManager.blue,
+                    size: 20,
                   ),
-                  const SizedBox(height: 4),
-                  // Questions count
-                  Text(
-                    '$totalQuestions Questions',
-                    style: getRegularStyle(
-                      color: ColorManager.grey,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  // Corrected answers
-                  Text(
-                    '$correctAnswers corrected answers in $timeSpent min.',
-                    style: getMediumStyle(
-                      color: ColorManager.grey,
-                      fontSize: 14,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'HTML Quiz',
+                          style: getBoldStyle(
+                            color: ColorManager.black,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Text(
+                              'High Level',
+                              style: getRegularStyle(
+                                color: ColorManager.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                            _buildDot(),
+                            Text(
+                              '${questions.length} Questions',
+                              style: getRegularStyle(
+                                color: ColorManager.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                            _buildDot(),
+                            Text(
+                              _formatDuration(duration),
+                              style: getRegularStyle(
+                                color: ColorManager.grey,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: 8),
+            Text(
+              '${examScore.correctAnswers} corrected answers in ${_formatDuration(duration, short: true)}',
+              style: getMediumStyle(
+                color: ColorManager.blue,
+                fontSize: 12,
+              ),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDot() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Text(
+        '•',
+        style: getRegularStyle(
+          color: ColorManager.grey,
+          fontSize: 12,
+        ),
+      ),
+    );
+  }
+
+  void _navigateToDetails(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ResultDetails(
+          questions: questions,
+          examScore: examScore,
         ),
       ),
     );

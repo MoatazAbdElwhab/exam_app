@@ -5,33 +5,35 @@ import 'package:hive/hive.dart';
 part 'question_model.g.dart';
 
 @HiveType(typeId: 0)
-class QuestionModelHive {
+class QuestionModelHive extends HiveObject {
   @HiveField(0)
-  final dynamic id;
+  final String id;
 
   @HiveField(1)
-  final dynamic examID;
+  final String examID;
 
   @HiveField(2)
-  final dynamic questionID;
+  final String questionID;
 
   @HiveField(3)
-  final dynamic question;
+  final String question;
 
   @HiveField(4)
-  final dynamic answes;
+  final List<String> answes; 
 
   @HiveField(5)
-  final dynamic correctAnswer;
+  final String correctAnswer;
 
   @HiveField(6)
-  final dynamic userAnswer;
+  final String? userAnswer;
 
   @HiveField(7)
-  final dynamic duration;
+  final int duration;
 
   @HiveField(8)
   final bool isCompleted;
+
+
 
   QuestionModelHive({
     required this.id,
@@ -40,8 +42,8 @@ class QuestionModelHive {
     required this.question,
     required this.answes,
     required this.correctAnswer,
-    required this.userAnswer,
     required this.duration,
     required this.isCompleted,
+    this.userAnswer,
   });
 }

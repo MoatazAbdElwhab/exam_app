@@ -17,15 +17,15 @@ class QuestionModelHiveAdapter extends TypeAdapter<QuestionModelHive> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return QuestionModelHive(
-      id: fields[0] as dynamic,
-      examID: fields[1] as dynamic,
-      questionID: fields[2] as dynamic,
-      question: fields[3] as dynamic,
-      answes: fields[4] as dynamic,
-      correctAnswer: fields[5] as dynamic,
-      userAnswer: fields[6] as dynamic,
-      duration: fields[7] as dynamic,
+      id: fields[0] as String,
+      examID: fields[1] as String,
+      questionID: fields[2] as String,
+      question: fields[3] as String,
+      answes: (fields[4] as List).cast<String>(),
+      correctAnswer: fields[5] as String,
+      duration: fields[7] as int,
       isCompleted: fields[8] as bool,
+      userAnswer: fields[6] as String?,
     );
   }
 

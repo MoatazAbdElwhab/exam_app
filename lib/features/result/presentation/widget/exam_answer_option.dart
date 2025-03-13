@@ -1,7 +1,7 @@
 // features/result/presentation/widget/exam_answer_option.dart
-import 'package:flutter/material.dart';
 import 'package:exam_app/core/resources/color_manager.dart';
 import 'package:exam_app/core/resources/styles_manager.dart';
+import 'package:flutter/material.dart';
 
 class ExamAnswerOption extends StatelessWidget {
   final String answer;
@@ -19,24 +19,20 @@ class ExamAnswerOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: _getBackgroundColor(),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
-          Icon(
-            _getIcon(),
-            color: _getColor(),
-            size: 20,
-          ),
+          _buildAnswerIcon(),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               answer,
-              style: getMediumStyle(
-                color: _getColor(),
+              style: getRegularStyle(
+                color: ColorManager.black,
                 fontSize: 14,
               ),
             ),
@@ -47,20 +43,38 @@ class ExamAnswerOption extends StatelessWidget {
   }
 
   Color _getBackgroundColor() {
-    if (isCorrect) return Colors.green.withOpacity(0.1);
-    if (isUserAnswer && !isCorrect) return Colors.red.withOpacity(0.1);
-    return Colors.grey.withOpacity(0.1);
+    if (isCorrect) {
+      return ColorManager.success.withOpacity(0.1);
+    }
+    return ColorManager.white;
   }
 
-  Color _getColor() {
-    if (isCorrect) return Colors.green;
-    if (isUserAnswer && !isCorrect) return Colors.red;
-    return ColorManager.black;
-  }
+  Widget _buildAnswerIcon() {
+    if (isCorrect) {
+      return Container(
+        padding: const EdgeInsets.all(2),
+        decoration:const BoxDecoration(
+          color: ColorManager.success,
+          shape: BoxShape.circle,
+        ),
+        child:const Icon(
+          Icons.check,
+          color: ColorManager.white,
+          size: 16,
+        ),
+      );
+    }
 
-  IconData _getIcon() {
-    if (isCorrect) return Icons.check_circle;
-    if (isUserAnswer && !isCorrect) return Icons.cancel;
-    return Icons.radio_button_unchecked;
+    return Container(
+      width: 20,
+      height: 20,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: isUserAnswer ? ColorManager.error : ColorManager.grey,
+          width: 2,
+        ),
+      ),
+    );
   }
 }
